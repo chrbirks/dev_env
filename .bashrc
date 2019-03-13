@@ -41,7 +41,3 @@ powerline-daemon -q
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
 . /usr/lib/python3.7/site-packages/powerline/bindings/bash/powerline.sh
-
-PATH=$PATH:/home/chrbirks/bin/010Editor;export PATH; # ADDED BY INSTALLER - DO NOT EDIT OR DELETE THIS COMMENT - 87FF8EFC-483D-BCAA-D67D-735CF60410D1 89A1D2F9-71A8-F8DD-9F82-3E53A2B7DDB9
-
-export QSYS_ROOTDIR="/home/chrbirks/intelFPGA_lite/18.1/quartus/sopc_builder/bin"
