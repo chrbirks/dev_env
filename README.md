@@ -1,4 +1,4 @@
-# dev_env
+# Development environment
 Configuration files for Bash, tmux, spacemacs, etc.
 
 # Spacemacs shortcuts
