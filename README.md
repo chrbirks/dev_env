@@ -2,6 +2,8 @@
 Configuration files for Bash, tmux, spacemacs, etc.
 
 # Spacemacs shortcuts
+To list and update packages use `SPC a k`.
+
 To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
 - Navigate to a file in my project
 - Type `SPC m g c` to create tags
@@ -234,7 +236,7 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 ## Error handling
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC t s` | toggle flycheck |
+| `SPC t s` | toggle flycheck/syntax highlighting (syntax-highlighting layer must be added first) |
 | `SPC e c` | clear all errors |
 | `SPC e h` | describe a flycheck checker |
 | `SPC e l` | toggle the display of the flycheck list of errors/warnings |
