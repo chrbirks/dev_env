@@ -2,8 +2,6 @@
 Configuration files for Bash, tmux, spacemacs, etc.
 
 # Spacemacs shortcuts
-To list and update packages use `SPC a k`.
-
 To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
 - Navigate to a file in my project
 - Type `SPC m g c` to create tags
@@ -13,6 +11,21 @@ To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
 - Check the root directory of the project and see GPATH, GRTAGS, and GTAGS
 - Put the cursor over the name of an interface being implemented by a class
 - Hit `SPC m g d` to run helm-gtags-find-tag
+
+## ELPA package manager
+| Shortcut | Description |
+| -------- | ----------- |
+|`SPC a k` | Launch paradox |
+|`/` | Evil-search |
+|`f k` | Filter by keywords |
+|`f r` | Filter by regexp |
+|`f u` | Display only installed packages with updates available |
+|`o` | Open package homepage |
+|`r` | Refresh |
+|`S P` | Sort by name |
+|`S S` | Sort by status |
+|`v` | Visual state |
+|`x` | Execute (action flags) |
 
 ## Navigation
 These shortcuts are a mix of native vi and spacemacs shortcuts.
