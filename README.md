@@ -12,7 +12,9 @@ To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
 - Put the cursor over the name of an interface being implemented by a class
 - Hit `SPC m g d` to run helm-gtags-find-tag
 
-## ELPA package manager
+## ELPA package manager (paradox)
+Note: do not use this manager for installing packages since they won't be persisten this way. And do not update packages here either since it does not support roll-back. Use the "Update Packages" function on the Spacemacs loading page.
+
 | Shortcut | Description |
 | -------- | ----------- |
 |`SPC a k` | Launch paradox |
