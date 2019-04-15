@@ -49,7 +49,7 @@ These shortcuts are a mix of native vi and spacemacs shortcuts.
 |`g ;` | Go to last place edited|
 |`g f` | Go to file path under cursor|
 |`SPC j l` | Avy go to line|
-|`SPC j j` | Avy go to char|
+|`SPC j j` | Avy go to char/word|
 |`zz` | Scroll and place line in the center of the screen|
 |`zt` | Scroll and place line in the top of the screen|
 |`zb` | Scroll and place line in the bottom of the screen|
@@ -260,7 +260,6 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | `SPC e v` | verify flycheck setup (useful to debug 3rd party tools configuration) |
 | `SPC e .` | error transient state |
 
-
 ## Toggles
 | Shortcut | Description |
 | -------- | ----------- |
@@ -272,3 +271,13 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | `SPC w m` | Zoom/maximize/minimize buffer window |
 | `SPC SPC global-diff-hl-mode` | Highlight version control diffs |
 | `SPC SPC diff-hl-flydiff-mode` | Highlight version control diffs on the fly |
+
+## Verilog major mode
+| Shortcut | Description |
+| -------- | ----------- |
+| `C-c C-t` | inital shortcut |
+| `... c` | case block |
+| `... h` | header block |
+| `... u` | UVM Object block |
+| `... U` | UVM Component block |
+| `... S` | state machine |
