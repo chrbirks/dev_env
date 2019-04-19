@@ -1,7 +1,7 @@
 # Development environment
 Configuration files for Bash, tmux, spacemacs, etc.
 
-# Spacemacs shortcuts
+# Spacemacs
 To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
 - Navigate to a file in my project
 - Type `SPC m g c` to create tags
@@ -29,7 +29,97 @@ Note: do not use this manager for installing packages since they won't be persis
 |`v` | Visual state |
 |`x` | Execute (action flags) |
 
-## Navigation
+## GTAGS
+### Installation
+`counsel-gtags`, `helm-gtags` and `ggtags` are clients for GNU Global. GNU
+Global is a source code tagging system that allows querying symbol locations in
+source code, such as definitions or references. Adding the `gtags` layer enables
+both of these modes. See the Helm GTAGS Layer info page in Emacs for more information.
+To use gtags you first have to install GNU Global on the OS.
+
+`sudo pacman -S ctags python-pygments`
+
+### Configuration
+To be able to use `pygments` and `ctags`, you need to copy the sample
+`gtags.conf` either to `/etc/gtags.conf` or `$HOME/.globalrc`.
+Additionally you should define GTAGSLABEL in your shell startup file e.g.
+with sh/ksh:
+
+```echo export GTAGSLABEL=pygments >> .profile```
+
+If you installed Emacs from source after ctags, your original ctags binary
+is probably replaced by emacs’s etags. To get around this you will need to
+configure emacs as following before installing:
+
+`./configure --program-transform-name='s/^ctags$/ctags.emacs/'`
+
+To check if you have the correct version of ctags execute:
+
+`ctags --version | grep Exuberant`
+
+If there is no output you have the wrong =ctags= executable and you need to
+reinstall ctags from your package manager.
+
+To use this configuration layer, add it to your `~/.spacemacs` file. You
+will need to add `gtags` to the existing `dotspacemacs-configuration-layers`.
+
+```
+(setq dotspacemacs-configuration-layers
+     '( ;; ...
+        gtags
+        ;; ...
+       ))
+```
+
+If `ggtags-mode` is too intrusive you can disable it by default, by setting the
+layer variable `gtags-enable-by-default` to `nil`.
+
+```
+(setq-default dotspacemacs-configuration-layers
+    '((gtags :variables gtags-enable-by-default t)))
+```
+
+This variable can also be set as a file-local or directory-local variable for
+additional control on a per project basis.
+Before using `gtags`, remember to create a GTAGS database by one of the following
+methods:
+
+* From within Emacs, run `helm-gtags-create-tags`, which are bound to `SPC m g C`.If the language is
+  not directly supported by GNU Global, you can choose `ctags` or `pygments` as
+  a backend to generate the database.
+* From inside a terminal:
+
+```cd /path/to/project/root```
+
+If the language is not directly supported and GTAGSLABEL is not set
+
+```gtags --gtagslabel=pygments```
+
+Otherwise
+
+```gtags```
+
+| Shortcut | Description |
+| -------- | ----------- |
+| `SPC m g C` | create a tag database                                     |
+| `SPC m g f` | jump to a file in tag database                            |
+| `SPC m g g` | jump to a location based on context                       |
+| `SPC m g G` | jump to a location based on context (open another window) |
+| `SPC m g d` | find definitions                                          |
+| `SPC m g i` | present tags in current function only                     |
+| `SPC m g l` | jump to definitions in file                               |
+| `SPC m g n` | jump to next location in context stack                    |
+| `SPC m g p` | jump to previous location in context stack                |
+| `SPC m g r` | find references                                           |
+| `SPC m g R` | resume previous helm-gtags session                        |
+| `SPC m g s` | select any tag in a project retrieved by gtags            |
+| `SPC m g S` | show stack of visited locations                           |
+| `SPC m g y` | find symbols                                              |
+| `SPC m g u` | manually update tag database   
+
+
+## Shortcuts
+### Navigation
 These shortcuts are a mix of native vi and spacemacs shortcuts.
 
 | Shortcut | Description |
@@ -66,7 +156,7 @@ These shortcuts are a mix of native vi and spacemacs shortcuts.
 |`[{` | Go up to outer brace|
 |`]}` | Go down to outer brace|
 
-## Visual mode
+### Visual mode
 Press `v` to enter visual mode so you can highlight text).
 Use the arrow keys (or h,j,k,l,w,b,$) to highlight.
 
@@ -80,7 +170,7 @@ Spacemacs adds another Visual mode via the expand-region mode.
 |`r` | reset the region to initial selection|
 |`ESC` | leave expand-region mode|
 
-## Editing
+### Editing
 | Shortcut | Description |
 | -------- | ----------- |
 |`i` | Insert before cursor|
@@ -125,7 +215,7 @@ Spacemacs adds another Visual mode via the expand-region mode.
 |`SPC x w d` | show dictionary entry of word from wordnik.com|
 |`SPC x TAB` | indent or dedent a regionf rigidly|
 
-## Bookmarks
+### Bookmarks
 Bookmarks can be set anywhere in a file. Bookmarks are persistent. They are very useful to jump to/open a known project. Spacemacs uses helm-bookmarks to manage them.	
 Open an helm window with the current bookmarks by pressing: `SPC f b`
 Then in the helm-bookmarks buffer:
@@ -135,7 +225,7 @@ Then in the helm-bookmarks buffer:
 `C-o` open the selected bookmark in another window
 To save a new bookmark, just type the name of the bookmark and press RET.
 
-## Searching
+### Searching
 Searching in current file
 
 | Shortcut | Description |
@@ -169,7 +259,7 @@ Searching in a project
 | `SPC / or SPC s p` | search with the first found tool |
 | `SPC * or SPC s P` | search with the first found tool with default input |
 
-## Projectile shortcuts
+### Projectile shortcuts
 | Shortcut | Description |
 | -------- | ----------- |
 | `SPC p f` | find file |
@@ -197,14 +287,14 @@ Searching in a project
 | `SPC p p` | switch project |
 
 
-## Neotree/Spacetree
+### Neotree/Spacetree
 Spacemacs provides a quick and simple way to navigate in an unknown project file tree with NeoTree.	
 To toggle the NeoTree buffer press `SPC f t` or `SPC p t` (the latter open NeoTree with the root set to the projectile project root).
 The NeoTree window always has the number 0 so it does not shift the current number of the other windows. To select the NeoTree window you then use `SPC 0`.
 Spacetree file tree replaces NeoTree. Press `?` to show Spacetree shortcuts.
 
 
-## Version control commands
+### Version control commands
 | Shortcut | Description |
 | -------- | ----------- |
 | `SPC p v` | Open VC window |
@@ -219,7 +309,7 @@ Spacetree file tree replaces NeoTree. Press `?` to show Spacetree shortcuts.
 | `C-c C-c` | Finish commit message |
 | `q` | quit vc-dir |
 
-## Commenting
+### Commenting
 Comments are handled by evil-nerd-commenter, it’s bound to the following keys.
 
 | Shortcut | Description |
@@ -236,7 +326,7 @@ Comments are handled by evil-nerd-commenter, it’s bound to the following keys.
 | `SPC c Y` | invert comment and yank |
 | `SPC ; SPC j l` | Comment efficiently a block of lines |
 		
-## Regular expressions	
+### Regular expressions	
 Spacemacs uses the packages pcre2el to manipulate regular expressions. It is useful when working with Emacs Lisp buffers since it allows to easily converts PCRE (Perl Compatible RegExp) to Emacs RegExp or rx. It can also be used to “explain” a PCRE RegExp around point in rx form.
 
 | Shortcut | Description |
@@ -248,7 +338,7 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | `SPC x r c` | Convert regexp around point to the other form and display the result in the minibuffer |
 | `SPC x r e /` | Explain Emacs Lisp regexp |
 
-## Error handling
+### Error handling
 | Shortcut | Description |
 | -------- | ----------- |
 | `SPC t s` | toggle flycheck/syntax highlighting (syntax-highlighting layer must be added first) |
@@ -260,7 +350,7 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | `SPC e v` | verify flycheck setup (useful to debug 3rd party tools configuration) |
 | `SPC e .` | error transient state |
 
-## Toggles
+### Toggles
 | Shortcut | Description |
 | -------- | ----------- |
 | `SPC t i` | indent guidelines |
@@ -272,7 +362,7 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | `SPC SPC global-diff-hl-mode` | Highlight version control diffs |
 | `SPC SPC diff-hl-flydiff-mode` | Highlight version control diffs on the fly |
 
-## Verilog major mode
+### Verilog major mode
 | Shortcut | Description |
 | -------- | ----------- |
 | `C-c C-t` | inital shortcut |
