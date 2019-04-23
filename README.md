@@ -34,7 +34,8 @@ Note: do not use this manager for installing packages since they won't be persis
 `counsel-gtags`, `helm-gtags` and `ggtags` are clients for GNU Global. GNU
 Global is a source code tagging system that allows querying symbol locations in
 source code, such as definitions or references. Adding the `gtags` layer enables
-both of these modes. See the Helm GTAGS Layer info page in Emacs for more information.
+both of these modes. See the Helm GTAGS Layer info page in Emacs for more information
+(http://spacemacs.org/layers/+tags/gtags/README.html).
 To use gtags you first have to install GNU Global on the OS.
 
 `sudo pacman -S ctags python-pygments`
@@ -120,7 +121,8 @@ Otherwise
 
 ## Shortcuts
 ### Navigation
-These shortcuts are a mix of native vi and spacemacs shortcuts.
+These shortcuts are a mix of native vi and spacemacs shortcuts, some of which
+requires certain packages or layers to be installed.
 
 | Shortcut | Description |
 | -------- | ----------- |
@@ -169,6 +171,26 @@ Spacemacs adds another Visual mode via the expand-region mode.
 |`V` | contract the region by one semantic unit|
 |`r` | reset the region to initial selection|
 |`ESC` | leave expand-region mode|
+
+### Buffers
+| Shortcut | Description |
+| -------- | ----------- |
+|`SPC 1..9` | open buffer in window 1..9 |
+|`SPC b b` | list buffers |
+|`SPC b d` | kill buffer |
+|`SPC b n/p` | next/previous buffer |
+|`SPC b i` | toggle imenu with buffer outline (requires imenu-list layer) |
+
+### imenu-list
+Opened with `SPC b i`
+
+| Shortcut | Description |
+| -------- | ----------- |
+|`SPC q` | quit imenu |
+|`SPC RET` | jump to enty |
+|`SPC d` | jump to entry, keep focus |
+|`SPC f` | fold/unfold current section |
+|`SPC r` | refresh imenu window |
 
 ### Editing
 | Shortcut | Description |
