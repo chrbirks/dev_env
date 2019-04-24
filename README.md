@@ -309,17 +309,47 @@ Searching in a project
 | `SPC p p` | switch project |
 
 
-### Neotree/Spacetree
-Spacemacs provides a quick and simple way to navigate in an unknown project file tree with NeoTree.	
-To toggle the NeoTree buffer press `SPC f t` or `SPC p t` (the latter open NeoTree with the root set to the projectile project root).
-The NeoTree window always has the number 0 so it does not shift the current number of the other windows. To select the NeoTree window you then use `SPC 0`.
-Spacetree file tree replaces NeoTree. Press `?` to show Spacetree shortcuts.
+### Neotree/Treemacs
+Spacemacs provides a quick and simple way to navigate in an unknown project file tree with `neotree` layer (replaced by `treemacs` in newest version).	
+To toggle the `neotree` buffer press `SPC f t` or `SPC p t` (the latter open `neotree` with the root set to the projectile project root).
+The `neotree` window always has the number 0 so it does not shift the current number of the other windows. To select the `neotree` window you then use `SPC 0`.
+`treemacs` file tree replaces `neotree`. Press `?` to show `treemacs` shortcuts.
 
+| Shortcut | Description |
+| -------- | ----------- |
+| `SPC f t` | open/close neotree/treemacs  |
+| `SPC p t` | open/close neotree/treemacs in project mode |
+| `SPC f T` | open/close neotree/treemacs and shift focus |
+| `SPC f B` | find and select a bookmark |
+| `SPC 0` | focus on tree window |
+
+Inside treemacs:
+
+| Shortcut | Description |
+| -------- | ----------- |
+| `... ?` | show shortcuts |
+| `... j/k` | go to next/previous line |
+| `... C-p a` | select new project to add to workspace |
+| `... C-p p` | select projectile project to add to workspace |
+| `... C-p d` | remove project at point from workspace |
+| `... C-p r` | rename project at point |
+| `... th` | toggle display dotfiles |
+| `... tf` | toggle treemacs-follow-mode |
+| `... ta` | toggle treemacs-filewatch-mode |
+| `... r` | refresh |
+| `... cf` | create file |
+| `... cd` | create directory |
+| `... R` | rename selected node |
+| `... u` | select parent of selected node if possible |
+| `... q` | show/hide tree window |
+| `... oaa` | open current file or tag using ace-window |
+| `... yr` | copy absolute path of the nearest project at point |
+| `... yy` | copy absolute path of the node at point |
 
 ### Version control commands
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC p v` | Open VC window |
+| `SPC p v` | open VC window |
 | `n/p` | next/prev item |
 | `tab/S-tab` | next/prev folder |
 | `o` | visit file in new window |
