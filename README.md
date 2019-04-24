@@ -118,6 +118,26 @@ Otherwise
 | `SPC m g y` | find symbols                                              |
 | `SPC m g u` | manually update tag database   
 
+## Debug
+The layer `debug` adds interactive debuggers for multiple languages using `realgud`, e.g. gdb.
+
+| Shortcut | Description |
+| -------- | ----------- |
+|`SPC m d d` | open cmd buffer |
+|`bb` | set break |
+|`bc` | clear break |
+|`bd` | delete break |
+|`bs` | disable break |
+|`be` | enable break |
+|`c` | continue |
+|`i` | step into |
+|`J` | jump to current line |
+|`o` | step out |
+|`q` | quit debugger |
+|`r` | restart |
+|`s` | step over |
+|`S` | goto cmd buffer |
+|`v` | eval variable |
 
 ## Shortcuts
 ### Navigation
