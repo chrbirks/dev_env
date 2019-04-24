@@ -116,7 +116,11 @@ Otherwise
 | `SPC m g s` | select any tag in a project retrieved by gtags            |
 | `SPC m g S` | show stack of visited locations                           |
 | `SPC m g y` | find symbols                                              |
-| `SPC m g u` | manually update tag database   
+| `SPC m g u` | manually update tag database  |
+| `SPC p g`   | find tag |
+| `SPC p G`   | regenerate tags |
+| `SPC p I`   | invalidate projectile tags cache |
+
 
 ## Debug
 The layer `debug` adds interactive debuggers for multiple languages using `realgud`, e.g. gdb.
@@ -160,8 +164,10 @@ requires certain packages or layers to be installed.
 |`C-o` | Jump back to last position|
 |`g ;` | Go to last place edited|
 |`g f` | Go to file path under cursor|
+|`SPC j j` | Avy go to char|
+|`SPC j w` | Avy go to word|
 |`SPC j l` | Avy go to line|
-|`SPC j j` | Avy go to char/word|
+|`SPC j b` | Avy go back|
 |`zz` | Scroll and place line in the center of the screen|
 |`zt` | Scroll and place line in the top of the screen|
 |`zb` | Scroll and place line in the bottom of the screen|
@@ -278,6 +284,7 @@ Searching in current file
 | `SPC s a A` | Seach with ag with default input |
 | `SPC s g g` | Search with grep |
 | `SPC s g G` | Seach with grep with default input |
+| `SPC s h` | Highlight word |
 
 Searching in all open buffers visiting files	
 
@@ -293,6 +300,7 @@ Searching in all open buffers visiting files
 | `SPC s k B` | Seach with ack with default input |
 | `SPC s t b` | Search with pt |
 | `SPC s t B` | Seach with pt with default input|
+| `SPC s C-s` | Search in all open buffers |
 
 Searching in a project	
 
