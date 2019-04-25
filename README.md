@@ -2,15 +2,7 @@
 Configuration files for Bash, tmux, spacemacs, etc.
 
 # Spacemacs
-To enable gtags/ctags/cctags: Add "gtags" to dotspacemacs-configuration-layers
-- Navigate to a file in my project
-- Type `SPC m g c` to create tags
-- Select root directory of project to create tags and hit enter
-- Choose 'pygment' (out of ctags, pygment, etc)
-- Verify "Success: create TAGS"
-- Check the root directory of the project and see GPATH, GRTAGS, and GTAGS
-- Put the cursor over the name of an interface being implemented by a class
-- Hit `SPC m g d` to run helm-gtags-find-tag
+To get information about what a specific shortcut is bound to run `C-h k`.
 
 ## ELPA package manager (paradox)
 Note: do not use this manager for installing packages since they won't be persisten this way. And do not update packages here either since it does not support roll-back. Use the "Update Packages" function on the Spacemacs loading page.
@@ -31,7 +23,7 @@ Note: do not use this manager for installing packages since they won't be persis
 
 ## GTAGS
 ### Installation
-`counsel-gtags`, `helm-gtags` and `ggtags` are clients for GNU Global. GNU
+`helm-gtags` and `ggtags` are clients for GNU Global. GNU
 Global is a source code tagging system that allows querying symbol locations in
 source code, such as definitions or references. Adding the `gtags` layer enables
 both of these modes. See the Helm GTAGS Layer info page in Emacs for more information
@@ -72,22 +64,41 @@ will need to add `gtags` to the existing `dotspacemacs-configuration-layers`.
        ))
 ```
 
-If `ggtags-mode` is too intrusive you can disable it by default, by setting the
-layer variable `gtags-enable-by-default` to `nil`.
+Also add the following configuration to dotspacemacs/user-config()
 
 ```
-(setq-default dotspacemacs-configuration-layers
-    '((gtags :variables gtags-enable-by-default t)))
+;; Enable helm-gtags-mode
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+(add-hook 'verilog-mode-hook 'helm-gtags-mode)
+(add-hook 'vhdl-mode-hook 'helm-gtags-mode)
+;; Customize helm-gtags-mode
+(custom-set-variables
+   '(helm-gtags-path-style 'root)
+   '(helm-gtags-display-style 'detail)
+   '(helm-gtags-direct-helm-completing t)
+   '(helm-gtags-ignore-case t)
+   '(helm-gtags-auto-update nil) ;update only when file is saved
+   '(helm-gtags-pulse-at-cursor t)
+   )
+;; Set helm-gtags key bindings
+(eval-after-load "helm-gtags"
+  '(progn
+     (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
+     (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
+     (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
+     (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
+     (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+     (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+     (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 ```
 
-This variable can also be set as a file-local or directory-local variable for
-additional control on a per project basis.
 Before using `gtags`, remember to create a GTAGS database by one of the following
 methods:
 
-* From within Emacs, run `helm-gtags-create-tags`, which are bound to `SPC m g C`.If the language is
-  not directly supported by GNU Global, you can choose `ctags` or `pygments` as
-  a backend to generate the database.
+* From within Emacs, run `helm-gtags-create-tags`, which are bound to `SPC m g C` (if the current
+buffer has a major mode). Choose `pygments` as the backend to generate the database with support for the most languages.
 * From inside a terminal:
 
 ```cd /path/to/project/root```
