@@ -348,9 +348,9 @@ Searching in a project
 | `SPC p p` | switch project |
 
 
-### Neotree/Treemacs
+### Treemacs
 Spacemacs provides a quick and simple way to navigate in an unknown project file tree with `neotree` layer (replaced by `treemacs` in newest version).	
-To toggle the `neotree` buffer press `SPC f t` or `SPC p t` (the latter open `neotree` with the root set to the projectile project root).
+To toggle the `treemacs` buffer press `SPC f t` or `SPC p t` (the latter open `treemacs` with the root set to the projectile project root).
 The `neotree` window always has the number 0 so it does not shift the current number of the other windows. To select the `neotree` window you then use `SPC 0`.
 `treemacs` file tree replaces `neotree`. Press `?` to show `treemacs` shortcuts.
 
@@ -368,9 +368,10 @@ Inside treemacs:
 | -------- | ----------- |
 | `... ?` | show shortcuts |
 | `... j/k` | go to next/previous line |
-| `... C-p a` | select new project to add to workspace |
-| `... C-p p` | select projectile project to add to workspace |
-| `... C-p d` | remove project at point from workspace |
+| `... tab` | expand folder or file to see functions and variables |
+| `... C-c C-p a` | select new project to add to workspace |
+| `... C-c C-p r` | rename project in workspace |
+| `... C-c C-p d` | remove project at point from workspace |
 | `... C-p r` | rename project at point |
 | `... th` | toggle display dotfiles |
 | `... tf` | toggle treemacs-follow-mode |
