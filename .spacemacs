@@ -33,27 +33,38 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(;; ----------------------------------------------------------------
+   '(
+     ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (auto-completion :variables
+                      auto-completion-front-end 'company
                       auto-completion-return-key-behavior 'complete
                       auto-completion-tab-key-behavior 'cycle
                       auto-completion-complete-with-key-sequence-delay 0.1
                       auto-completion-private-snippets-directory nil
-                      auto-completion-enable-sort-by-usage t)
+                      auto-completion-enable-sort-by-usage t ;sort provided by the company package only and not auto-completion
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-help-tooltip t
+                      :disabled-for
+                      org
+                      git)
      asm
+     ;; better-defaults
      (c-c++ :variables
             c-c++-enable-clang-support t ;; auto-completion of function calls etc.
             c-c++-enable-rtags-completion t) ;; usefull for anything?
      csv
+     debug ; layer for interactive debuggers using realgud, e.g. gdb
      emacs-lisp
      git
-     gtags
+     gtags; use pygments when generating tags for (System)Verilog support 
      helm
      html
+     imenu-list
+     major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
      org
@@ -61,16 +72,18 @@ This function should only modify configuration layer settings."
      python
      syntax-checking ; :variables syntax-checking-enable-by-default nil
      shell-scripts
-     treemacs
+     themes-megapack
+     (treemacs :variables
+               treemacs-use-follow-mode t
+               treemacs-use-filewatch-mode t)
      vimscript
-     version-control
-     ;company
-     ;company-statistics-mode
-     ;; better-defaults
-     ;; markdown
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
+     (version-control :variables
+                      version-control-diff-side 'left
+                      version-control-global-margin t
+                      version-control-diff-tool 'diff-hl) ; options are diff-hl, git-gutter, git-gutter+. See version-control readme for differences.
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
      ;; spell-checking
      )
 
@@ -209,7 +222,18 @@ It should only modify the values of Spacemacs settings."
                          soft-charcoal
                          apropospriate-dark
                          spacemacs-light)
-   ;; If non nil the cursor color matches the state color in GUI Emacs.
+
+   ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
+   ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
+   ;; first three are spaceline themes. `doom' is the doom-emacs mode-line.
+   ;; `vanilla' is default Emacs mode-line. `custom' is a user defined themes,
+   ;; refer to the DOCUMENTATION.org for more info on how to create your own
+   ;; spaceline theme. Value can be a symbol or list with additional properties.
+   ;; (default '(spacemacs :separator wave :separator-scale 1.5))
+   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+
+   ;; If non-nil the cursor color matches the state color in GUI Emacs.
+   ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -248,17 +272,7 @@ It should only modify the values of Spacemacs settings."
    ;; In the terminal, these pairs are generally indistinguishable, so this only
    ;; works in the GUI. (default nil)
    dotspacemacs-distinguish-gui-tab nil
-   ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
-   dotspacemacs-remap-Y-to-y$ nil
-   ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
-   ;; there. (default t)
-   dotspacemacs-retain-visual-state-on-shift t
-   ;; If non-nil, J and K move lines up and down when in visual mode.
-   ;; (default nil)
-   dotspacemacs-visual-line-move-text nil
-   ;; If non nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
-   ;; (default nil)
-   dotspacemacs-ex-substitute-global nil
+
    ;; Name of the default layout (default "Default")
    dotspacemacs-default-layout-name "Default"
 
@@ -287,21 +301,10 @@ It should only modify the values of Spacemacs settings."
 
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
    dotspacemacs-max-rollback-slots 5
-   ;; If non nil, `helm' will try to minimize the space it uses. (default nil)
-   dotspacemacs-helm-resize nil
-   ;; if non nil, the helm header is hidden when there is only one source.
-   ;; (default nil)
-   dotspacemacs-helm-no-header nil
-   ;; define the position to display `helm', options are `bottom', `top',
-   ;; `left', or `right'. (default 'bottom)
-   dotspacemacs-helm-position 'bottom
-   ;; Controls fuzzy matching in helm. If set to `always', force fuzzy matching
-   ;; in all non-asynchronous sources. If set to `source', preserve individual
-   ;; source settings. Else, disable fuzzy matching in all sources.
-   ;; (default 'always)
-   dotspacemacs-helm-use-fuzzy 'always
-   ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
-   ;; several times cycle between the kill ring content. (default nil)
+
+   ;; If non-nil, the paste transient-state is enabled. While enabled, after you
+   ;; paste something, pressing `C-j' and `C-k' several times cycles through the
+   ;; elements in the `kill-ring'. (default nil)
    dotspacemacs-enable-paste-transient-state nil
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
@@ -487,7 +490,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (setq-default
    ;; Set powerline separator type
-   powerline-default-separator 'arrow
+   powerline-default-separator 'wave
    ;; Do not wrap lines
    truncate-lines t
    ;; Disable highlight line mode
@@ -498,11 +501,15 @@ you should place your code here."
    evil-escape-key-sequence "fd"
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
+   ;; Set top/bottom scroll margin in number of lines
+   scroll-margin 5
    )
-
+  ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
+  (require 'flycheck)
+  (add-to-list 'flycheck-global-modes 'verilog-mode)
+  (add-to-list 'flycheck-global-modes 'vhdl-mode)
   ;; Github token for paradox package lister
   (setq paradox-github-token '2f7121265ff31a6088b30c5f2326ab1cad1ce3e8)
-
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
@@ -522,31 +529,59 @@ you should place your code here."
                   "*.dcp"
                   "syn_timing_report")
                 projectile-globally-ignored-files))
-
-  ;;
+  ;; Cycle through windows
   (global-set-key (kbd "C-a") 'other-window)
-
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
   (add-to-list 'auto-mode-alist '("\\.[dsp]?v\\'" . verilog-mode))
-  ;; Any files in verilog mode should have their keywords colorized
-  (add-hook 'verilog-mode-hook '(lambda () (font-lock-mode 1)))
-  ;;replace highlighted text when typing
+  ;; Replace highlighted text when typing
   (delete-selection-mode 1)
-
+  ;; Verilog block comment macro
   (fset 'verilog-block-comment
         [?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- return ?/ ?/ ?  return ?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- up right left ? ])
   (global-set-key (kbd "C-c c") 'verilog-block-comment)
-
+  ;; UVM warning macro
   (fset 'uvm_warning
         (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([96 117 118 109 95 119 97 114 110 105 110 103 40 34 70 73 88 77 69 34 44 32 41 59 left left] 0 "%d")) arg)))
   (global-set-key (kbd "C-c v") 'uvm_warning)
-
+  ;; Shortcut for switching to minibuffer
   (defun switch-to-minibuffer-window ()
     "switch to minibuffer window (if active)"
     (interactive)
     (when (active-minibuffer-window)
       (select-window (active-minibuffer-window))))
   (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
+  ;; Enable global auto completion
+  (global-company-mode t)
+  ;; Enable helm-gtags-mode
+  (add-hook 'c-mode-hook 'helm-gtags-mode)
+  (add-hook 'c++-mode-hook 'helm-gtags-mode)
+  (add-hook 'asm-mode-hook 'helm-gtags-mode)
+  (add-hook 'verilog-mode-hook 'helm-gtags-mode)
+  (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
+  ;; Customize helm-gtags-mode
+  (custom-set-variables
+   '(helm-gtags-path-style 'root)
+   '(helm-gtags-display-style 'detail)
+   '(helm-gtags-direct-helm-completing t)
+   '(helm-gtags-ignore-case t)
+   '(helm-gtags-auto-update nil) ; do not update TAGS files when buffer is saved
+   '(helm-gtags-pulse-at-cursor t)
+   )
+  ;; Set helm-gtags key bindings
+  (eval-after-load "helm-gtags"
+    '(progn
+       (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
+       (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
+       (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
+       (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
+       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+  ;; veri-kompass for Verilog
+  (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
+  (require 'veri-kompass)
+  ;; Enable veri kompass minor mode mode
+  (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -584,5 +619,9 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-tooltip-common
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
  )
 )
