@@ -503,13 +503,16 @@ you should place your code here."
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
    ;; Set top/bottom scroll margin in number of lines
    scroll-margin 5
+   ;; Set horizontal scroll margin in number of characters
+   hscroll-margin 15
+   hscroll-step 1
+   ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
+   auto-hscroll-mode 'current-line
    )
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   (add-to-list 'flycheck-global-modes 'vhdl-mode)
-  ;; Github token for paradox package lister
-  (setq paradox-github-token '2f7121265ff31a6088b30c5f2326ab1cad1ce3e8)
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
