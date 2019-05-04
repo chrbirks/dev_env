@@ -9,17 +9,17 @@ Note: do not use this manager for installing packages since they won't be persis
 
 | Shortcut | Description |
 | -------- | ----------- |
-|`SPC a k` | Launch paradox |
-|`/` | Evil-search |
-|`f k` | Filter by keywords |
-|`f r` | Filter by regexp |
-|`f u` | Display only installed packages with updates available |
-|`o` | Open package homepage |
-|`r` | Refresh |
-|`S P` | Sort by name |
-|`S S` | Sort by status |
-|`v` | Visual state |
-|`x` | Execute (action flags) |
+| <kbd>SPC a k</kbd> | Launch paradox |
+| <kbd>/</kbd> | Evil-search |
+| <kbd>f k</kbd> | Filter by keywords |
+| <kbd>f r</kbd> | Filter by regexp |
+| <kbd>f u</kbd> | Display only installed packages with updates available |
+| <kbd>o</kbd> | Open package homepage |
+| <kbd>r</kbd> | Refresh |
+| <kbd>S P</kbd> | Sort by name |
+| <kbd>S S</kbd> | Sort by status |
+| <kbd>v</kbd> | Visual state |
+| <kbd>x</kbd> | Execute (action flags) |
 
 ## GTAGS
 ### Installation
@@ -97,7 +97,7 @@ Also add the following configuration to dotspacemacs/user-config()
 Before using `gtags`, remember to create a GTAGS database by one of the following
 methods:
 
-* From within Emacs, run `helm-gtags-create-tags`, which are bound to `SPC m g C` (if the current
+* From within Emacs, run `helm-gtags-create-tags`, which are bound to <kbd>SPC m g C</kbd> (if the current
 buffer has a major mode). Choose `pygments` as the backend to generate the database with support for the most languages.
 * From inside a terminal:
 
@@ -113,24 +113,24 @@ Otherwise
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC m g C` | create a tag database                                     |
-| `SPC m g f` | jump to a file in tag database                            |
-| `SPC m g g` | jump to a location based on context                       |
-| `SPC m g G` | jump to a location based on context (open another window) |
-| `SPC m g d` | find definitions                                          |
-| `SPC m g i` | present tags in current function only                     |
-| `SPC m g l` | jump to definitions in file                               |
-| `SPC m g n` | jump to next location in context stack                    |
-| `SPC m g p` | jump to previous location in context stack                |
-| `SPC m g r` | find references                                           |
-| `SPC m g R` | resume previous helm-gtags session                        |
-| `SPC m g s` | select any tag in a project retrieved by gtags            |
-| `SPC m g S` | show stack of visited locations                           |
-| `SPC m g y` | find symbols                                              |
-| `SPC m g u` | manually update tag database  |
-| `SPC p g`   | find tag |
-| `SPC p G`   | regenerate tags |
-| `SPC p I`   | invalidate projectile tags cache |
+| <kbd>SPC m g C</kbd> | create a tag database                                     |
+| <kbd>SPC m g f</kbd> | jump to a file in tag database                            |
+| <kbd>SPC m g g</kbd> | jump to a location based on context                       |
+| <kbd>SPC m g G</kbd> | jump to a location based on context (open another window) |
+| <kbd>SPC m g d</kbd> | find definitions                                          |
+| <kbd>SPC m g i</kbd> | present tags in current function only                     |
+| <kbd>SPC m g l</kbd> | jump to definitions in file                               |
+| <kbd>SPC m g n</kbd> | jump to next location in context stack                    |
+| <kbd>SPC m g p</kbd> | jump to previous location in context stack                |
+| <kbd>SPC m g r</kbd> | find references                                           |
+| <kbd>SPC m g R</kbd> | resume previous helm-gtags session                        |
+| <kbd>SPC m g s</kbd> | select any tag in a project retrieved by gtags            |
+| <kbd>SPC m g S</kbd> | show stack of visited locations                           |
+| <kbd>SPC m g y</kbd> | find symbols                                              |
+| <kbd>SPC m g u</kbd> | manually update tag database  |
+| <kbd>SPC m g g</kbd> | find tag |
+| <kbd>SPC m g G</kbd> | regenerate tags |
+| <kbd>SPC m g I</kbd> | invalidate projectile tags cache |
 
 
 ## Debug
@@ -138,96 +138,105 @@ The layer `debug` adds interactive debuggers for multiple languages using `realg
 
 | Shortcut | Description |
 | -------- | ----------- |
-|`SPC m d d` | open cmd buffer |
-|`bb` | set break |
-|`bc` | clear break |
-|`bd` | delete break |
-|`bs` | disable break |
-|`be` | enable break |
-|`c` | continue |
-|`i` | step into |
-|`J` | jump to current line |
-|`o` | step out |
-|`q` | quit debugger |
-|`r` | restart |
-|`s` | step over |
-|`S` | goto cmd buffer |
-|`v` | eval variable |
+|<kbd>SPC m d d</kbd> | open cmd buffer |
+|<kbd>b b</kbd> | set break |
+|<kbd>b c</kbd> | clear break |
+|<kbd>b d</kbd> | delete break |
+|<kbd>b s</kbd> | disable break |
+|<kbd>b e</kbd> | enable break |
+|<kbd>c</kbd> | continue |
+|<kbd>i</kbd> | step into |
+|<kbd>J</kbd> | jump to current line |
+|<kbd>o</kbd> | step out |
+|<kbd>q</kbd> | quit debugger |
+|<kbd>r</kbd> | restart |
+|<kbd>s</kbd> | step over |
+|<kbd>S</kbd> | goto cmd buffer |
+|<kbd>v</kbd> | eval variable |
 
 ## Shortcuts
-### Navigation
+### Window layouts and sessions
+With the `spacemacs-layouts` layer you get access to `eyebrowse` which can group your window configuration into sessions and store/load them using names.
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>SPC l</kbd>    | open layouts           |
+| <kbd>... 0..9</kbd> | open/create new layout |
+| <kbd>... ?</kbd>    | open shortcuts window  |
+
+### Buffer navigation
 These shortcuts are a mix of native vi and spacemacs shortcuts, some of which
 requires certain packages or layers to be installed.
 
 | Shortcut | Description |
 | -------- | ----------- |
-|`w` | Go right a word|
-|`5w` | Go right 5 words|
-|`b` | Go left a word|
-|`e` | Go to the end of a word|
-|`0` | Go to the line beginning|
-|`_` | Go to first non-white character|
-|`$` | Go to the line end|
-|`gg` | Go to the beginning of file|
-|`G` | Go to the end of file|
-|`22j` | Go 22 lines down|
-|`SPC SPC <first letter of word>` | Jump to any word|
-|`C-o` | Jump back to last position|
-|`g ;` | Go to last place edited|
-|`g f` | Go to file path under cursor|
-|`SPC j j` | Avy go to char|
-|`SPC j w` | Avy go to word|
-|`SPC j l` | Avy go to line|
-|`SPC j b` | Avy go back|
-|`zz` | Scroll and place line in the center of the screen|
-|`zt` | Scroll and place line in the top of the screen|
-|`zb` | Scroll and place line in the bottom of the screen|
-|`C-d` | Move half page down|
-|`C-u` | Move half page up|
-|`C-b` | Move page up|
-|`C-f` | Move page down|
-|`C-y` | Move view pane up|
-|`C-e` | Move view pane down|
-|`{` | Go up to the next paragraph|
-|`}` | Go down to the next paragraph|
-|`[[` | Go to the previous function|
-|`]]` | Go to the next function|
-|`[{` | Go up to outer brace|
-|`]}` | Go down to outer brace|
+|<kbd>w</kbd> | Go right a word|
+|<kbd>5w</kbd> | Go right 5 words|
+|<kbd>b</kbd> | Go left a word|
+|<kbd>e</kbd> | Go to the end of a word|
+|<kbd>0</kbd> | Go to the line beginning|
+|<kbd>_</kbd> | Go to first non-white character|
+|<kbd>$</kbd> | Go to the line end|
+|<kbd>gg</kbd> | Go to the beginning of file|
+|<kbd>G</kbd> | Go to the end of file|
+|<kbd>22j</kbd> | Go 22 lines down|
+|<kbd>SPC SPC first_letter_of_word</kbd> | Jump to any word|
+|<kbd>C-o</kbd> | Jump back to last position|
+|<kbd>g ;</kbd> | Go to last place edited|
+|<kbd>g f</kbd> | Go to file path under cursor|
+|<kbd>SPC j j</kbd> | Avy go to char|
+|<kbd>SPC j w</kbd> | Avy go to word|
+|<kbd>SPC j l</kbd> | Avy go to line|
+|<kbd>SPC j b</kbd> | Avy go back|
+|<kbd>z z</kbd> | Scroll and place line in the center of the screen|
+|<kbd>z t</kbd> | Scroll and place line in the top of the screen|
+|<kbd>z b</kbd> | Scroll and place line in the bottom of the screen|
+|<kbd>C-d</kbd> | Move half page down|
+|<kbd>C-u</kbd> | Move half page up|
+|<kbd>C-b</kbd> | Move page up|
+|<kbd>C-f</kbd> | Move page down|
+|<kbd>C-y</kbd> | Move view pane up|
+|<kbd>C-e</kbd> | Move view pane down|
+|<kbd>{</kbd> | Go up to the next paragraph|
+|<kbd>}</kbd> | Go down to the next paragraph|
+|<kbd>[[</kbd> | Go to the previous function|
+|<kbd>]]</kbd> | Go to the next function|
+|<kbd>[{</kbd> | Go up to outer brace|
+|<kbd>]}</kbd> | Go down to outer brace|
 
 ### Visual mode
-Press `v` to enter visual mode so you can highlight text).
+Press <kbd>v</kbd> to enter visual mode so you can highlight text).
 Use the arrow keys (or h,j,k,l,w,b,$) to highlight.
 
 Spacemacs adds another Visual mode via the expand-region mode.
 
 | Shortcut | Description |
 | -------- | ----------- |
-|`SPC v` | initiate expand-region mode|
-|`v` | expand the region by one semantic unit|
-|`V` | contract the region by one semantic unit|
-|`r` | reset the region to initial selection|
-|`ESC` | leave expand-region mode|
+|<kbd>SPC v</kbd> | initiate expand-region mode|
+|<kbd>v</kbd> | expand the region by one semantic unit|
+|<kbd>V</kbd> | contract the region by one semantic unit|
+|<kbd>r</kbd> | reset the region to initial selection|
+|<kbd>ESC</kbd> | leave expand-region mode|
 
 ### Buffers
 | Shortcut | Description |
 | -------- | ----------- |
-|`SPC 1..9` | open buffer in window 1..9 |
-|`SPC b b` | list buffers |
-|`SPC b d` | kill buffer |
-|`SPC b n/p` | next/previous buffer |
-|`SPC b i` | toggle imenu with buffer outline (requires imenu-list layer) |
+|<kbd>SPC 0-9</kbd> | open buffer in window 1..9 |
+|<kbd>SPC b b</kbd> | list buffers |
+|<kbd>SPC b d</kbd> | kill buffer |
+|<kbd>SPC b n/p</kbd> | next/previous buffer |
+|<kbd>SPC b i</kbd> | toggle imenu with buffer outline (requires imenu-list layer) |
 
 ### imenu-list
-Opened with `SPC b i`
+Opened with <kbd>SPC b i</kbd>
 
 | Shortcut | Description |
 | -------- | ----------- |
-|`SPC q` | quit imenu |
-|`SPC RET` | jump to enty |
-|`SPC d` | jump to entry, keep focus |
-|`SPC f` | fold/unfold current section |
-|`SPC r` | refresh imenu window |
+|<kbd>SPC q</kbd> | quit imenu |
+|<kbd>SPC RET</kbd> | jump to enty |
+|<kbd>SPC d</kbd>` | jump to entry, keep focus |
+|<kbd>SPC f</kbd> | fold/unfold current section |
+|<kbd>SPC r</kbd> | refresh imenu window |
 
 ### Editing
 | Shortcut | Description |
@@ -319,6 +328,9 @@ Searching in a project
 | -------- | ----------- |
 | `SPC / or SPC s p` | search with the first found tool |
 | `SPC * or SPC s P` | search with the first found tool with default input |
+| `... C-c C-e`      | enter iedit mode to edit search result, e.g. seach and replace in project |
+| `... SPC s e`      | enter iedit state on selected word |
+| `... C-c C-c`      | commit changes after leaving iedit state |
 
 ### Projectile shortcuts
 | Shortcut | Description |
