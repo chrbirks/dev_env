@@ -70,8 +70,9 @@ This function should only modify configuration layer settings."
      org
      prettier
      python
-     syntax-checking ; :variables syntax-checking-enable-by-default nil
      shell-scripts
+     spacemacs-layouts
+     syntax-checking ; :variables syntax-checking-enable-by-default nil
      themes-megapack
      (treemacs :variables
                treemacs-use-follow-mode t
@@ -239,7 +240,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -491,28 +492,46 @@ you should place your code here."
   (setq-default
    ;; Set powerline separator type
    powerline-default-separator 'wave
+
    ;; Do not wrap lines
    truncate-lines t
+
    ;; Disable highlight line mode
    global-hl-line-mode nil
+
    ;; Do not show trailing whitespaces
    spacemacs-show-trailing-whitespace nil
+
    ;; Escape sequence
    evil-escape-key-sequence "fd"
+
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
+
    ;; Set top/bottom scroll margin in number of lines
    scroll-margin 5
+
    ;; Set horizontal scroll margin in number of characters
    hscroll-margin 15
    hscroll-step 1
+
    ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
    auto-hscroll-mode 'current-line
    )
+  ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
+  (require 'midnight)
+  (midnight-mode t)
+  (midnight-delay-set 'midnight-delay 3600) ; run every hour
+
+  ;; Parameters for clean-buffer-list mode
+  (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
+        clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
+
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   (add-to-list 'flycheck-global-modes 'vhdl-mode)
+
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
@@ -532,20 +551,26 @@ you should place your code here."
                   "*.dcp"
                   "syn_timing_report")
                 projectile-globally-ignored-files))
+
   ;; Cycle through windows
   (global-set-key (kbd "C-a") 'other-window)
+
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
   (add-to-list 'auto-mode-alist '("\\.[dsp]?v\\'" . verilog-mode))
+
   ;; Replace highlighted text when typing
   (delete-selection-mode 1)
+
   ;; Verilog block comment macro
   (fset 'verilog-block-comment
         [?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- return ?/ ?/ ?  return ?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- up right left ? ])
   (global-set-key (kbd "C-c c") 'verilog-block-comment)
+
   ;; UVM warning macro
   (fset 'uvm_warning
         (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([96 117 118 109 95 119 97 114 110 105 110 103 40 34 70 73 88 77 69 34 44 32 41 59 left left] 0 "%d")) arg)))
   (global-set-key (kbd "C-c v") 'uvm_warning)
+
   ;; Shortcut for switching to minibuffer
   (defun switch-to-minibuffer-window ()
     "switch to minibuffer window (if active)"
@@ -553,8 +578,10 @@ you should place your code here."
     (when (active-minibuffer-window)
       (select-window (active-minibuffer-window))))
   (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
+
   ;; Enable global auto completion
   (global-company-mode t)
+
   ;; Enable helm-gtags-mode
   (add-hook 'c-mode-hook 'helm-gtags-mode)
   (add-hook 'c++-mode-hook 'helm-gtags-mode)
@@ -580,6 +607,7 @@ you should place your code here."
        (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+
   ;; veri-kompass for Verilog
   (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
   (require 'veri-kompass)

@@ -2,7 +2,7 @@
 Configuration files for Bash, tmux, spacemacs, etc.
 
 # Spacemacs
-To get information about what a specific shortcut is bound to run `C-h k`.
+To get information about what a specific shortcut is bound to run <kbd>C-h k</kbd>.
 
 ## ELPA package manager (paradox)
 Note: do not use this manager for installing packages since they won't be persisten this way. And do not update packages here either since it does not support roll-back. Use the "Update Packages" function on the Spacemacs loading page.
@@ -241,56 +241,56 @@ Opened with <kbd>SPC b i</kbd>
 ### Editing
 | Shortcut | Description |
 | -------- | ----------- |
-|`i` | Insert before cursor|
-|`a` | Insert after cursor|
-|`I` | Insert at line beginning|
-|`A` | Insert at line end|
-|`O` | Insert above line|
-|`o` | Insert below line|
-|`y` | Copy highlighted text|
-|`yw` | Copy word|
-|`yy` | Copy line|
-|`y$` | Copy from cursor to end of line|
-|`p/P` | Paste before/after cursor|
-|`d` | Delete highlighted text|
-|`dw` | Delete word|
-|`dd` | Delete line|
-|`x` | Delete character|
-|`df(` | Delete from cursor to ( (including)|
-|`dt(` | Delete from cursor to ( (excluding)|
-|`di(` | Delete text inside ()|
-|`cw` | Replace word|
-|`ci(` | Replace text inside ()|
-|`s` | Replace character|
-|`SPC x j c` | set the justification to center|
-|`SPC x j f` | set the justification to full|
-|`SPC x j l` | set the justification to left|
-|`SPC x j n` | set the justification to none|
-|`SPC x j r` | set the justification to right|
-|`SPC x J` | move down a line of text (enter transient state)|
-|`SPC x K` | move up a line of text (enter transient state)|
-|`SPC x l d` | duplicate line or region|
-|`SPC x l s` | sort lines|
-|`SPC x l u` | uniquify lines|
-|`SPC x o` | use avy to select a link in the frame and open it|
-|`SPC x O` | use avy to select multiple links in the frame and open them|
-|`SPC x t c` | swap (transpose) the current character with the previous one|
-|`SPC x t w` | swap (transpose) the current word with the previous one|
-|`SPC x t l` | swap (transpose) the current line with the previous one|
-|`SPC x u` | set the selected text to lower case|
-|`SPC x U` | set the selected text to upper case|
-|`SPC x w c` | count the number of occurrences per word in the select region|
-|`SPC x w d` | show dictionary entry of word from wordnik.com|
-|`SPC x TAB` | indent or dedent a regionf rigidly|
+|<kbd>i</kbd> | Insert before cursor|
+|<kbd>a</kbd> | Insert after cursor|
+|<kbd>I</kbd> | Insert at line beginning|
+|<kbd>A</kbd> | Insert at line end|
+|<kbd>O</kbd> | Insert above line|
+|<kbd>o</kbd> | Insert below line|
+|<kbd>y</kbd> | Copy highlighted text|
+|<kbd>y w</kbd> | Copy word|
+|<kbd>y y</kbd> | Copy line|
+|<kbd>y $</kbd> | Copy from cursor to end of line|
+|<kbd>p/P</kbd> | Paste before/after cursor|
+|<kbd>d</kbd> | Delete highlighted text|
+|<kbd>d w</kbd> | Delete word|
+|<kbd>d d</kbd> | Delete line|
+|<kbd>x</kbd>  | Delete character|
+|<kbd>d f (</kbd> | Delete from cursor to ( (including)|
+|<kbd>d t (</kbd> | Delete from cursor to ( (excluding)|
+|<kbd>d i (</kbd> | Delete text inside ()|
+|<kbd>c w</kbd> | Replace word|
+|<kbd>c i (</kbd> | Replace text inside ()|
+|<kbd>s</kbd> | Replace character|
+|<kbd>SPC x j c</kbd> | set the justification to center|
+|<kbd>SPC x j f</kbd>      | set the justification to full|
+|<kbd>SPC x j l</kbd> | set the justification to left|
+|<kbd>SPC x j n</kbd> | set the justification to none|
+|<kbd>SPC x j r</kbd> | set the justification to right|
+|<kbd>SPC x J</kbd> | move down a line of text (enter transient state)|
+|<kbd>SPC x K</kbd>  | move up a line of text (enter transient state)|
+|<kbd>SPC x l d</kbd> | duplicate line or region|
+|<kbd>SPC x l s</kbd> | sort lines|
+|<kbd>SPC x l u</kbd> | uniquify lines|
+|<kbd>SPC x o</kbd>   | use avy to select a link in the frame and open it|
+|<kbd>SPC x O</kbd> | use avy to select multiple links in the frame and open them|
+|<kbd>SPC x t c</kbd> | swap (transpose) the current character with the previous one|
+|<kbd>SPC x t w</kbd> | swap (transpose) the current word with the previous one|
+|<kbd>SPC x t l</kbd> | swap (transpose) the current line with the previous one|
+|<kbd>SPC x u</kbd> | set the selected text to lower case|
+|<kbd>SPC x U</kbd> | set the selected text to upper case|
+|<kbd>SPC x w c</kbd> | count the number of occurrences per word in the select region|
+|<kbd>SPC x w d</kbd> | show dictionary entry of word from wordnik.com|
+|<kbd>SPC x TAB</kbd> | indent or dedent a regionf rigidly|
 
 ### Bookmarks
 Bookmarks can be set anywhere in a file. Bookmarks are persistent. They are very useful to jump to/open a known project. Spacemacs uses helm-bookmarks to manage them.	
-Open an helm window with the current bookmarks by pressing: `SPC f b`
+Open an helm window with the current bookmarks by pressing: <kbd>SPC f b</kbd>
 Then in the helm-bookmarks buffer:
-`C-d` delete the selected bookmark
-`C-e` edit the selected bookmark
-`C-f` toggle filename location
-`C-o` open the selected bookmark in another window
+<kbd>C-d</kbd> delete the selected bookmark
+<kbd>C-e</kbd> edit the selected bookmark
+<kbd>C-f</kbd> toggle filename location
+<kbd>C-o</kbd> open the selected bookmark in another window
 To save a new bookmark, just type the name of the bookmark and press RET.
 
 ### Searching
@@ -298,180 +298,180 @@ Searching in current file
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC s s` | search (helm-swoop) with the first found tool |
-| `SPC s S` | search (helm-swoop) with the first found tool with default input |
-| `SPC s a a` | Seach with ag |
-| `SPC s a A` | Seach with ag with default input |
-| `SPC s g g` | Search with grep |
-| `SPC s g G` | Seach with grep with default input |
-| `SPC s h` | Highlight word |
+| <kbd>SPC s s</kbd> | search (helm-swoop) with the first found tool |
+| <kbd>SPC s S</kbd>  | search (helm-swoop) with the first found tool with default input |
+| <kbd>SPC s a a</kbd> | Seach with ag |
+| <kbd>SPC s a A</kbd> | Seach with ag with default input |
+| <kbd>SPC s g g</kbd> | Search with grep |
+| <kbd>SPC s g G</kbd> | Seach with grep with default input |
+| <kbd>SPC s h</kbd> | Highlight word |
 
 Searching in all open buffers visiting files	
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC s b` | search with the first found tool |
-| `SPC s B` | search with the first found tool with default input |
-| `SPC s a b` | Seach with ag with default input |
-| `SPC s a B` | Seach with ag with default input |
-| `SPC s g b` | Search with grep |
-| `SPC s g B` | Seach with grep with default input |
-| `SPC s k b` | Search with ack |
-| `SPC s k B` | Seach with ack with default input |
-| `SPC s t b` | Search with pt |
-| `SPC s t B` | Seach with pt with default input|
-| `SPC s C-s` | Search in all open buffers |
+| <kbd>SPC s s b</kbd> | search with the first found tool |
+| <kbd>SPC s s B</kbd> | search with the first found tool with default input |
+| <kbd>SPC s a b</kbd> | Seach with ag with default input |
+| <kbd>SPC s a B</kbd> | Seach with ag with default input |
+| <kbd>SPC s g b</kbd> | Search with grep |
+| <kbd>SPC s g B</kbd> | Seach with grep with default input |
+| <kbd>SPC s k b</kbd> | Search with ack |
+| <kbd>SPC s k B</kbd> | Seach with ack with default input |
+| <kbd>SPC s t b</kbd> | Search with pt |
+| <kbd>SPC s t B</kbd> | Seach with pt with default input|
+| <kbd>SPC s C-s</kbd> | Search in all open buffers |
 
 Searching in a project	
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC / or SPC s p` | search with the first found tool |
-| `SPC * or SPC s P` | search with the first found tool with default input |
-| `... C-c C-e`      | enter iedit mode to edit search result, e.g. seach and replace in project |
-| `... SPC s e`      | enter iedit state on selected word |
-| `... C-c C-c`      | commit changes after leaving iedit state |
+| <kbd>SPC /</kbd> or <kbd>SPC s p</kbd> | search with the first found tool |
+| <kbd>SPC *</kbd> or <kbd>SPC s P</kbd> | search with the first found tool with default input |
+| <kbd>... C-c C-e</kbd> | enter iedit mode to edit search result, e.g. seach and replace in project |
+| <kbd>SPC s e</kbd> | enter iedit state on selected word |
+| <kbd>C-c C-c</kbd> | commit changes after leaving iedit state |
 
 ### Projectile shortcuts
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC p f` | find file |
-| `SPC p F` | find file based on path around point |
-| `SPC p h` | find file using helm |
-| `SPC p g` | find tags |
-| `SPC p G` | regenerate the project’s etags / gtags |
-| `SPC p d` | find directory |
-| `SPC p D` | open project root in dired |
-| `SPC p b` | switch to project buffer |
-| `SPC p r` | open a recent file |
-| `SPC s a p` | run ag |
-| `SPC s g p` | run grep |
-| `SPC s k p` | run ack |
-| `SPC s t p` | run pt |
-| `SPC p R` | replace a string |
-| `SPC p %` | replace a regexp |
-| `SPC p t` | open NeoTree/Spacetree in projectile root |
-| `SPC p T` | test project |
-| `SPC p a` | toggle between implementation and test |
-| `SPC p c` | compile project using projectile |
-| `SPC p I` | invalidate the projectile cache |
-| `SPC p k` | kill all project buffers |
-| `SPC p o` | run multi-occur |
-| `SPC p p` | switch project |
+| <kbd>SPC p f</kbd> | find file |
+| <kbd>SPC p F</kbd> | find file based on path around point |
+| <kbd>SPC p h</kbd> | find file using helm |
+| <kbd>SPC p g</kbd> | find tags |
+| <kbd>SPC p G</kbd> | regenerate the project’s etags / gtags |
+| <kbd>SPC p d</kbd> | find directory |
+| <kbd>SPC p D</kbd> | open project root in dired |
+| <kbd>SPC p b</kbd> | switch to project buffer |
+| <kbd>SPC p r</kbd> | open a recent file |
+| <kbd>SPC s a p </kbd> | run ag |
+| <kbd>SPC s g p </kbd> | run grep |
+| <kbd>SPC s k p</kbd> | run ack |
+| <kbd>SPC s t p</kbd>   | run pt |
+| <kbd>SPC p R</kbd> | replace a string |
+| <kbd>SPC p %</kbd> | replace a regexp |
+| <kbd>SPC p t</kbd> | open NeoTree/Spacetree in projectile root |
+| <kbd>SPC p T</kbd> | test project |
+| <kbd>SPC p a</kbd> | toggle between implementation and test |
+| <kbd>SPC p c</kbd> | compile project using projectile |
+| <kbd>SPC p I</kbd> | invalidate the projectile cache |
+| <kbd>SPC p k</kbd> | kill all project buffers |
+| <kbd>SPC p o</kbd> | run multi-occur |
+| <kbd>SPC p p</kbd> | switch project |
 
 
 ### Treemacs
 Spacemacs provides a quick and simple way to navigate in an unknown project file tree with `neotree` layer (replaced by `treemacs` in newest version).	
-To toggle the `treemacs` buffer press `SPC f t` or `SPC p t` (the latter open `treemacs` with the root set to the projectile project root).
-The `neotree` window always has the number 0 so it does not shift the current number of the other windows. To select the `neotree` window you then use `SPC 0`.
-`treemacs` file tree replaces `neotree`. Press `?` to show `treemacs` shortcuts.
+To toggle the `treemacs` buffer press <kbd>SPC f t</kbd> or <kbd>SPC p t</kbd> (the latter open `treemacs` with the root set to the projectile project root).
+The `neotree` window always has the number 0 so it does not shift the current number of the other windows. To select the `neotree` window you then use <kbd>SPC 0</kbd>.
+`treemacs` file tree replaces `neotree`. Press <kbd>?</kbd> to show `treemacs` shortcuts.
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC f t` | open/close neotree/treemacs  |
-| `SPC p t` | open/close neotree/treemacs in project mode |
-| `SPC f T` | open/close neotree/treemacs and shift focus |
-| `SPC f B` | find and select a bookmark |
-| `SPC 0` | focus on tree window |
+| <kbd>SPC f t</kbd> | open/close neotree/treemacs  |
+| <kbd>SPC p t</kbd> | open/close neotree/treemacs in project mode |
+| <kbd>SPC f T</kbd> | open/close neotree/treemacs and shift focus |
+| <kbd>SPC f B</kbd> | find and select a bookmark |
+| <kbd>SPC 0</kbd> | focus on tree window |
 
 Inside treemacs:
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `... ?` | show shortcuts |
-| `... j/k` | go to next/previous line |
-| `... tab` | expand folder or file to see functions and variables |
-| `... C-c C-p a` | select new project to add to workspace |
-| `... C-c C-p r` | rename project in workspace |
-| `... C-c C-p d` | remove project at point from workspace |
-| `... C-p r` | rename project at point |
-| `... th` | toggle display dotfiles |
-| `... tf` | toggle treemacs-follow-mode |
-| `... ta` | toggle treemacs-filewatch-mode |
-| `... r` | refresh |
-| `... cf` | create file |
-| `... cd` | create directory |
-| `... R` | rename selected node |
-| `... u` | select parent of selected node if possible |
-| `... q` | show/hide tree window |
-| `... oaa` | open current file or tag using ace-window |
-| `... yr` | copy absolute path of the nearest project at point |
-| `... yy` | copy absolute path of the node at point |
+| ... <kbd>?</kbd> | show shortcuts |
+| ... <kbd>j/k</kbd> | go to next/previous line |
+| ... <kbd>TAB</kbd> | expand folder or file to see functions and variables |
+| ... <kbd>C-c C-p a</kbd> | select new project to add to workspace |
+| ... <kbd>C-c C-p r</kbd> | rename project in workspace |
+| ... <kbd>C-c C-p d</kbd> | remove project at point from workspace |
+| ... <kbd>C-p r</kbd> | rename project at point |
+| ... <kbd>t h</kbd> | toggle display dotfiles |
+| ... <kbd>t f</kbd>      | toggle treemacs-follow-mode |
+| ... <kbd>t a</kbd> | toggle treemacs-filewatch-mode |
+| ... <kbd>r</kbd> | refresh |
+| ... <kbd>c f</kbd> | create file |
+| ... <kbd>c d</kbd> | create directory |
+| ... <kbd>R</kbd> | rename selected node |
+| ... <kbd>u</kbd> | select parent of selected node if possible |
+| ... <kbd>q</kbd> | show/hide tree window |
+| ... <kbd>o a a</kbd>  | open current file or tag using ace-window |
+| ... <kbd>y r</kbd> | copy absolute path of the nearest project at point |
+| ... <kbd>y y</kbd> | copy absolute path of the node at point |
 
 ### Version control commands
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC p v` | open VC window |
-| `n/p` | next/prev item |
-| `tab/S-tab` | next/prev folder |
-| `o` | visit file in new window |
-| `m/u` | mark/unmark file or folder |
-| `l` | open log for selected file/window |
-| `i` | register file |
-| `=` | Diff marked files/folders (diff all if none marked) |
-| `v` | Commit marked files/folders |
-| `C-c C-c` | Finish commit message |
-| `q` | quit vc-dir |
+| <kbd>SPC p v</kbd> | open VC window |
+| <kbd>n/p</kbd> | next/prev item |
+| <kbd>TAB/S-TAB</kbd> | next/prev folder |
+| <kbd>o</kbd> | visit file in new window |
+| <kbd>m/u</kbd> | mark/unmark file or folder |
+| <kbd>l</kbd> | open log for selected file/window |
+| <kbd>i</kbd> | register file |
+| <kbd>=</kbd> | Diff marked files/folders (diff all if none marked) |
+| <kbd>v</kbd> | Commit marked files/folders |
+| <kbd>C-c C-c</kbd> | Finish commit message |
+| <kbd>q</kbd> | quit vc-dir |
 
 ### Commenting
 Comments are handled by evil-nerd-commenter, it’s bound to the following keys.
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC ;` | comment operator |
-| `SPC c h` | hide/show comments |
-| `SPC c l` | comment lines |
-| `SPC c L` | invert comment lines |
-| `SPC c p` | comment paragraphs |
-| `SPC c P` | invert comment paragraphs |
-| `SPC c t` | comment to line |
-| `SPC c T` | invert comment to line |
-| `SPC c y` | comment and yank |
-| `SPC c Y` | invert comment and yank |
-| `SPC ; SPC j l` | Comment efficiently a block of lines |
+| <kbd>SPC ;</kbd>  | comment operator |
+| <kbd>SPC c h</kbd> | hide/show comments |
+| <kbd>SPC c l</kbd> | comment lines |
+| <kbd>SPC c L</kbd> | invert comment lines |
+| <kbd>SPC c p</kbd> | comment paragraphs |
+| <kbd>SPC c P</kbd> | invert comment paragraphs |
+| <kbd>SPC c t</kbd> | comment to line |
+| <kbd>SPC c T</kbd> | invert comment to line |
+| <kbd>SPC c y</kbd> | comment and yank |
+| <kbd>SPC c Y</kbd> | invert comment and yank |
+| <kbd>SPC ; SPC j l</kbd> | Comment efficiently a block of lines |
 		
 ### Regular expressions	
 Spacemacs uses the packages pcre2el to manipulate regular expressions. It is useful when working with Emacs Lisp buffers since it allows to easily converts PCRE (Perl Compatible RegExp) to Emacs RegExp or rx. It can also be used to “explain” a PCRE RegExp around point in rx form.
 
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC x r /` | Explain the regexp around point with rx |
-| `SPC x r '` | Generate strings given by a regexp given this list is finite |
-| `SPC x r t` | Replace regexp around point by the rx form or vice versa |
-| `SPC x r x` | Convert regexp around point in rx form and display the result in the minibuffer |
-| `SPC x r c` | Convert regexp around point to the other form and display the result in the minibuffer |
-| `SPC x r e /` | Explain Emacs Lisp regexp |
+| <kbd>SPC x r /</kbd> | Explain the regexp around point with rx |
+| <kbd>SPC x r '</kbd> | Generate strings given by a regexp given this list is finite |
+| <kbd>SPC x r t</kbd> | Replace regexp around point by the rx form or vice versa |
+| <kbd>SPC x r x</kbd> | Convert regexp around point in rx form and display the result in the minibuffer |
+| <kbd>SPC x r c</kbd> | Convert regexp around point to the other form and display the result in the minibuffer |
+| <kbd>SPC x r e /</kbd> | Explain Emacs Lisp regexp |
 
 ### Error handling
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC t s` | toggle flycheck/syntax highlighting (syntax-highlighting layer must be added first) |
-| `SPC e c` | clear all errors |
-| `SPC e h` | describe a flycheck checker |
-| `SPC e l` | toggle the display of the flycheck list of errors/warnings |
-| `SPC e n` | go to the next error |
-| `SPC e p` | go to the previous error |
-| `SPC e v` | verify flycheck setup (useful to debug 3rd party tools configuration) |
-| `SPC e .` | error transient state |
+| <kbd>SPC t s</kbd> | toggle flycheck/syntax highlighting (syntax-highlighting layer must be added first) |
+| <kbd>SPC e c</kbd> | clear all errors |
+| <kbd>SPC e h</kbd> | describe a flycheck checker |
+| <kbd>SPC e l</kbd> | toggle the display of the flycheck list of errors/warnings |
+| <kbd>SPC e n</kbd> | go to the next error |
+| <kbd>SPC e p</kbd> | go to the previous error |
+| <kbd>SPC e v</kbd> | verify flycheck setup (useful to debug 3rd party tools configuration) |
+| <kbd>SPC e .</kbd> | error transient state |
 
 ### Toggles
 | Shortcut | Description |
 | -------- | ----------- |
-| `SPC t i` | indent guidelines |
-| `SPC t h a` | automatically highligh selected word |
-| `SPC t r` | toggle relative/absolute line numbers |
-| `SPC t L` | toggle wrapping of lines |
-| `SPC T F` | Fullscreen Emacs application |
-| `SPC w m` | Zoom/maximize/minimize buffer window |
-| `SPC SPC global-diff-hl-mode` | Highlight version control diffs |
-| `SPC SPC diff-hl-flydiff-mode` | Highlight version control diffs on the fly |
+| <kbd>SPC t i</kbd> | indent guidelines |
+| <kbd>SPC t h a</kbd> | automatically highligh selected word |
+| <kbd>SPC t r</kbd> | toggle relative/absolute line numbers |
+| <kbd>SPC t L</kbd> | toggle wrapping of lines |
+| <kbd>SPC T F</kbd> | Fullscreen Emacs application |
+| <kbd>SPC w m</kbd> | Zoom/maximize/minimize buffer window |
+| <kbd>SPC SPC global-diff-hl-mode</kbd> | Highlight version control diffs |
+| <kbd>SPC SPC diff-hl-flydiff-mode</kbd> | Highlight version control diffs on the fly |
 
 ### Verilog major mode
 | Shortcut | Description |
 | -------- | ----------- |
-| `C-c C-t` | inital shortcut |
-| `... c` | case block |
-| `... h` | header block |
-| `... u` | UVM Object block |
-| `... U` | UVM Component block |
-| `... S` | state machine |
+| <kbd>C-c C-t</kbd>`C-c C-t` | inital shortcut |
+| ... <kbd>c</kbd>`... c` | case block |
+| ... <kbd>h</kbd>`... h` | header block |
+| ... <kbd>u</kbd>`... u` | UVM Object block |
+| ... <kbd>U</kbd>`... U` | UVM Component block |
+| ... <kbd>S</kbd>`... S` | state machine |
