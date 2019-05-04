@@ -70,8 +70,9 @@ This function should only modify configuration layer settings."
      org
      prettier
      python
-     syntax-checking ; :variables syntax-checking-enable-by-default nil
      shell-scripts
+     spacemacs-layouts
+     syntax-checking
      themes-megapack
      (treemacs :variables
                treemacs-use-follow-mode t
@@ -183,7 +184,8 @@ It should only modify the values of Spacemacs settings."
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
    dotspacemacs-editing-style 'hybrid
-   ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
+
+   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
 
    ;; Specify the startup banner. Default value is `official', it displays
@@ -238,8 +240,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+   dotspacemacs-default-font '("Source Code Pro" ;"Bitstream Vera Sans Mono" ;"Ubuntu Mono"
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -341,6 +343,7 @@ It should only modify the values of Spacemacs settings."
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup t
+
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -488,31 +491,71 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
   (setq-default
    ;; Set powerline separator type
    powerline-default-separator 'wave
+
    ;; Do not wrap lines
    truncate-lines t
+
    ;; Disable highlight line mode
    global-hl-line-mode nil
+
    ;; Do not show trailing whitespaces
    spacemacs-show-trailing-whitespace nil
+
    ;; Escape sequence
    evil-escape-key-sequence "fd"
+
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
+
    ;; Set top/bottom scroll margin in number of lines
    scroll-margin 5
+
    ;; Set horizontal scroll margin in number of characters
    hscroll-margin 15
    hscroll-step 1
+
    ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
    auto-hscroll-mode 'current-line
+
+   ;; Compress files when access them via TRAMP
+   tramp-inline-compress-start-size t
    )
+
+  ;; Remote access via TRAMP
+  (require 'tramp)
+  (setq tramp-default-method "sshx"
+        ;; tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+        ;; tramp-default-user "chrbirks"
+        ;; tramp-default-host "192.168.1.7"
+        ;; use the settings in ~/.ssh/config instead of Tramp's
+        tramp-use-ssh-controlmaster-options nil
+        ;; don't generate backups for remote files opened as root (security hazzard)
+        backup-enable-predicate
+        (lambda (name)
+          (and (normal-backup-enable-predicate name)
+               (not (let ((method (file-remote-p name 'method)))
+                      (when (stringp method)
+                        (member method '("su" "sudo"))))))))
+
+  ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
+  (require 'midnight)
+  (midnight-mode t)
+  (midnight-delay-set 'midnight-delay 3600) ; run every hour
+
+  ;; Parameters for clean-buffer-list mode
+  (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
+        clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
+
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   (add-to-list 'flycheck-global-modes 'vhdl-mode)
+  ;; (flycheck-verilator-include-path ...)
+
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
@@ -521,6 +564,7 @@ you should place your code here."
                   "*.str"
                   "*.pyc"
                   "*.bak"
+                  "*_bak"
                   "*.orig"
                   "*.jou"
                   "*.rpt"
@@ -532,20 +576,26 @@ you should place your code here."
                   "*.dcp"
                   "syn_timing_report")
                 projectile-globally-ignored-files))
+
   ;; Cycle through windows
   (global-set-key (kbd "C-a") 'other-window)
+
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
   (add-to-list 'auto-mode-alist '("\\.[dsp]?v\\'" . verilog-mode))
+
   ;; Replace highlighted text when typing
   (delete-selection-mode 1)
+
   ;; Verilog block comment macro
   (fset 'verilog-block-comment
         [?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- return ?/ ?/ ?  return ?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- up right left ? ])
   (global-set-key (kbd "C-c c") 'verilog-block-comment)
+
   ;; UVM warning macro
   (fset 'uvm_warning
         (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([96 117 118 109 95 119 97 114 110 105 110 103 40 34 70 73 88 77 69 34 44 32 41 59 left left] 0 "%d")) arg)))
   (global-set-key (kbd "C-c v") 'uvm_warning)
+
   ;; Shortcut for switching to minibuffer
   (defun switch-to-minibuffer-window ()
     "switch to minibuffer window (if active)"
@@ -553,12 +603,15 @@ you should place your code here."
     (when (active-minibuffer-window)
       (select-window (active-minibuffer-window))))
   (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
+
   ;; Enable global auto completion
   (global-company-mode t)
+
   ;; Enable helm-gtags-mode
   (add-hook 'c-mode-hook 'helm-gtags-mode)
   (add-hook 'c++-mode-hook 'helm-gtags-mode)
   (add-hook 'asm-mode-hook 'helm-gtags-mode)
+  (add-hook 'python-mode-hook 'helm-gtags-mode)
   (add-hook 'verilog-mode-hook 'helm-gtags-mode)
   (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
   ;; Customize helm-gtags-mode
@@ -580,6 +633,7 @@ you should place your code here."
        (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+
   ;; veri-kompass for Verilog
   (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
   (require 'veri-kompass)
@@ -600,11 +654,18 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-buffer-indent 2)
+ '(helm-gtags-auto-update nil t)
+ '(helm-gtags-direct-helm-completing t)
+ '(helm-gtags-display-style (quote detail))
+ '(helm-gtags-ignore-case t t)
+ '(helm-gtags-path-style (quote root))
+ '(helm-gtags-pulse-at-cursor t t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
     (realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(paradox-github-token t)
  '(standard-indent 2)
  '(verilog-auto-declare-nettype nil)
  '(verilog-auto-indent-on-newline t)
@@ -622,9 +683,6 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-tooltip-common
-   ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection
-   ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
