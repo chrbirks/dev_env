@@ -204,6 +204,13 @@ requires certain packages or layers to be installed.
 |<kbd>[{</kbd> | Go up to outer brace|
 |<kbd>]}</kbd> | Go down to outer brace|
 
+### Vi recording
+| Shortcut | Description |
+| -------- | ----------- |
+|<kbd>q [register name]</kbd> | start recording into register |
+|<kbd>q</kbd>                 | stop recording |
+|<kbd>@ [register name]</kbd> | run recording from register |
+
 ### Visual mode
 Press <kbd>v</kbd> to enter visual mode so you can highlight text).
 Use the arrow keys (or h,j,k,l,w,b,$) to highlight.
@@ -234,7 +241,7 @@ Opened with <kbd>SPC b i</kbd>
 | -------- | ----------- |
 |<kbd>SPC q</kbd> | quit imenu |
 |<kbd>SPC RET</kbd> | jump to enty |
-|<kbd>SPC d</kbd>` | jump to entry, keep focus |
+|<kbd>SPC d</kbd> | jump to entry, keep focus |
 |<kbd>SPC f</kbd> | fold/unfold current section |
 |<kbd>SPC r</kbd> | refresh imenu window |
 
