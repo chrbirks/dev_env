@@ -10,16 +10,17 @@ Note: do not use this manager for installing packages since they won't be persis
 | Shortcut | Description |
 | -------- | ----------- |
 | <kbd>SPC a k</kbd> | Launch paradox |
-| <kbd>/</kbd> | Evil-search |
-| <kbd>f k</kbd> | Filter by keywords |
-| <kbd>f r</kbd> | Filter by regexp |
-| <kbd>f u</kbd> | Display only installed packages with updates available |
-| <kbd>o</kbd> | Open package homepage |
-| <kbd>r</kbd> | Refresh |
-| <kbd>S P</kbd> | Sort by name |
-| <kbd>S S</kbd> | Sort by status |
-| <kbd>v</kbd> | Visual state |
-| <kbd>x</kbd> | Execute (action flags) |
+| ... <kbd>/</kbd> | Evil-search |
+| ... <kbd>f k</kbd> | Filter by keywords |
+| ... <kbd>f r</kbd> | Filter by regexp |
+| ... <kbd>f u</kbd> | Display only installed packages with updates available |
+| ... <kbd>L</kbd>   | Display list of updates for selected package |
+| ... <kbd>o</kbd> | Open package homepage |
+| ... <kbd>r</kbd> | Refresh |
+| ... <kbd>S P</kbd> | Sort by name |
+| ... <kbd>S S</kbd> | Sort by status |
+| ... <kbd>v</kbd> | Visual state |
+| ... <kbd>x</kbd> | Execute (action flags) |
 
 ## GTAGS
 ### Installation
@@ -204,6 +205,13 @@ requires certain packages or layers to be installed.
 |<kbd>[{</kbd> | Go up to outer brace|
 |<kbd>]}</kbd> | Go down to outer brace|
 
+### Vi recording
+| Shortcut | Description |
+| -------- | ----------- |
+|<kbd>q [register name]</kbd> | start recording into register |
+|<kbd>q</kbd>                 | stop recording |
+|<kbd>@ [register name]</kbd> | run recording from register |
+
 ### Visual mode
 Press <kbd>v</kbd> to enter visual mode so you can highlight text).
 Use the arrow keys (or h,j,k,l,w,b,$) to highlight.
@@ -234,7 +242,7 @@ Opened with <kbd>SPC b i</kbd>
 | -------- | ----------- |
 |<kbd>SPC q</kbd> | quit imenu |
 |<kbd>SPC RET</kbd> | jump to enty |
-|<kbd>SPC d</kbd>` | jump to entry, keep focus |
+|<kbd>SPC d</kbd> | jump to entry, keep focus |
 |<kbd>SPC f</kbd> | fold/unfold current section |
 |<kbd>SPC r</kbd> | refresh imenu window |
 
