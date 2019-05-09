@@ -10,16 +10,17 @@ Note: do not use this manager for installing packages since they won't be persis
 | Shortcut | Description |
 | -------- | ----------- |
 | <kbd>SPC a k</kbd> | Launch paradox |
-| <kbd>/</kbd> | Evil-search |
-| <kbd>f k</kbd> | Filter by keywords |
-| <kbd>f r</kbd> | Filter by regexp |
-| <kbd>f u</kbd> | Display only installed packages with updates available |
-| <kbd>o</kbd> | Open package homepage |
-| <kbd>r</kbd> | Refresh |
-| <kbd>S P</kbd> | Sort by name |
-| <kbd>S S</kbd> | Sort by status |
-| <kbd>v</kbd> | Visual state |
-| <kbd>x</kbd> | Execute (action flags) |
+| ... <kbd>/</kbd> | Evil-search |
+| ... <kbd>f k</kbd> | Filter by keywords |
+| ... <kbd>f r</kbd> | Filter by regexp |
+| ... <kbd>f u</kbd> | Display only installed packages with updates available |
+| ... <kbd>L</kbd>   | Display list of updates for selected package |
+| ... <kbd>o</kbd> | Open package homepage |
+| ... <kbd>r</kbd> | Refresh |
+| ... <kbd>S P</kbd> | Sort by name |
+| ... <kbd>S S</kbd> | Sort by status |
+| ... <kbd>v</kbd> | Visual state |
+| ... <kbd>x</kbd> | Execute (action flags) |
 
 ## GTAGS
 ### Installation
