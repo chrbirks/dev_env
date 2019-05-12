@@ -340,6 +340,18 @@ Searching in a project
 | <kbd>SPC s e</kbd> | enter iedit state on selected word |
 | <kbd>C-c C-c</kbd> | commit changes after leaving iedit state |
 
+Searching with `iedit`
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>SPC s e</kbd> | open `iedit-mode` on selected word |
+| ... <kbd>n/N</kbd> | next/previous occurence |
+| ... <kbd>F</kbd> | restrict occurences to function (depending on file type) |
+| ... <kbd>L</kbd> | restrict occurence to selected line |
+| ... <kbd>J/K</kbd> | add line below/above |
+| ... <kbd>TAB</kbd> | toggle selected occurence on/off |
+| ... <kbd>i</kbd> | enter edit mode |
+
 ### Projectile shortcuts
 | Shortcut | Description |
 | -------- | ----------- |
