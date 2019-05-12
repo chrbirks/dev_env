@@ -529,8 +529,8 @@ you should place your code here."
   (require 'tramp)
   (setq tramp-default-method "sshx"
         ;; tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
-        ;; tramp-default-user "chrbirks"
-        ;; tramp-default-host "192.168.1.7"
+        tramp-default-user "chrbirks"
+        tramp-default-host "192.168.1.7"
         ;; use the settings in ~/.ssh/config instead of Tramp's
         tramp-use-ssh-controlmaster-options nil
         ;; don't generate backups for remote files opened as root (security hazzard)
@@ -634,11 +634,11 @@ you should place your code here."
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
-  ;; veri-kompass for Verilog
-  (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
-  (require 'veri-kompass)
-  ;; Enable veri kompass minor mode mode
-  (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
+  ;; ;; veri-kompass for Verilog
+  ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
+  ;; (require 'veri-kompass)
+  ;; ;; Enable veri kompass minor mode mode
+  ;; (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -654,12 +654,12 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-buffer-indent 2)
- '(helm-gtags-auto-update nil t)
+ '(helm-gtags-auto-update nil)
  '(helm-gtags-direct-helm-completing t)
  '(helm-gtags-display-style (quote detail))
- '(helm-gtags-ignore-case t t)
+ '(helm-gtags-ignore-case t)
  '(helm-gtags-path-style (quote root))
- '(helm-gtags-pulse-at-cursor t t)
+ '(helm-gtags-pulse-at-cursor t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
@@ -667,17 +667,36 @@ This function is called at the very end of Spacemacs initialization."
     (realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-github-token t)
  '(standard-indent 2)
+ '(user-full-name "Christian Birk Sørensen")
+ '(user-mail-address "chrbirks+emacs@gmail.com")
+ '(verilog-align-ifelse nil)
  '(verilog-auto-declare-nettype nil)
+ '(verilog-auto-delete-trailing-whitespace t)
  '(verilog-auto-indent-on-newline t)
- '(verilog-auto-newline nil)
+ '(verilog-highlight-grouping-keywords nil)
+ '(verilog-highlight-modules nil)
+ '(verilog-highlight-p1800-keywords nil)
  '(verilog-indent-level 2)
  '(verilog-indent-level-behavioral 2)
  '(verilog-indent-level-declaration 2)
+ '(verilog-indent-level-directive 1)
  '(verilog-indent-level-module 2)
- '(verilog-indent-lists nil)
- '(verilog-tab-always-indent nil)
+ '(verilog-indent-lists t)
+ '(verilog-tab-always-indent t)
  '(vhdl-basic-offset 0)
- '(vhdl-end-comment-column 180))
+ '(vhdl-end-comment-column 180)
+ '(vhdl-hideshow-menu t)
+ '(vhdl-index-menu t)
+ '(vhdl-instance-name (quote (".*" . "i_\\&")))
+ '(vhdl-source-file-menu t)
+ '(vhdl-speedbar-auto-open nil)
+ '(vhdl-speedbar-display-mode (quote directory))
+ '(vhdl-standard (quote (8 nil)))
+ '(vhdl-upper-case-attributes nil)
+ '(vhdl-upper-case-constants nil)
+ '(vhdl-upper-case-enum-values nil)
+ '(vhdl-upper-case-keywords nil)
+ '(vhdl-upper-case-types nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
