@@ -88,6 +88,8 @@ Also add the following configuration to dotspacemacs/user-config()
   '(progn
      (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
      (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
+     (define-key helm-gtags-mode-map (kbd "M-æ") 'helm-gtags-dwim) ; find definition
+     (define-key helm-gtags-mode-map (kbd "M-ø") 'helm-gtags-dwim-other-window) ; find definition and open in other window
      (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
      (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
      (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
@@ -111,6 +113,22 @@ If the language is not directly supported and GTAGSLABEL is not set
 Otherwise
 
 ```gtags```
+
+Shortcuts defined above:
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>M-t</kbd>                | find definition |
+| <kbd>M-r</kbd>                | find references |
+| <kbd>M-æ</kbd>                | find definition |
+| <kbd>M-ø</kbd>                | find definition and open in other window |
+| <kbd>M-s</kbd>                | find symbols |
+| <kbd>M-g</kbd> <kbd>M-p</kbd> | list all tags in file |
+| <kbd>C-c</kbd> <kbd><</kbd>   | `helm-gtags-previous-history` |
+| <kbd>C-c</kbd> <kbd>></kbd>   | `helm-gtags-next-history` |
+| <kbd>M-,</kbd>                | `helm-gtags-pop-stack` |
+
+Shortcuts in the major mode menu:
 
 | Shortcut | Description |
 | -------- | ----------- |
