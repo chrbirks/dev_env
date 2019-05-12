@@ -112,6 +112,20 @@ Otherwise
 
 ```gtags```
 
+Shortcuts defined above:
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>M-t</kbd>                | find definition |
+| <kbd>M-r</kbd>                | find references |
+| <kbd>M-s</kbd>                | find symbols |
+| <kbd>M-g</kbd> <kbd>M-p</kbd> | list all tags in file |
+| <kbd>C-c</kbd> <kbd><</kbd>   | `helm-gtags-previous-history` |
+| <kbd>C-c</kbd> <kbd>></kbd>   | `helm-gtags-next-history` |
+| <kbd>M-,</kbd>                | `helm-gtags-pop-stack` |
+
+Shortcuts in the major mode menu:
+
 | Shortcut | Description |
 | -------- | ----------- |
 | <kbd>SPC m g C</kbd> | create a tag database                                     |
