@@ -511,26 +511,33 @@ you should place your code here."
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
 
-   ;; Set top/bottom scroll margin in number of lines
-   scroll-margin 5
-
-   ;; Set horizontal scroll margin in number of characters
-   hscroll-margin 15
-   hscroll-step 1
-
-   ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
-   auto-hscroll-mode 'current-line
-
    ;; Compress files when access them via TRAMP
    tramp-inline-compress-start-size t
    )
 
+  ;; Settings for horizontal/vertical scrolling
+  (setq scroll-margin 5   ;; Set top/bottom scroll margin in number of lines
+        hscroll-margin 15 ;; Set horizontal scroll margin in number of characters
+        hscroll-step 1)
+  ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
+  auto-hscroll-mode 'current-line
+  ;; Set scroll margin to zero for terminals etc.
+  (defun unset-scroll-margin()
+    "Set scroll-margin to zero"
+    (setq-local scroll-margin 0))
+  (spacemacs/add-to-hooks
+   'unset-scroll-margin
+   '(messages-buffer-mode-hook
+     comint-mode-hook
+     term-mode-hook
+     shell-mode-hook))
+  
   ;; Remote access via TRAMP
   (require 'tramp)
   (setq tramp-default-method "sshx"
         ;; tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
-        tramp-default-user "chrbirks"
-        tramp-default-host "192.168.1.7"
+        ;; tramp-default-user "chrbirks"
+        ;; tramp-default-host "192.168.1.7"
         ;; use the settings in ~/.ssh/config instead of Tramp's
         tramp-use-ssh-controlmaster-options nil
         ;; don't generate backups for remote files opened as root (security hazzard)
