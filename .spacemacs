@@ -531,7 +531,7 @@ you should place your code here."
      comint-mode-hook
      term-mode-hook
      shell-mode-hook))
-  
+
   ;; Remote access via TRAMP
   (require 'tramp)
   (setq tramp-default-method "sshx"
@@ -635,6 +635,8 @@ you should place your code here."
     '(progn
        (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
        (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
+       (define-key helm-gtags-mode-map (kbd "M-æ") 'helm-gtags-dwim) ; find definition
+       (define-key helm-gtags-mode-map (kbd "M-ø") 'helm-gtags-dwim-other-window) ; find definition and open in other window
        (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
        (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
        (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
