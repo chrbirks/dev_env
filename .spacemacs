@@ -60,10 +60,11 @@ This function should only modify configuration layer settings."
      debug ; layer for interactive debuggers using realgud, e.g. gdb
      emacs-lisp
      git
-     gtags; use pygments when generating tags for (System)Verilog support 
+     gtags; use pygments when generating tags for (System)Verilog support
      helm
      html
      imenu-list
+     lsp ; Language Server Protocol
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
@@ -95,7 +96,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(eglot)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -493,6 +494,8 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
   (setq-default
+   ;; debug-on-error t
+
    ;; Set powerline separator type
    powerline-default-separator 'wave
 
@@ -514,6 +517,27 @@ you should place your code here."
    ;; Compress files when access them via TRAMP
    tramp-inline-compress-start-size t
    )
+
+  ;; Increase garbage collection limits
+  (setq gc-cons-threshold 50000000)
+  (setq large-file-warning-threshold 100000000)
+
+  ;; Delete trailing whitespaces before saving
+  (use-package files
+    :hook
+    (before-save . delete-trailing-whitespace)
+    :custom
+    (require-final-newline nil))
+
+  ;; Clean up recent file buffers
+  (use-package recentf
+    :custom
+    (recentf-auto-cleanup 30)
+    :config
+    (run-with-idle-timer 30 t 'recentf-save-list))
+
+  ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
+  (setq avy-style 'words)
 
   ;; Settings for horizontal/vertical scrolling
   (setq scroll-margin 5   ;; Set top/bottom scroll margin in number of lines
@@ -556,12 +580,6 @@ you should place your code here."
   ;; Parameters for clean-buffer-list mode
   (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
         clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
-
-  ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
-  (require 'flycheck)
-  (add-to-list 'flycheck-global-modes 'verilog-mode)
-  (add-to-list 'flycheck-global-modes 'vhdl-mode)
-  ;; (flycheck-verilator-include-path ...)
 
   ;; Project Management
   (require 'projectile)
@@ -614,6 +632,15 @@ you should place your code here."
   ;; Enable global auto completion
   (global-company-mode t)
 
+  ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
+  (require 'flycheck)
+  ;; (setq 'flycheck-global-modes t)
+  (add-to-list 'flycheck-global-modes 'verilog-mode)
+  (add-to-list 'flycheck-global-modes 'vhdl-mode)
+  ;; TODO: Override parameters for flycheck vhdl mode? flycheck-ghdl-language-standard, flycheck-ghdl-dir, flycheck-ghdl-ieee-library
+
+  ;; (flycheck-verilator-include-path ...)
+
   ;; Enable helm-gtags-mode
   (add-hook 'c-mode-hook 'helm-gtags-mode)
   (add-hook 'c++-mode-hook 'helm-gtags-mode)
@@ -642,6 +669,53 @@ you should place your code here."
        (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
+
+  ;; TESTING lsp-mode
+  (require 'lsp-mode)
+  (setq lsp-ui-doc-enable t
+        lsp-ui-doc-include-signature t
+        lsp-ui-sideline-enable t
+        lsp-ui-sideline-show-symbol t
+        lsp-enable-symbol-highlighting nil
+        lsp-ui-doc-use-childframe nil) ;TODO 17-05-2019: box is not placed correctly
+  (add-hook 'prog-mode-hook #'lsp) ;; enable for all proggramming languages
+  ;; (add-hook 'c-mode-hook #'lsp)
+  ;; (add-hook 'vhdl-mode-hook #'lsp)
+  ;; (add-hook 'verilog-mode-hook #'lsp)
+
+  ;; (require 'lsp-mode)
+  ;; (lsp-define-stdio-client
+  ;;  lsp-vhdl-mode
+  ;;  "VHDL"
+  ;;  (lsp-make-traverser "vhdl_ls.toml")
+  ;;  '("/home/chrbirks/github/rust_hdl/target/release/vhdl_ls"))
+  ;; (require 'lsp-ui)
+  ;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  ;; (add-hook 'vhdl-mode-hook 'flycheck-mode)
+  ;; (add-hook 'vhdl-mode-hook 'lsp-vhdl-mode-enable)
+
+  ;; (lsp-register-client
+  ;;  (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
+  ;;                   :major-modes '(python-mode)
+  ;;                   :server-id 'pyls))
+
+
+  ;; ;; ;; Enable lsp-clangd after loading lsp-mode
+  ;; ;; (with-eval-after-load 'lsp-mode
+  ;; ;;   (require 'lsp-clangd)
+  ;; ;;   (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
+  ;; ;;   (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)
+  ;; ;;   (add-hook 'objc-mode-hook #'lsp-clangd-objc-enable))
+
+  ;; ;; To enable flycheck-mode for a particular LSP client, add the following
+  ;; ;; (add-hook 'c-mode-hook 'flycheck-mode)
+  ;; ;; (add-hook 'vhdl-mode-hook 'flycheck-mode)
+
+  ;;(require 'eglot)
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '(vhdl-mode . ("/home/chrbirks/github/rust_hdl/target/release/vhdl_ls")))
+
+
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
