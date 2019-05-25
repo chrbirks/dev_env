@@ -152,6 +152,24 @@ Shortcuts in the major mode menu:
 | <kbd>SPC m g I</kbd> | invalidate projectile tags cache |
 
 
+## lsp-mode
+Useful lsp-mode functions:
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>i</kbd> | `lsp-find-implementation` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>t</kbd> | `lsp-find-type-definition` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>e</kbd> | `lsp-treemacs-error-list` (press <kbd>x</kbd> when in treemacs for quickfix) |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>M</kbd> | `lsp-ui-imenu` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>s</kbd> | `helm-lsp-workspace-symbol` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>S</kbd> | `helm-lsp-global-workspace-symbol` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>d</kbd> | `xref-find-definitions` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>r</kbd> | `xref-find-references` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>p</kbd> | `xref-pop-marker-stack` |
+|                                                       | `helm-semantic-or-imenu` |
+|                                                       | `lsp-describe-session` |
+
+
 ## Debug
 The layer `debug` adds interactive debuggers for multiple languages using `realgud`, e.g. gdb.
 
