@@ -64,17 +64,19 @@ This function should only modify configuration layer settings."
      helm
      html
      imenu-list
+     (java :variables
+           java-backend 'lsp)
      lsp ; Language Server Protocol
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
      org
      prettier
-     python
+     (python :variables
+             python-backend 'lsp) ;anaconda or lsp
      shell-scripts
      spacemacs-layouts
      syntax-checking
-     themes-megapack
      (treemacs :variables
                treemacs-use-follow-mode t
                treemacs-use-filewatch-mode t)
@@ -96,7 +98,8 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(eglot)
+   dotspacemacs-additional-packages '(;vhdl-tools
+                                      )
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -468,6 +471,7 @@ This function defines the environment variables for your Emacs session. By
 default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
+  ;; (add-to-list 'load-path "/home/chrbirks/github/dev_env")
   (spacemacs/load-spacemacs-env))
 
 (defun dotspacemacs/user-init ()
@@ -670,52 +674,56 @@ you should place your code here."
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
-  ;; TESTING lsp-mode
-  (require 'lsp-mode)
+  ;; Colorize tags (keywords) in helm-semantic-or-imenu
+  (with-eval-after-load 'helm-semantic
+    (push '(c-mode . semantic-format-tag-summarize) helm-semantic-display-style)
+    (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style)
+    (push '(vhdl-mode . semantic-format-tag-summarize) helm-semantic-display-style))
+
+  ;; ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
+  ;; (autoload 'vhdl-tools-mode "vhdl-tools")
+  ;; (autoload 'vhdl-tools-vorg-mode "vhdl-tools")
+  ;; ;; (require 'vhdl-tools)
+  ;; (setq vhdl-tools-use-outshine t)
+  ;; (require 'outshine)
+  ;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+  ;; (add-to-list 'company-begin-commands 'outshine-self-insert-command)
+
+  ;; Set general parameters for lsp-mode
+  ;; ;; Disable all lsp features excep flycheck
+  ;; (setq lsp-ui-doc-enable nil
+  ;;       lsp-ui-peek-enable nil
+  ;;       lsp-ui-sideline-enable nil
+  ;;       lsp-ui-imenu-enable nil
+  ;;       lsp-enable-symbol-highlighting nil
+  ;;       lsp-ui-flycheck-enable t)
+  ;; Enable all lsp features except symbol highlighting
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-include-signature t
+        lsp-ui-doc-use-childframe nil ;TODO 17-05-2019: box is not placed correctly when t
         lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
         lsp-enable-symbol-highlighting nil
-        lsp-ui-doc-use-childframe nil) ;TODO 17-05-2019: box is not placed correctly
-  (add-hook 'prog-mode-hook #'lsp) ;; enable for all proggramming languages
-  ;; (add-hook 'c-mode-hook #'lsp)
-  ;; (add-hook 'vhdl-mode-hook #'lsp)
-  ;; (add-hook 'verilog-mode-hook #'lsp)
+        ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-menu which works
+        lsp-ui-flycheck-enable t
+        lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
+        lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
+        lsp-auto-guess-root t
+        lsp-enable-completion-at-point t
+        lsp-enable-indentation t
+        lsp-enable-snippet t
+        lsp-enable-on-type-formatting t
+        lsp-enable-file-watchers t
+        lsp-enable-xref t
+        lsp-print-io nil ;FIXME: log all messages to *lsp-log* for debugging
+        )
 
-  ;; (require 'lsp-mode)
-  ;; (lsp-define-stdio-client
-  ;;  lsp-vhdl-mode
-  ;;  "VHDL"
-  ;;  (lsp-make-traverser "vhdl_ls.toml")
-  ;;  '("/home/chrbirks/github/rust_hdl/target/release/vhdl_ls"))
-  ;; (require 'lsp-ui)
-  ;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  ;; (add-hook 'vhdl-mode-hook 'flycheck-mode)
-  ;; (add-hook 'vhdl-mode-hook 'lsp-vhdl-mode-enable)
+  ;; Enable lsp for all programming languages
+  ;; (add-hook 'prog-mode-hook #'lsp)
 
-  ;; (lsp-register-client
-  ;;  (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
-  ;;                   :major-modes '(python-mode)
-  ;;                   :server-id 'pyls))
-
-
-  ;; ;; ;; Enable lsp-clangd after loading lsp-mode
-  ;; ;; (with-eval-after-load 'lsp-mode
-  ;; ;;   (require 'lsp-clangd)
-  ;; ;;   (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
-  ;; ;;   (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)
-  ;; ;;   (add-hook 'objc-mode-hook #'lsp-clangd-objc-enable))
-
-  ;; ;; To enable flycheck-mode for a particular LSP client, add the following
-  ;; ;; (add-hook 'c-mode-hook 'flycheck-mode)
-  ;; ;; (add-hook 'vhdl-mode-hook 'flycheck-mode)
-
-  ;;(require 'eglot)
-  ;; (add-to-list 'eglot-server-programs
-  ;;              '(vhdl-mode . ("/home/chrbirks/github/rust_hdl/target/release/vhdl_ls")))
-
-
+  ;; Load package for LSP in vhdl-mode
+  (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
+  (load-file "/home/chrbirks/github/dev_env/emacs_packages/lsp-vhdl.el")
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
@@ -737,17 +745,17 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-buffer-indent 2)
- '(helm-gtags-auto-update nil)
+ '(helm-gtags-auto-update nil t)
  '(helm-gtags-direct-helm-completing t)
  '(helm-gtags-display-style (quote detail))
- '(helm-gtags-ignore-case t)
+ '(helm-gtags-ignore-case t t)
  '(helm-gtags-path-style (quote root))
- '(helm-gtags-pulse-at-cursor t)
+ '(helm-gtags-pulse-at-cursor t t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-github-token t)
  '(standard-indent 2)
  '(user-full-name "Christian Birk Sørensen")
