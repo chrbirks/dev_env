@@ -152,6 +152,35 @@ Shortcuts in the major mode menu:
 | <kbd>SPC m g I</kbd> | invalidate projectile tags cache |
 
 
+## lsp-mode
+Useful lsp-mode functions (works in `vhdl-mode` but may change under other modes):
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>i</kbd> | `lsp-find-implementation` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>t</kbd> | `lsp-find-type-definition` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>e</kbd> | `lsp-treemacs-error-list` (press <kbd>x</kbd> when in treemacs for quickfix) |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>M</kbd> | `lsp-ui-imenu` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>s</kbd> | `helm-lsp-workspace-symbol` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>S</kbd> | `helm-lsp-global-workspace-symbol` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>d</kbd> | `xref-find-definitions` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>r</kbd> | `xref-find-references` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>g</kbd> <kbd>p</kbd> | `xref-pop-marker-stack` |
+|                                                       | `helm-semantic-or-imenu` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>b</kbd> <kbd>d</kbd> | `lsp-describe-session` |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>=</kbd>              | Formatting |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>b</kbd>              | `lsp` backend options |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>F</kbd>              | `lsp` workspace options |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>r</kbd>              | `lsp` rename |
+| <kbd>SPC</kbd> <kbd>m</kbd> <kbd>T</kbd>              | Toggle options for `lsp` and `ggtags` |
+
+### LSP language server for VHDL
+A server written in Rust can be found here https://github.com/kraigher/rust_hdl and the server is called `vhdl_ls`. See `lsp-vhdl.el` for details for detail on how it is used. 
+
+It requires a file list called `vhdl_ls.toml` with paths to all files in the project to work. To find the location the toml file must be placed under set the following to write debug messages to *lsp-log* buffer: `(setq lsp-print-io t)`. The file should be placed under `rootPath` og `rootUri`.
+
+This root path is determined by Projectile (true?) when `lsp-auto-guess-root t` and will search upwards from the opened VHDL file until a project folder is found. This can be a Git or Mercurial root directory, or when a empty `.projectile` file is found.
+
 ## Debug
 The layer `debug` adds interactive debuggers for multiple languages using `realgud`, e.g. gdb.
 
