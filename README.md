@@ -509,6 +509,20 @@ Spacemacs uses the packages pcre2el to manipulate regular expressions. It is use
 | <kbd>SPC x r c</kbd> | Convert regexp around point to the other form and display the result in the minibuffer |
 | <kbd>SPC x r e /</kbd> | Explain Emacs Lisp regexp |
 
+### Text alignment
+The package `align-regexp` can be used for aligning the selected text. The package `ialign` visualizes `align-regexp` on the fly: https://github.com/mkcms/interactive-align.
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>SPC</kbd> <kbd>SPC</kbd> <kbd>ialign</kbd> | Starts visual `align-regexp` mode |
+| ... <kbd>C-c</kbd> <kbd>M-c</kbd>               | ialign-toggle-case-fold |
+| ... <kbd>C-c</kbd> <kbd>+</kbd>                 | ialign-increment-spacing |
+| ... <kbd>C-c</kbd> <kbd>-</kbd>                 | ialign-decrement-spacing |
+| ... <kbd>C-c</kbd> <kbd>C-s</kbd>               | ialign-set-spacing |
+| ... <kbd>C-c</kbd> <kbd>[</kbd>                 | ialign-decrement-group |
+| ... <kbd>C-c</kbd> <kbd>]</kbd>                 | ialign-increment-group |
+| ... <kbd>C-c</kbd> <kbd>C-f</kbd>               | ialign-set-group |
+
 ### Error handling
 | Shortcut | Description |
 | -------- | ----------- |
