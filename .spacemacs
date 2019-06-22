@@ -99,6 +99,7 @@ This function should only modify configuration layer settings."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(;vhdl-tools
+                                      ialign ;; visual align-regexp
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -198,7 +199,7 @@ It should only modify the values of Spacemacs settings."
    ;; directory. A string value must be a path to an image format supported
    ;; by your Emacs build.
    ;; If the value is nil then no banner is displayed. (default 'official)
-   dotspacemacs-startup-banner 'official
+   dotspacemacs-startup-banner nil
 
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
@@ -206,8 +207,10 @@ It should only modify the values of Spacemacs settings."
    ;; `recents' `bookmarks' `projects' `agenda' `todos'.
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   dotspacemacs-startup-lists '((recents . 5)
-                                (projects . 7))
+   dotspacemacs-startup-lists '((agenda . 2)
+                                (todos . 2)
+                                (recents . 2)
+                                (projects . 4))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -236,7 +239,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
+   dotspacemacs-mode-line-theme '(spacemacs :separator arrow :separator-scale 1.5)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -244,12 +247,12 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro" ;"Bitstream Vera Sans Mono" ;"Ubuntu Mono"
-                               :size 15
+   dotspacemacs-default-font '("Hack" ;"Source Code Pro" ;"Bitstream Vera Sans Mono" ;"Ubuntu Mono"
+                               :size 14
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
-   ;; The leader key
+   ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
 
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
@@ -297,7 +300,7 @@ It should only modify the values of Spacemacs settings."
    ;; Size (in MB) above which spacemacs will prompt to open the large file
    ;; literally to avoid performance issues. Opening a file literally means that
    ;; no major mode or minor modes are active. (default is 1)
-   dotspacemacs-large-file-size 1
+   dotspacemacs-large-file-size 10
 
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
@@ -393,6 +396,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; (default nil)
    dotspacemacs-line-numbers t
+
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -459,7 +463,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'changed
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -503,9 +507,6 @@ before packages are loaded."
   (setq-default
    ;; debug-on-error t
 
-   ;; Set powerline separator type
-   powerline-default-separator 'wave
-
    ;; Do not wrap lines
    truncate-lines t
 
@@ -525,16 +526,12 @@ before packages are loaded."
    tramp-inline-compress-start-size t
    )
 
-  ;; Increase garbage collection limits
-  (setq gc-cons-threshold 50000000)
-  (setq large-file-warning-threshold 100000000)
-
   ;; Delete trailing whitespaces before saving
-  (use-package files
-    :hook
-    (before-save . delete-trailing-whitespace)
-    :custom
-    (require-final-newline nil))
+  ;; (use-package files
+  ;;   :hook
+  ;;   (before-save . delete-trailing-whitespace)
+  ;;   :custom
+  ;;   (require-final-newline nil))
 
   ;; Clean up recent file buffers
   (use-package recentf
@@ -547,8 +544,8 @@ before packages are loaded."
   (setq avy-style 'words)
 
   ;; Settings for horizontal/vertical scrolling
-  (setq scroll-margin     5   ;; Set top/bottom scroll margin in number of lines
-        hscroll-margin    15 ;; Set horizontal scroll margin in number of characters
+  (setq scroll-margin     5              ;; Set top/bottom scroll margin in number of lines
+        hscroll-margin    15             ;; Set horizontal scroll margin in number of characters
         hscroll-step      1
         auto-hscroll-mode 'current-line) ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
 
@@ -693,7 +690,7 @@ before packages are loaded."
   ;; (add-to-list 'company-begin-commands 'outshine-self-insert-command)
 
   ;; Set general parameters for lsp-mode
-  ;; ;; Disable all lsp features excep flycheck
+  ;; ;; Disable all lsp features except flycheck
   ;; (setq lsp-ui-doc-enable nil
   ;;       lsp-ui-peek-enable nil
   ;;       lsp-ui-sideline-enable nil
@@ -712,6 +709,7 @@ before packages are loaded."
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
         lsp-auto-guess-root t
+        lsp-lens-mode t
         lsp-enable-completion-at-point t
         lsp-enable-indentation t
         lsp-enable-snippet t
@@ -747,13 +745,14 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(comment-style (quote indent))
  '(custom-buffer-indent 2)
- '(helm-gtags-auto-update nil t)
+ '(helm-gtags-auto-update nil)
  '(helm-gtags-direct-helm-completing t)
  '(helm-gtags-display-style (quote detail))
- '(helm-gtags-ignore-case t t)
+ '(helm-gtags-ignore-case t)
  '(helm-gtags-path-style (quote root))
- '(helm-gtags-pulse-at-cursor t t)
+ '(helm-gtags-pulse-at-cursor t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
@@ -777,20 +776,58 @@ This function is called at the very end of Spacemacs initialization."
  '(verilog-indent-level-module 2)
  '(verilog-indent-lists t)
  '(verilog-tab-always-indent t)
- '(vhdl-basic-offset 0)
+ '(vhdl-align-groups t)
+ '(vhdl-align-same-indent t)
+ '(vhdl-array-index-record-field-in-sensitivity-list t)
+ '(vhdl-auto-align t)
+ '(vhdl-beautify-options (quote (nil t t t t)))
+ '(vhdl-company-name "Silicom Denmark A/S")
+ '(vhdl-compiler "GHDL")
+ '(vhdl-date-format "%d-%m-%Y")
+ '(vhdl-default-library "work")
+ '(vhdl-electric-mode nil)
  '(vhdl-end-comment-column 180)
+ '(vhdl-file-header
+   "-------------------------------------------------------------------------------
+-- Title      : <title string>
+-- Project    : <project>
+-------------------------------------------------------------------------------
+-- File       : <filename>
+-- Author     : <author>
+-- Company    : <company>
+-- Created    : <date>
+-- Last update: <date>
+-- Platform   : <platform>
+-- Standard   : <standard>
+<projectdesc>-------------------------------------------------------------------------------
+-- Description: <cursor>
+<copyright>-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- <date>  1.0      <login>	Created
+-------------------------------------------------------------------------------
+
+")
  '(vhdl-hideshow-menu t)
+ '(vhdl-indent-comment-like-next-code-line t)
+ '(vhdl-indent-syntax-based t)
+ '(vhdl-indent-tabs-mode nil)
  '(vhdl-index-menu t)
  '(vhdl-instance-name (quote (".*" . "i_\\&")))
+ '(vhdl-intelligent-tab nil)
+ '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
  '(vhdl-source-file-menu t)
  '(vhdl-speedbar-auto-open nil)
  '(vhdl-speedbar-display-mode (quote directory))
  '(vhdl-standard (quote (8 nil)))
+ '(vhdl-stutter-mode nil)
+ '(vhdl-underscore-is-part-of-word t)
  '(vhdl-upper-case-attributes nil)
  '(vhdl-upper-case-constants nil)
  '(vhdl-upper-case-enum-values nil)
  '(vhdl-upper-case-keywords nil)
- '(vhdl-upper-case-types nil))
+ '(vhdl-upper-case-types nil)
+ '(vhdl-use-direct-instantiation (quote standard)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
