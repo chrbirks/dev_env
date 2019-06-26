@@ -463,7 +463,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'changed
+   dotspacemacs-whitespace-cleanup 'changed ; FIXME: 'changed does not work
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -521,12 +521,17 @@ before packages are loaded."
 
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
+   flycheck-vhdl-ghdl-executable "~/src/ghdl/bin/ghdl"
+   flycheck-ghdl-ieee-library "synopsys" ;;"standard"
+   flycheck-ghdl-language-standard "08"
+   ;; flycheck-ghdl-workdir ;; TODO
+   ;; (flycheck-verilator-include-path ...) TODO
 
    ;; Compress files when access them via TRAMP
    tramp-inline-compress-start-size t
    )
 
-  ;; Delete trailing whitespaces before saving
+  ;; ;; Delete trailing whitespaces before saving
   ;; (use-package files
   ;;   :hook
   ;;   (before-save . delete-trailing-whitespace)
@@ -548,7 +553,6 @@ before packages are loaded."
         hscroll-margin    15             ;; Set horizontal scroll margin in number of characters
         hscroll-step      1
         auto-hscroll-mode 'current-line) ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
-
   ;; Set scroll margin to zero for terminals etc.
   (defun unset-scroll-margin()
     "Set scroll-margin to zero"
@@ -588,7 +592,8 @@ before packages are loaded."
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
-        (append '(
+        (append '("_info"
+                  "_lib.qdb"
                   "*.log"
                   "*.str"
                   "*.pyc"
@@ -603,8 +608,17 @@ before packages are loaded."
                   "*.vds"
                   "*.pb"
                   "*.dcp"
-                  "syn_timing_report")
-                projectile-globally-ignored-files))
+                  "*.rtd"
+                  "*.tar"
+                  "*.qpg"
+                  "syn_timing_report"
+                  "fbupdate"
+                  "modelsim_compile.txt")
+                projectile-globally-ignored-files)
+        projectile-globally-ignored-directories
+        (append '(".Xil"
+                  "work"))
+        )
 
   ;; Cycle through windows
   (global-set-key (kbd "C-a") 'other-window)
@@ -641,9 +655,6 @@ before packages are loaded."
   ;; (setq 'flycheck-global-modes t)
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   (add-to-list 'flycheck-global-modes 'vhdl-mode)
-  ;; TODO: Override parameters for flycheck vhdl mode? flycheck-ghdl-language-standard, flycheck-ghdl-dir, flycheck-ghdl-ieee-library
-
-  ;; (flycheck-verilator-include-path ...)
 
   ;; Enable helm-gtags-mode
   (add-hook 'c-mode-hook 'helm-gtags-mode)
@@ -724,13 +735,117 @@ before packages are loaded."
 
   ;; Load package for LSP in vhdl-mode
   (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
-  (load-file "/home/chrbirks/github/dev_env/emacs_packages/lsp-vhdl.el")
+  (load-file "~/github/dev_env/emacs_packages/lsp-vhdl.el")
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
   ;; (require 'veri-kompass)
   ;; ;; Enable veri kompass minor mode mode
   ;; (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
+
+  (custom-set-variables
+   '(vhdl-align-groups t)
+   '(vhdl-align-groups t)
+   '(vhdl-align-same-indent t)
+   '(vhdl-array-index-record-field-in-sensitivity-list t)
+   '(vhdl-auto-align t)
+   '(vhdl-basic-offset 3)
+   '(vhdl-beautify-options (quote (nil t t t t)))
+   ;; '(vhdl-comment-only-line-offset 0)
+   '(vhdl-company-name "Silicom Denmark A/S")
+   '(vhdl-compiler "GHDL")
+   '(vhdl-date-format "%Y-%m-%d")
+   '(vhdl-default-library "work")
+   '(vhdl-electric-mode nil)
+   '(vhdl-end-comment-column 180)
+   '(vhdl-file-header
+     "-- *************************************************************************
+-- *
+-- * Copyright (c) 2008-2019, <company>
+-- * All rights reserved.
+-- *
+-- * Redistribution and use in source and binary forms, with or without
+-- * modification, are permitted provided that the following conditions are met:
+-- *
+-- * 1. Redistributions of source code must retain the above copyright notice,
+-- * this list of conditions and the following disclaimer.
+-- *
+-- * 2. Redistributions in binary form must reproduce the above copyright
+-- * notice, this list of conditions and the following disclaimer in the
+-- * documentation and/or other materials provided with the distribution.
+-- *
+-- * 3. Neither the name of the Silicom nor the names of its
+-- * contributors may be used to endorse or promote products derived from
+-- * this software without specific prior written permission.
+-- *
+-- * 4. This software may only be redistributed and used in connection with a
+-- *  Silicom network adapter product.
+-- *
+-- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"
+-- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+-- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+-- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+-- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+-- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+-- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+-- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+-- * POSSIBILITY OF SUCH DAMAGE.
+-- *
+-- ***************************************************************************
+-------------------------------------------------------------------------------
+-- Title      : <title string>
+-- Project    : <project>
+-------------------------------------------------------------------------------
+-- File       : <filename>
+-- Author     : <author>
+-- Company    : <company
+-- Created    : <date>
+-- Platform   : <platform>
+-- Standard   : <standard>
+-------------------------------------------------------------------------------
+-- Description: <cursor>
+-------------------------------------------------------------------------------
+
+")
+   '(vhdl-hideshow-menu t)
+   '(vhdl-indent-comment-like-next-code-line t)
+   '(vhdl-indent-syntax-based t)
+   '(vhdl-indent-tabs-mode nil)
+   '(vhdl-index-menu t)
+   '(vhdl-instance-name (quote (".*" . "i_\\&")))
+   '(vhdl-intelligent-tab nil)
+   '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
+   '(vhdl-source-file-menu t)
+   '(vhdl-speedbar-auto-open nil)
+   '(vhdl-speedbar-display-mode (quote directory))
+   '(vhdl-standard (quote (8 nil)))
+   '(vhdl-stutter-mode nil)
+   '(vhdl-underscore-is-part-of-word t)
+   '(vhdl-upper-case-attributes nil)
+   '(vhdl-upper-case-constants t)
+   '(vhdl-upper-case-enum-values t)
+   '(vhdl-upper-case-keywords nil)
+   '(vhdl-upper-case-types nil)
+   '(vhdl-use-direct-instantiation (quote standard)))
+
+  ;; Silicom (System)Verilog options
+  '(custom-set-variables
+    '(verilog-align-ifelse nil)
+    '(verilog-auto-declare-nettype nil)
+    '(verilog-auto-delete-trailing-whitespace t)
+    '(verilog-auto-indent-on-newline t)
+    '(verilog-highlight-grouping-keywords nil)
+    '(verilog-highlight-modules nil)
+    '(verilog-highlight-p1800-keywords nil)
+    '(verilog-indent-level 2)
+    '(verilog-indent-level-behavioral 2)
+    '(verilog-indent-level-declaration 2)
+    '(verilog-indent-level-directive 1)
+    '(verilog-indent-level-module 2)
+    '(verilog-indent-lists t)
+    '(verilog-tab-always-indent t))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -762,72 +877,7 @@ This function is called at the very end of Spacemacs initialization."
  '(standard-indent 2)
  '(user-full-name "Christian Birk Sørensen")
  '(user-mail-address "chrbirks+emacs@gmail.com")
- '(verilog-align-ifelse nil)
- '(verilog-auto-declare-nettype nil)
- '(verilog-auto-delete-trailing-whitespace t)
- '(verilog-auto-indent-on-newline t)
- '(verilog-highlight-grouping-keywords nil)
- '(verilog-highlight-modules nil)
- '(verilog-highlight-p1800-keywords nil)
- '(verilog-indent-level 2)
- '(verilog-indent-level-behavioral 2)
- '(verilog-indent-level-declaration 2)
- '(verilog-indent-level-directive 1)
- '(verilog-indent-level-module 2)
- '(verilog-indent-lists t)
- '(verilog-tab-always-indent t)
- '(vhdl-align-groups t)
- '(vhdl-align-same-indent t)
- '(vhdl-array-index-record-field-in-sensitivity-list t)
- '(vhdl-auto-align t)
- '(vhdl-beautify-options (quote (nil t t t t)))
- '(vhdl-company-name "Silicom Denmark A/S")
- '(vhdl-compiler "GHDL")
- '(vhdl-date-format "%d-%m-%Y")
- '(vhdl-default-library "work")
- '(vhdl-electric-mode nil)
- '(vhdl-end-comment-column 180)
- '(vhdl-file-header
-   "-------------------------------------------------------------------------------
--- Title      : <title string>
--- Project    : <project>
--------------------------------------------------------------------------------
--- File       : <filename>
--- Author     : <author>
--- Company    : <company>
--- Created    : <date>
--- Last update: <date>
--- Platform   : <platform>
--- Standard   : <standard>
-<projectdesc>-------------------------------------------------------------------------------
--- Description: <cursor>
-<copyright>-------------------------------------------------------------------------------
--- Revisions  :
--- Date        Version  Author  Description
--- <date>  1.0      <login>	Created
--------------------------------------------------------------------------------
-
-")
- '(vhdl-hideshow-menu t)
- '(vhdl-indent-comment-like-next-code-line t)
- '(vhdl-indent-syntax-based t)
- '(vhdl-indent-tabs-mode nil)
- '(vhdl-index-menu t)
- '(vhdl-instance-name (quote (".*" . "i_\\&")))
- '(vhdl-intelligent-tab nil)
- '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
- '(vhdl-source-file-menu t)
- '(vhdl-speedbar-auto-open nil)
- '(vhdl-speedbar-display-mode (quote directory))
- '(vhdl-standard (quote (8 nil)))
- '(vhdl-stutter-mode nil)
- '(vhdl-underscore-is-part-of-word t)
- '(vhdl-upper-case-attributes nil)
- '(vhdl-upper-case-constants nil)
- '(vhdl-upper-case-enum-values nil)
- '(vhdl-upper-case-keywords nil)
- '(vhdl-upper-case-types nil)
- '(vhdl-use-direct-instantiation (quote standard)))
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
