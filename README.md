@@ -280,7 +280,7 @@ Spacemacs adds another Visual mode via the expand-region mode.
 |<kbd>SPC b b</kbd> | list buffers |
 |<kbd>SPC b d</kbd> | kill buffer |
 |<kbd>SPC b n/p</kbd> | next/previous buffer |
-|<kbd>SPC b i</kbd> | toggle imenu with buffer outline (requires imenu-list layer) |
+|<kbd>SPC b t</kbd> | toggle imenu with buffer outline (requires imenu-list layer) |
 
 ### imenu-list
 Opened with <kbd>SPC b i</kbd>
