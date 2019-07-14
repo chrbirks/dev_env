@@ -181,6 +181,9 @@ It requires a file list called `vhdl_ls.toml` with paths to all files in the pro
 
 This root path is determined by Projectile (true?) when `lsp-auto-guess-root t` and will search upwards from the opened VHDL file until a project folder is found. This can be a Git or Mercurial root directory, or when a empty `.projectile` file is found.
 
+## Company mode for autocompletion
+To see all available company backends and the currently used backend type <kbd>M-x</kbd><kbd>company-diag</kbd>.
+
 ## Debug
 The layer `debug` adds interactive debuggers for multiple languages using `realgud`, e.g. gdb.
 
