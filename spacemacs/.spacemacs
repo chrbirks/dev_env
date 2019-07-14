@@ -33,8 +33,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-     ;; ----------------------------------------------------------------
+   '(;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -54,9 +53,18 @@ This function should only modify configuration layer settings."
      asm
      ;; better-defaults
      (c-c++ :variables
-            c-c++-enable-clang-support t ;; auto-completion of function calls etc.
+            ; Use ccls as LSP backend
+            c-c++-backend 'lsp-ccls ; 'lsp-ccls or 'lsp-cquery
+            c-c++-lsp-executable "/usr/bin/ccls"
+            ; Use cquery as LSP backend
+            ;; c-c++-backend 'lsp-cquery
+            ;; c-c++-lsp-executable "/usr/bin/cquery"
+            ; Others
+            c-c++-adopt-subprojects t
+            ;; c-c++-enable-clang-support t ;; auto-completion of function calls etc. (ignored when using lsp backend)
             c-c++-enable-rtags-completion t) ;; usefull for anything?
      csv
+     dap ; optional requirement for lsp-ccls
      debug ; layer for interactive debuggers using realgud, e.g. gdb
      emacs-lisp
      git
@@ -67,6 +75,8 @@ This function should only modify configuration layer settings."
      (java :variables
            java-backend 'lsp)
      lsp ; Language Server Protocol
+     ;; (lsp :variables ; Language Server Protocol
+     ;;      c-c++-backend 'lsp-ccls)
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
@@ -100,6 +110,8 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(;vhdl-tools
                                       ialign ;; visual align-regexp
+                                      ;; deadgrip
+                                      doom-themes
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -231,6 +243,10 @@ It should only modify the values of Spacemacs settings."
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(spacemacs-dark
+                         doom-one
+                         doom-city-lights
+                         doom-molokai
+                         doom-nord
                          subatomic
                          tangotango
                          soft-charcoal
@@ -531,10 +547,10 @@ before packages are loaded."
 
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
-   flycheck-vhdl-ghdl-executable "~/src/ghdl/bin/ghdl"
+   flycheck-vhdl-ghdl-executable "/usr/bin/ghdl"
    flycheck-ghdl-ieee-library "synopsys" ;;"standard"
    flycheck-ghdl-language-standard "08"
-   ;; flycheck-ghdl-workdir ;; TODO
+   ;; flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl";; TODO
    ;; (flycheck-verilator-include-path ...) TODO
 
    ;; Compress files when access them via TRAMP
@@ -675,8 +691,8 @@ before packages are loaded."
   (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
   ;; Customize helm-gtags-mode
   (custom-set-variables
-   '(helm-gtags-path-style 'root)
-   '(helm-gtags-display-style 'detail)
+   '(helm-gtags-path-style (quote root))
+   '(helm-gtags-display-style (quote detail))
    '(helm-gtags-direct-helm-completing t)
    '(helm-gtags-ignore-case t)
    '(helm-gtags-auto-update nil) ; do not update TAGS files when buffer is saved
@@ -742,10 +758,13 @@ before packages are loaded."
 
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
+  (add-hook 'java-mode-hook #'lsp)
+  (add-hook 'c-mode-hook #'lsp)
+  (add-hook 'c++-mode-hook #'lsp)
 
   ;; Load package for LSP in vhdl-mode
-  (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
-  (load-file "~/github/dev_env/emacs_packages/lsp-vhdl.el")
+  ;; (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
+  ;; (load-file "~/github/dev_env/emacs/emacs_packages/lsp-vhdl.el")
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
@@ -753,23 +772,48 @@ before packages are loaded."
   ;; ;; Enable veri kompass minor mode mode
   ;; (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
 
-  (custom-set-variables
-   '(vhdl-align-groups t)
-   '(vhdl-align-groups t)
-   '(vhdl-align-same-indent t)
-   '(vhdl-array-index-record-field-in-sensitivity-list t)
-   '(vhdl-auto-align t)
-   '(vhdl-basic-offset 3)
-   '(vhdl-beautify-options (quote (nil t t t t)))
-   ;; '(vhdl-comment-only-line-offset 0)
-   '(vhdl-company-name "Silicom Denmark A/S")
-   '(vhdl-compiler "GHDL")
-   '(vhdl-date-format "%Y-%m-%d")
-   '(vhdl-default-library "work")
-   '(vhdl-electric-mode nil)
-   '(vhdl-end-comment-column 180)
-   '(vhdl-file-header
-     "-- *************************************************************************
+  '(custom-set-variables
+    '(user-full-name "Christian Birk Sørensen")
+    '(user-mail-address "chrbirks+emacs@gmail.com")
+    )
+
+  ;; Custom Verilog settings
+  '(custom-set-variables
+    '(verilog-auto-delete-trailing-whitespace t)
+    '(verilog-highlight-grouping-keywords nil)
+    '(verilog-highlight-p1800-keywords t)
+    '(verilog-highlight-modules t)
+    '(verilog-tab-always-indent t)
+    '(verilog-align-ifelse nil)
+    '(verilog-auto-declare-nettype nil)
+    '(verilog-auto-indent-on-newline t)
+    '(verilog-indent-level 2)
+    '(verilog-indent-level-behavioral 2)
+    '(verilog-indent-level-declaration 2)
+    '(verilog-indent-level-directive 1)
+    '(verilog-indent-level-module 2)
+    '(verilog-indent-lists t)
+    )
+
+  ;; Custom VHDL settings
+  '(custom-set-variables
+    '(vhdl-array-index-record-field-in-sensitivity-list t)
+    '(vhdl-compiler "GHDL")
+    '(vhdl-default-library "work")
+    '(vhdl-hideshow-menu t)
+    '(vhdl-index-menu t) ; Build file index for imenu when opened
+    '(vhdl-intelligent-tab nil)
+    '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
+    '(vhdl-source-file-menu t) ; Add menu of all source files in current directory
+    '(vhdl-speedbar-auto-open nil)
+    '(vhdl-speedbar-display-mode (quote directory))
+    '(vhdl-stutter-mode t) ; Enable ".." -> "=>" and other shortcuts
+    '(vhdl-underscore-is-part-of-word t)
+    '(vhdl-use-direct-instantiation (quote standard)) ; Only use direct instantiation of VHDL standard allows it (from '93)
+    '(vhdl-company-name silicom-company-name)
+    '(vhdl-date-format "%Y-%m-%d")
+    '(vhdl-file-header
+      "-- *************************************************************************
 -- *
 -- * Copyright (c) 2008-2019, <company>
 -- * All rights reserved.
@@ -819,43 +863,32 @@ before packages are loaded."
 -------------------------------------------------------------------------------
 
 ")
-   '(vhdl-hideshow-menu t)
-   '(vhdl-indent-comment-like-next-code-line t)
-   '(vhdl-indent-syntax-based t)
-   '(vhdl-indent-tabs-mode nil)
-   '(vhdl-index-menu t)
-   '(vhdl-instance-name (quote (".*" . "i_\\&")))
-   '(vhdl-intelligent-tab nil)
-   '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
-   '(vhdl-source-file-menu t)
-   '(vhdl-speedbar-auto-open nil)
-   '(vhdl-speedbar-display-mode (quote directory))
-   '(vhdl-standard (quote (8 nil)))
-   '(vhdl-stutter-mode nil)
-   '(vhdl-underscore-is-part-of-word t)
-   '(vhdl-upper-case-attributes nil)
-   '(vhdl-upper-case-constants t)
-   '(vhdl-upper-case-enum-values t)
-   '(vhdl-upper-case-keywords nil)
-   '(vhdl-upper-case-types nil)
-   '(vhdl-use-direct-instantiation (quote standard)))
+    '(vhdl-align-groups t)
+    '(vhdl-align-same-indent t)
+    '(vhdl-auto-align t)
+    '(vhdl-basic-offset 3)
+    '(vhdl-beautify-options (quote (nil t t t t)))
+    ;; '(vhdl-comment-only-line-offset 0)
+    '(vhdl-electric-mode nil)
+    '(vhdl-end-comment-column 180)
+    '(vhdl-indent-comment-like-next-code-line t)
+    '(vhdl-indent-syntax-based t)
+    '(vhdl-indent-tabs-mode nil)
+    '(vhdl-instance-name (quote (".*" . "i_\\&")))
+    '(vhdl-upper-case-attributes nil)
+    '(vhdl-upper-case-constants t)
+    '(vhdl-upper-case-enum-values t)
+    '(vhdl-upper-case-keywords nil)
+    '(vhdl-upper-case-types nil)
+    )
 
-  ;; Silicom (System)Verilog options
-  '(custom-set-variables
-    '(verilog-align-ifelse nil)
-    '(verilog-auto-declare-nettype nil)
-    '(verilog-auto-delete-trailing-whitespace t)
-    '(verilog-auto-indent-on-newline t)
-    '(verilog-highlight-grouping-keywords nil)
-    '(verilog-highlight-modules nil)
-    '(verilog-highlight-p1800-keywords nil)
-    '(verilog-indent-level 2)
-    '(verilog-indent-level-behavioral 2)
-    '(verilog-indent-level-declaration 2)
-    '(verilog-indent-level-directive 1)
-    '(verilog-indent-level-module 2)
-    '(verilog-indent-lists t)
-    '(verilog-tab-always-indent t))
+  (use-package silicom-fw-common
+    :load-path "/home/chrbirks/github/dev_env/emacs/emacs_packages/"
+    :init (setq silicom-email "cbs@silicom.dk"
+                silicom-name "Christian Birk Sørensen")
+    :config (setq vhdl-standard (quote (8 nil))) ;; Change default VHDL standard from '93 to '08
+    )
+
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -872,12 +905,6 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(comment-style (quote indent))
  '(custom-buffer-indent 2)
- '(helm-gtags-auto-update nil)
- '(helm-gtags-direct-helm-completing t)
- '(helm-gtags-display-style (quote detail))
- '(helm-gtags-ignore-case t)
- '(helm-gtags-path-style (quote root))
- '(helm-gtags-pulse-at-cursor t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
@@ -885,8 +912,6 @@ This function is called at the very end of Spacemacs initialization."
     (toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-github-token t)
  '(standard-indent 2)
- '(user-full-name "Christian Birk Sørensen")
- '(user-mail-address "chrbirks+emacs@gmail.com")
  )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
