@@ -95,10 +95,10 @@
 -- Author     : <author>
 -- Company    : <company>
 -- Created    : <date>
--- Platform   : <platform>
+-- Platform   : <platform string>
 -- Standard   : <standard>
 -------------------------------------------------------------------------------
--- Description: <cursor>
+-- Description: <cursor>TODO
 -------------------------------------------------------------------------------
 
 ")
@@ -124,20 +124,69 @@
 ;; Verilog settings
 (setq verilog-company silicom-company-name)
 
-;; Define Verilog header
+(defun silicom-verilog-insert-date ()
+  "Insert date from the system."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+
+(defun silicom-verilog-insert-year ()
+  "Insert year from the system."
+  (interactive)
+  (insert (format-time-string "%Y")))
+
+;; ;; Define Verilog header
 (define-skeleton silicom--verilog-sk-header-tmpl
   "Insert a comment block containing the module title, author, etc."
   "[Description]: "
-  "//                              -*- Mode: Verilog -*-"
-  "\n// Filename        : " (buffer-name)
-  "\n// Description     : " str
-  "\n// FIXME          : " (user-full-name)
-  "\n// Created On      : " (current-time-string)
-  "\n// Last Modified By: " (user-full-name)
-  "\n// Last Modified On: " (current-time-string)
-  "\n// Update Count    : 0"
-  "\n// Status          : Unknown, Use with caution!"
-  "\n")
+  "/**************************************************************************"
+"\n *"
+"\n * Copyright (c) 2008-" (silicom-verilog-insert-year) ", " silicom-company-name
+"\n * All rights reserved."
+"\n *"
+"\n * Redistribution and use in source and binary forms, with or without"
+"\n * modification, are permitted provided that the following conditions are met:"
+"\n *"
+"\n * 1. Redistributions of source code must retain the above copyright notice,"
+"\n * this list of conditions and the following disclaimer."
+"\n *"
+"\n * 2. Redistributions in binary form must reproduce the above copyright"
+"\n * notice, this list of conditions and the following disclaimer in the"
+"\n * documentation and/or other materials provided with the distribution."
+"\n *"
+"\n * 3. Neither the name of the Silicom nor the names of its"
+"\n * contributors may be used to endorse or promote products derived from"
+"\n * this software without specific prior written permission."
+"\n *"
+"\n * 4. This software may only be redistributed and used in connection with a"
+"\n *  Silicom network adapter product."
+"\n *"
+"\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\""
+"\n * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE"
+"\n * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE"
+"\n * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE"
+"\n * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR"
+"\n * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF"
+"\n * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS"
+"\n * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN"
+"\n * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)"
+"\n * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE"
+"\n * POSSIBILITY OF SUCH DAMAGE."
+"\n *"
+"\n ***************************************************************************"
+"\n * -- Title      : " (setq string (read-string "Title: " verilog-project))
+"\n * -- Project    : " (setq string (read-string "Project: " verilog-project))
+"\n ***************************************************************************"
+"\n * -- File       : " (buffer-name)
+"\n * -- Author     : " silicom-name " <" silicom-email ">"
+"\n * -- Company    : " silicom-company-name
+"\n * -- Created    : " (silicom-verilog-insert-date)
+"\n * -- Platform   : " (setq string (read-string "Platform: " verilog-project))
+"\n * -- Standard   : " (setq string (read-string "Standard: " verilog-project))
+"\n ***************************************************************************"
+"\n * -- Description: TODO"
+"\n ***************************************************************************/"
+"\n"
+)
 
 ;; Override default Verilog header function verilog-sk-header
 (with-eval-after-load 'verilog-mode
