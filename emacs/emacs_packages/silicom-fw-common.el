@@ -21,6 +21,9 @@
 
 ;;; Commentary:
 
+;; Set Silicom coding standards such as indentation and header templates
+;; for VHDL and Verilog.
+
 ;;; Code:
 
 (defgroup silicom-fw-common nil
@@ -107,7 +110,6 @@
  '(vhdl-auto-align t)
  '(vhdl-basic-offset 3)
  '(vhdl-beautify-options (quote (nil t t t t)))
- ;; '(vhdl-comment-only-line-offset 0)
  '(vhdl-electric-mode nil)
  '(vhdl-end-comment-column 180)
  '(vhdl-indent-comment-like-next-code-line t)
@@ -134,7 +136,7 @@
   (interactive)
   (insert (format-time-string "%Y")))
 
-;; ;; Define Verilog header
+;; Define Verilog header
 (define-skeleton silicom--verilog-sk-header-tmpl
   "Insert a comment block containing the module title, author, etc."
   "[Description]: "
@@ -199,6 +201,7 @@ See also `verilog-header' for an alternative format."
       (silicom--verilog-sk-header-tmpl)))
   )
 
+;; Verilog settings
 '(custom-set-variables
   '(verilog-align-ifelse nil)
   '(verilog-auto-declare-nettype nil)
@@ -209,6 +212,9 @@ See also `verilog-header' for an alternative format."
   '(verilog-indent-level-directive 1)
   '(verilog-indent-level-module 2)
   '(verilog-indent-lists t))
+
+;; TCL settings
+(setq tcl-indent-level 3)
 
 (provide 'silicom-fw-common)
 ;;; silicom-fw-common.el ends here
