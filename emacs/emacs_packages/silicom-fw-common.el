@@ -51,11 +51,10 @@
  )
 
 ;; VHDL settings
-(custom-set-variables
- '(vhdl-company-name silicom-company-name)
- '(vhdl-date-format "%Y-%m-%d")
- '(vhdl-file-header
-   "-- *************************************************************************
+(setq vhdl-company-name silicom-company-name
+      vhdl-date-format "%Y-%m-%d"
+      vhdl-file-header
+      "-- *************************************************************************
 -- *
 -- * Copyright (c) 2008-2019, <company>
 -- * All rights reserved.
@@ -104,24 +103,24 @@
 -- Description: <cursor>TODO
 -------------------------------------------------------------------------------
 
-")
- '(vhdl-align-groups t)
- '(vhdl-align-same-indent t)
- '(vhdl-auto-align t)
- '(vhdl-basic-offset 3)
- '(vhdl-beautify-options (quote (nil t t t t)))
- '(vhdl-electric-mode nil)
- '(vhdl-end-comment-column 180)
- '(vhdl-indent-comment-like-next-code-line t)
- '(vhdl-indent-syntax-based t)
- '(vhdl-indent-tabs-mode nil)
- '(vhdl-instance-name (quote (".*" . "i_\\&")))
- '(vhdl-upper-case-attributes nil)
- '(vhdl-upper-case-constants t)
- '(vhdl-upper-case-enum-values t)
- '(vhdl-upper-case-keywords nil)
- '(vhdl-upper-case-types nil)
- )
+"
+      vhdl-align-groups t
+      vhdl-align-same-indent t
+      vhdl-auto-align t
+      vhdl-basic-offset 3
+      vhdl-beautify-options (quote (nil t t t t))
+      vhdl-electric-mode nil
+      vhdl-end-comment-column 180
+      vhdl-indent-comment-like-next-code-line t
+      vhdl-indent-syntax-based t
+      vhdl-indent-tabs-mode nil
+      vhdl-instance-name (quote (".*" . "i_\\&"))
+      vhdl-upper-case-attributes nil
+      vhdl-upper-case-constants t
+      vhdl-upper-case-enum-values t
+      vhdl-upper-case-keywords nil
+      vhdl-upper-case-types nil
+      )
 
 ;; Verilog settings
 (setq verilog-company silicom-company-name)
@@ -202,16 +201,18 @@ See also `verilog-header' for an alternative format."
   )
 
 ;; Verilog settings
-'(custom-set-variables
-  '(verilog-align-ifelse nil)
-  '(verilog-auto-declare-nettype nil)
-  '(verilog-auto-indent-on-newline t)
-  '(verilog-indent-level 2)
-  '(verilog-indent-level-behavioral 2)
-  '(verilog-indent-level-declaration 2)
-  '(verilog-indent-level-directive 1)
-  '(verilog-indent-level-module 2)
-  '(verilog-indent-lists t))
+(setq verilog-align-ifelse nil
+      verilog-auto-declare-nettype nil
+      verilog-auto-indent-on-newline t
+      verilog-case-indent 2
+      verilog-indent-level 2
+      verilog-indent-level-behavioral 2
+      verilog-indent-level-declaration 2
+      verilog-indent-level-directive 1
+      verilog-indent-level-module 2
+      verilog-indent-lists t
+      verilog-auto-lineup (quote all)
+      )
 
 ;; TCL settings
 (setq tcl-indent-level 3)
