@@ -695,7 +695,7 @@ before packages are loaded."
    '(helm-gtags-display-style (quote detail))
    '(helm-gtags-direct-helm-completing t)
    '(helm-gtags-ignore-case t)
-   '(helm-gtags-auto-update nil) ; do not update TAGS files when buffer is saved
+   '(helm-gtags-auto-update t) ; update TAGS files when buffer is saved
    '(helm-gtags-pulse-at-cursor t)
    )
   ;; Set helm-gtags key bindings
