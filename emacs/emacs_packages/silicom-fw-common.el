@@ -3,8 +3,8 @@
 ;; Copyright (C) 2019 Christian Birk Sørensen
 
 ;; Author: Christian Birk Sørensen <chrbirks+emacs@gmail.com>
-;; Created: 16 May 2019
-;; Keywords: languages, vhdl
+;; Created: 17 July 2019
+;; Keywords: languages, vhdl, verilog, tcl
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 ;;; Commentary:
 
 ;; Set Silicom coding standards such as indentation and header templates
-;; for VHDL and Verilog.
+;; for VHDL, Verilog and TCL.
 
 ;;; Code:
 
