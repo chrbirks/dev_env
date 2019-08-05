@@ -41,7 +41,7 @@ This function should only modify configuration layer settings."
      (auto-completion :variables
                       auto-completion-front-end 'company
                       auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'cycle
+                      auto-completion-tab-key-behavior 'complete
                       auto-completion-complete-with-key-sequence-delay 0.1
                       auto-completion-private-snippets-directory nil
                       auto-completion-enable-sort-by-usage t ;sort provided by the company package only and not auto-completion
@@ -55,6 +55,7 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
             ; Use ccls as LSP backend
             c-c++-backend 'lsp-ccls ; 'lsp-ccls or 'lsp-cquery
+            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-ccls"
             c-c++-lsp-executable "/usr/bin/ccls"
             ; Use cquery as LSP backend
             ;; c-c++-backend 'lsp-cquery
@@ -84,6 +85,7 @@ This function should only modify configuration layer settings."
      prettier
      (python :variables
              python-backend 'lsp) ;anaconda or lsp
+     rust
      shell-scripts
      spacemacs-layouts
      syntax-checking
@@ -108,10 +110,14 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(;vhdl-tools
+   dotspacemacs-additional-packages '(vhdl-tools ;; extended vhdl-mode
                                       ialign ;; visual align-regexp
                                       ;; deadgrip
                                       doom-themes
+                                      solaire-mode
+                                      posframe
+                                      hydra
+                                      major-mode-hydra
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -243,15 +249,10 @@ It should only modify the values of Spacemacs settings."
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(spacemacs-dark
+                         doom-tomorrow-night
                          doom-one
                          doom-city-lights
-                         doom-molokai
-                         doom-nord
-                         subatomic
-                         tangotango
-                         soft-charcoal
-                         apropospriate-dark
-                         spacemacs-light)
+                         doom-nord)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -312,7 +313,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil then the last auto saved layouts are resumed automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts nil
+   dotspacemacs-auto-resume-layouts t
 
    ;; If non-nil, auto-generate layout name when creating new layouts. Only has
    ;; effect when using the "jump to layout by number" commands. (default nil)
@@ -570,6 +571,13 @@ before packages are loaded."
     (recentf-auto-cleanup 30)
     :config
     (run-with-idle-timer 30 t 'recentf-save-list))
+  ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
+  (require 'midnight)
+  (midnight-mode t)
+  (midnight-delay-set 'midnight-delay 3600) ; run every hour
+  ;; Parameters for clean-buffer-list mode
+  (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
+        clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
 
   ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
   (setq avy-style 'words)
@@ -605,15 +613,6 @@ before packages are loaded."
                (not (let ((method (file-remote-p name 'method)))
                       (when (stringp method)
                         (member method '("su" "sudo"))))))))
-
-  ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
-  (require 'midnight)
-  (midnight-mode t)
-  (midnight-delay-set 'midnight-delay 3600) ; run every hour
-
-  ;; Parameters for clean-buffer-list mode
-  (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
-        clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
 
   ;; Project Management
   (require 'projectile)
@@ -675,6 +674,24 @@ before packages are loaded."
 
   ;; Enable global auto completion
   (global-company-mode t)
+  ;; TODO: Try with all possible backends and see which one suits vhdl-mode best
+  ;; ;company-backends: ((company-capf)
+  ;; ;                   company-bbdb company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
+  ;; ;                   (company-dabbrev-code company-gtags company-etags company-keywords)
+  ;; ;                   company-oddmuse company-dabbrev)
+  ;; (add-to-list 'company-backends '(company-capf :with company-gtags))
+  ;; (add-to-list 'company-backends 'company-capf)
+  ;; (add-to-list 'company-backends 'company-gtags)
+  ;; (add-to-list 'company-backends 'company-bbdb)
+
+  ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
+  (use-package solaire-mode
+    :hook
+    ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+    (minibuffer-setup . solaire-mode-in-minibuffer)
+    :config
+    (solaire-global-mode +1)
+    (solaire-mode-swap-bg))
 
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
@@ -698,18 +715,6 @@ before packages are loaded."
    '(helm-gtags-auto-update t) ; update TAGS files when buffer is saved
    '(helm-gtags-pulse-at-cursor t)
    )
-  ;; Set helm-gtags key bindings
-  (eval-after-load "helm-gtags"
-    '(progn
-       (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
-       (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
-       (define-key helm-gtags-mode-map (kbd "M-æ") 'helm-gtags-dwim) ; find definition
-       (define-key helm-gtags-mode-map (kbd "M-ø") 'helm-gtags-dwim-other-window) ; find definition and open in other window
-       (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
-       (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
-       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
-       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
   ;; Colorize tags (keywords) in helm-semantic-or-imenu
   (with-eval-after-load 'helm-semantic
@@ -717,14 +722,20 @@ before packages are loaded."
     (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style)
     (push '(vhdl-mode . semantic-format-tag-summarize) helm-semantic-display-style))
 
-  ;; ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
-  ;; (autoload 'vhdl-tools-mode "vhdl-tools")
-  ;; (autoload 'vhdl-tools-vorg-mode "vhdl-tools")
-  ;; ;; (require 'vhdl-tools)
-  ;; (setq vhdl-tools-use-outshine t)
-  ;; (require 'outshine)
-  ;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-  ;; (add-to-list 'company-begin-commands 'outshine-self-insert-command)
+  ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
+  (use-package vhdl-tools
+    :ensure t
+    :defer t
+    :config
+    (setq vhdl-tools-manage-folding t
+          vhdl-tools-verbose nil
+          vhdl-tools-use-outshine nil
+          vhdl-tools-vorg-tangle-comments-link t
+          vhdl-tools-recenter-nb-lines '(6)))
+  (use-package vhdl
+    :defer t
+    :hook (vhdl-mode . (lambda ()
+                         (vhdl-tools-mode 1))))
 
   ;; Set general parameters for lsp-mode
   ;; ;; Disable all lsp features except flycheck
@@ -758,6 +769,7 @@ before packages are loaded."
 
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
+  ;; Enable lsp for specific programming languages
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
@@ -806,7 +818,7 @@ before packages are loaded."
     '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
     '(vhdl-source-file-menu t) ; Add menu of all source files in current directory
     '(vhdl-speedbar-auto-open nil)
-    '(vhdl-speedbar-display-mode (quote directory))
+    '(vhdl-speedbar-display-mode (quote files))
     '(vhdl-stutter-mode t) ; Enable ".." -> "=>" and other shortcuts
     '(vhdl-underscore-is-part-of-word t)
     '(vhdl-use-direct-instantiation (quote standard)) ; Only use direct instantiation of VHDL standard allows it (from '93)
@@ -883,11 +895,25 @@ before packages are loaded."
     )
 
   (use-package silicom-fw-common
-    :load-path "/home/chrbirks/github/dev_env/emacs/emacs_packages/"
-    :init (setq silicom-email "cbs@silicom.dk"
+    :load-path "~/github/dev_env/emacs/emacs_packages/"
+    :init (setq silicom-email "chrbirks+emacs@gmail.com"
                 silicom-name "Christian Birk Sørensen")
     :config (setq vhdl-standard (quote (8 nil))) ;; Change default VHDL standard from '93 to '08
     )
+
+  ;; Set custom key bindings
+  ;; Set helm-gtags key bindings
+  (eval-after-load "helm-gtags"
+    '(progn
+       (define-key helm-gtags-mode-map (kbd "M-t") 'helm-gtags-find-tag) ; find definition
+       (define-key helm-gtags-mode-map (kbd "M-r") 'helm-gtags-find-rtag) ; find references
+       (define-key helm-gtags-mode-map (kbd "M-æ") 'helm-gtags-dwim) ; find definition
+       (define-key helm-gtags-mode-map (kbd "M-ø") 'helm-gtags-dwim-other-window) ; find definition and open in other window
+       (define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-find-symbol) ; find symbols
+       (define-key helm-gtags-mode-map (kbd "M-g M-p") 'helm-gtags-parse-file) ; list all tags in file
+       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
 )
 
@@ -903,16 +929,14 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(comment-style (quote indent))
+ '(comment-style 'indent)
  '(custom-buffer-indent 2)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   (quote
-    (toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+   '(toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))
  '(paradox-github-token t)
- '(standard-indent 2)
- )
+ '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

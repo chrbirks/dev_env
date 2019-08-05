@@ -559,3 +559,31 @@ The package `align-regexp` can be used for aligning the selected text. The packa
 | ... <kbd>u</kbd>`... u` | UVM Object block |
 | ... <kbd>U</kbd>`... U` | UVM Component block |
 | ... <kbd>S</kbd>`... S` | state machine |
+
+### VHDL major mode
+The normal `vhdl-mode` can be extended with `vhdl-tools` which gives better searching and navigation in VHDL files. Include and configure with the following:
+
+```
+dotspacemacs-additional-packages '(vhdl-tools)
+[...]
+;; Configure Vhdl-tools
+  (use-package vhdl-tools
+    :ensure t
+    :defer t
+    :config
+    (setq vhdl-tools-manage-folding t
+          vhdl-tools-verbose t
+          vhdl-tools-use-outshine nil
+          vhdl-tools-vorg-tangle-comments-link t
+          vhdl-tools-recenter-nb-lines '(4)))
+  (use-package vhdl
+    :defer t
+    :hook (vhdl-mode . (lambda ()
+                         (vhdl-tools-mode 1))))
+```
+
+| Shortcut | Description |
+| -------- | ----------- |
+| <kbd>C-c</kbd><kbd>M-D</kbd> | `vhdl-tools-goto-type-def` jumps to the definition of symbol at point |
+| <kbd>C-c</kbd><kbd>M-.</kbd> | `vhdl-tools-jump-into-module` jumps into the instance at point and move point |
+| <kbd>C-c</kbd><kbd>M-u</kbd> | `vhdl-tools-jump-upper` jumps to upper hierarchy level |
