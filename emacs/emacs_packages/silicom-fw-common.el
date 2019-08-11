@@ -108,7 +108,6 @@
       vhdl-align-same-indent t
       vhdl-auto-align t
       vhdl-basic-offset 3
-      vhdl-beautify-options (quote (nil t t t t))
       vhdl-electric-mode nil
       vhdl-end-comment-column 180
       vhdl-indent-comment-like-next-code-line t
