@@ -7,22 +7,19 @@ Libraries:
       paths:
         - "./**/*.vhd"
         - "./**/*.vhdl"
-        # - "vhdl/sha256core_top.vhd"
 
 
-    # # - name: hardware_lib2
-    #   paths:
-    #     - "hardware_lib2/**/*.vhd"
-    #     - "hardware_lib2/**/*.vhdl"
+    - name: std
+      paths:
+        - "./vhdl_libraries/**/*.vhd"
+        - "./vhdl_libraries/**/*.vhdl"
 
 
-    #Point to the IEEE standard libraries
     - name: ieee
       paths:
-        - "/home/chrbirks/tmp/ieee2008/**/*.vhd"
-        - "/home/chrbirks/tmp/ieee2008/**/*.vhdl"
-        - "/home/chrbirks/tmp/vhdl_libraries/**/*.vhd"
-        - "/home/chrbirks/tmp/vhdl_libraries/**/*.vhdl"
+        - "./ieee2008/**/*.vhd"
+        - "./ieee2008/**/*.vhdl"
+
 
 
 #Enable/disable typechecking
