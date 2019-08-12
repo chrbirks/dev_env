@@ -33,7 +33,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(;; ----------------------------------------------------------------
+   '(yaml
+     ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -149,10 +150,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
-   ;; File path pointing to emacs 27.1 executable compiled with support
-   ;; for the portable dumper (this is currently the branch pdumper).
-   ;; (default "emacs-27.0.50")
-   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+   ;; Name of executable file pointing to emacs 27+. This executable must be
+   ;; in your PATH.
+   ;; (default "emacs")
+   dotspacemacs-emacs-pdumper-executable-file "emacs"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
@@ -433,7 +434,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smartparens-strict-mode nil
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etc…
+   ;; over any automatically added closing parenthesis, bracket, quote, etc...
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis nil
 
@@ -774,9 +775,22 @@ before packages are loaded."
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
 
-  ;; Load package for LSP in vhdl-mode
+  ;; ;; Load package for LSP in vhdl-mode
   ;; (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
   ;; (load-file "~/github/dev_env/emacs/emacs_packages/lsp-vhdl.el")
+
+
+  ;; Start vhdl-tool LSP server
+  (add-hook 'vhdl-mode-hook #'lsp)
+  (add-to-list 'lsp-language-id-configuration '(vhdl-mode . "vhdl"))
+  (lsp-register-client
+   ;; (make-lsp-client :new-connection (lsp-stdio-connection '("~/tmp/vhdl-tool" "--config" "/home/chrbirks/github/dev_env/example_code/vhdl/vhdltool-config.yaml" "lsp"))
+   (make-lsp-client :new-connection (lsp-stdio-connection '("~/tmp/vhdl-tool" "lsp"))
+                    :major-modes '(vhdl-mode)
+                    :priority -1
+                    :language-id "VHDL"
+                    :server-id 'lsp-vhdl-mode))
+
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
@@ -784,115 +798,31 @@ before packages are loaded."
   ;; ;; Enable veri kompass minor mode mode
   ;; (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
 
-  '(custom-set-variables
-    '(user-full-name "Christian Birk Sørensen")
-    '(user-mail-address "chrbirks+emacs@gmail.com")
-    )
-
   ;; Custom Verilog settings
-  '(custom-set-variables
-    '(verilog-auto-delete-trailing-whitespace t)
-    '(verilog-highlight-grouping-keywords nil)
-    '(verilog-highlight-p1800-keywords t)
-    '(verilog-highlight-modules t)
-    '(verilog-tab-always-indent t)
-    '(verilog-align-ifelse nil)
-    '(verilog-auto-declare-nettype nil)
-    '(verilog-auto-indent-on-newline t)
-    '(verilog-indent-level 2)
-    '(verilog-indent-level-behavioral 2)
-    '(verilog-indent-level-declaration 2)
-    '(verilog-indent-level-directive 1)
-    '(verilog-indent-level-module 2)
-    '(verilog-indent-lists t)
-    )
+  (setq verilog-auto-delete-trailing-whitespace t
+        verilog-highlight-grouping-keywords nil
+        verilog-highlight-p1800-keywords t
+        verilog-highlight-modules t
+        verilog-tab-always-indent t
+        )
 
   ;; Custom VHDL settings
-  '(custom-set-variables
-    '(vhdl-array-index-record-field-in-sensitivity-list t)
-    '(vhdl-compiler "GHDL")
-    '(vhdl-default-library "work")
-    '(vhdl-hideshow-menu t)
-    '(vhdl-index-menu t) ; Build file index for imenu when opened
-    '(vhdl-intelligent-tab nil)
-    '(vhdl-makefile-default-targets (quote ("all" "clean" "library")))
-    '(vhdl-source-file-menu t) ; Add menu of all source files in current directory
-    '(vhdl-speedbar-auto-open nil)
-    '(vhdl-speedbar-display-mode (quote files))
-    '(vhdl-stutter-mode t) ; Enable ".." -> "=>" and other shortcuts
-    '(vhdl-underscore-is-part-of-word t)
-    '(vhdl-use-direct-instantiation (quote standard)) ; Only use direct instantiation of VHDL standard allows it (from '93)
-    '(vhdl-company-name silicom-company-name)
-    '(vhdl-date-format "%Y-%m-%d")
-    '(vhdl-file-header
-      "-- *************************************************************************
--- *
--- * Copyright (c) 2008-2019, <company>
--- * All rights reserved.
--- *
--- * Redistribution and use in source and binary forms, with or without
--- * modification, are permitted provided that the following conditions are met:
--- *
--- * 1. Redistributions of source code must retain the above copyright notice,
--- * this list of conditions and the following disclaimer.
--- *
--- * 2. Redistributions in binary form must reproduce the above copyright
--- * notice, this list of conditions and the following disclaimer in the
--- * documentation and/or other materials provided with the distribution.
--- *
--- * 3. Neither the name of the Silicom nor the names of its
--- * contributors may be used to endorse or promote products derived from
--- * this software without specific prior written permission.
--- *
--- * 4. This software may only be redistributed and used in connection with a
--- *  Silicom network adapter product.
--- *
--- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"
--- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
--- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
--- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
--- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
--- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
--- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
--- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
--- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
--- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
--- * POSSIBILITY OF SUCH DAMAGE.
--- *
--- ***************************************************************************
--------------------------------------------------------------------------------
--- Title      : <title string>
--- Project    : <project>
--------------------------------------------------------------------------------
--- File       : <filename>
--- Author     : <author>
--- Company    : <company>
--- Created    : <date>
--- Platform   : <platform>
--- Standard   : <standard>
--------------------------------------------------------------------------------
--- Description: <cursor>
--------------------------------------------------------------------------------
-
-")
-    '(vhdl-align-groups t)
-    '(vhdl-align-same-indent t)
-    '(vhdl-auto-align t)
-    '(vhdl-basic-offset 3)
-    '(vhdl-beautify-options (quote (nil t t t t)))
-    ;; '(vhdl-comment-only-line-offset 0)
-    '(vhdl-electric-mode nil)
-    '(vhdl-end-comment-column 180)
-    '(vhdl-indent-comment-like-next-code-line t)
-    '(vhdl-indent-syntax-based t)
-    '(vhdl-indent-tabs-mode nil)
-    '(vhdl-instance-name (quote (".*" . "i_\\&")))
-    '(vhdl-upper-case-attributes nil)
-    '(vhdl-upper-case-constants t)
-    '(vhdl-upper-case-enum-values t)
-    '(vhdl-upper-case-keywords nil)
-    '(vhdl-upper-case-types nil)
-    )
+  (setq vhdl-underscore-is-part-of-word t
+        vhdl-array-index-record-field-in-sensitivity-list t
+        vhdl-compiler "GHDL"
+        vhdl-default-library "work"
+        vhdl-hideshow-menu t
+        vhdl-index-menu t ; Build file index for imenu when opened
+        vhdl-intelligent-tab nil
+        vhdl-beautify-options (quote (nil t t t t)) ; whitespace cleanup, single state per line, indentation, alignment, case fixing TODO: move back into silicom-fw-common package
+        vhdl-makefile-default-targets (quote ("all" "clean" "library"))
+        vhdl-source-file-menu t ; Add menu of all source files in current directory
+        vhdl-speedbar-auto-open nil
+        vhdl-speedbar-display-mode (quote files)
+        vhdl-stutter-mode t ; Enable ".." -> "=>" and other shortcuts
+        vhdl-underscore-is-part-of-word t
+        vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
+        )
 
   (use-package silicom-fw-common
     :load-path "~/github/dev_env/emacs/emacs_packages/"
@@ -915,6 +845,58 @@ before packages are loaded."
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
+  ;; Set hydra for vhdl-mode
+  ;; TODO: Use posframe for hydra
+  ;; (use-package posframe)
+  ;; (use-package hydra
+  ;;   :config
+  ;;   (use-package hydra-posframe
+  ;;     :load-path "~/github/hydra-posframe"
+  ;;     :custom
+  ;;     (hydra-posframe-parameters
+  ;;      '((left-fringe . 5)
+  ;;        (right-fringe . 5)))
+  ;;     :custom-face
+  ;;     (hydra-posframe-border-face ((t (:background "#6272a4"))))
+  ;;     :hook (after-init . hydra-posframe-enable)))
+  (use-package major-mode-hydra
+    :ensure t
+    :bind ("C-å" . major-mode-hydra)
+    )
+  (major-mode-hydra-define vhdl-mode nil
+    ;; :color amaranth
+    ;; :title jp-toggles--title
+    ;; :quit-key "q"
+    ;; (:title "Clojure Mode" :color pink :separator "-")
+    ("Toggles"
+     (
+      ;; ("n" linum-mode "line number" :toggle t)
+      ("2" spacemacs/toggle-auto-completion "autocompletion" :toogle (default-value 'spacemacs/toggle-auto-completion))
+      ("1" vhdl-underscore-is-part-of-word "underscore subword" :toggle (default-value 'vhdl-underscore-is-part-of-word))
+      ;; ("r" spacemacs/toggle-relative-line-numbers "relative linum" :toggle (default-value 'spacemacs/toggle-relative-line-numbers))
+      ("d" toggle-debug-on-error "debug on error" :toggle (default-value 'debug-on-error))
+      ("3" ggtags-mode "ggtags-mode" :toggle (default-value 'ggtags-mode))
+      ;; TODO: ("4" auto-hscroll-mode "hscroll-mode" :toggle 'current-line/t)
+      )
+     "imenu"
+     (("i" imenu-list-smart-toggle "imenu" :toggle nil))
+     ;; "Test"
+     ;; (("t" ert "prompt")
+     ;;  ("T" (ert t) "all")
+     ;;  ("F" (ert :failed) "failed"))
+     "Ref"
+     (("a" helm-gtags-create-tags "create tags")
+      ("b" helm-gtags-update-tags "update tags")
+      ("c" helm-gtags-parse-file "parse file")
+      ("d" helm-gtags-dwim "find definition")
+      ("e" helm-gtags-dwim-other-window "find definition (other window)")
+      ("f" helm-gtags-find-tag "find tag")
+      ("g" helm-gtags-find-rtag "find rtag")
+      ("h" helm-gtags-find-symbol "find symbol"))
+     "Misc"
+     (("x" vhdl-beautify-buffer "format buffer")))
+    )
+
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -929,14 +911,22 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(comment-style 'indent)
+ '(comment-style (quote indent))
  '(custom-buffer-indent 2)
- '(indent-tabs-mode nil)
+ '(helm-gtags-auto-update t)
+ '(helm-gtags-direct-helm-completing t)
+ '(helm-gtags-display-style (quote detail))
+ '(helm-gtags-ignore-case t)
+ '(helm-gtags-path-style (quote root))
+ '(helm-gtags-pulse-at-cursor t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))
+   (quote
+    (yaml-mode toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(paradox-github-token t)
- '(standard-indent 2))
+ '(standard-indent 2)
+ '(user-full-name silicom-name)
+ '(user-mail-address silicom-email))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
