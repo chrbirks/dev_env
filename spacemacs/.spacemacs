@@ -41,7 +41,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      (auto-completion :variables
                       auto-completion-front-end 'company
-                      auto-completion-return-key-behavior 'complete
+                      auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-complete-with-key-sequence-delay 0.1
                       auto-completion-private-snippets-directory nil
@@ -77,8 +77,6 @@ This function should only modify configuration layer settings."
      (java :variables
            java-backend 'lsp)
      lsp ; Language Server Protocol
-     ;; (lsp :variables ; Language Server Protocol
-     ;;      c-c++-backend 'lsp-ccls)
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
@@ -620,7 +618,7 @@ before packages are loaded."
   (setq projectile-globally-ignored-files
         (append '("_info"
                   "_lib.qdb"
-                  "*.log"
+                  "*.backup.log"
                   "*.str"
                   "*.pyc"
                   "*.bak"
@@ -637,13 +635,19 @@ before packages are loaded."
                   "*.rtd"
                   "*.tar"
                   "*.qpg"
+                  "*.hg"
+                  "hg_info"
                   "syn_timing_report"
                   "fbupdate"
-                  "modelsim_compile.txt")
+                  "modelsim_compile.txt"
+                  "GRTAGS"
+                  "GTAGS"
+                  "GPATH")
                 projectile-globally-ignored-files)
         projectile-globally-ignored-directories
         (append '(".Xil"
-                  "work"))
+                  "work"
+                  "bit_file"))
         )
 
   ;; Cycle through windows
@@ -774,6 +778,7 @@ before packages are loaded."
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
+  (add-hook 'python-mode #'lsp)
 
   ;; ;; Load package for LSP in vhdl-mode
   ;; (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
@@ -807,8 +812,7 @@ before packages are loaded."
         )
 
   ;; Custom VHDL settings
-  (setq vhdl-underscore-is-part-of-word t
-        vhdl-array-index-record-field-in-sensitivity-list t
+  (setq vhdl-array-index-record-field-in-sensitivity-list t
         vhdl-compiler "GHDL"
         vhdl-default-library "work"
         vhdl-hideshow-menu t
