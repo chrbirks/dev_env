@@ -751,13 +751,16 @@ before packages are loaded."
   ;;       lsp-enable-symbol-highlighting nil
   ;;       lsp-ui-flycheck-enable t)
   ;; Enable all lsp features except symbol highlighting
-  (setq lsp-ui-doc-enable t
+  (setq ; Show info from cursor
+        lsp-ui-doc-enable nil
         lsp-ui-doc-include-signature t
-        lsp-ui-doc-use-childframe nil ;TODO 17-05-2019: box is not placed correctly when t
+        lsp-ui-doc-use-childframe t ;TODO 17-05-2019: box is not placed correctly when t
+        lsp-enable-symbol-highlighting nil
+        ; Show info from whole line
         lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
-        lsp-enable-symbol-highlighting nil
-        ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-menu which works
+        ; Other options
+        ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         lsp-ui-flycheck-enable t
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
@@ -769,7 +772,7 @@ before packages are loaded."
         lsp-enable-on-type-formatting t
         lsp-enable-file-watchers t
         lsp-enable-xref t
-        lsp-print-io nil ;FIXME: log all messages to *lsp-log* for debugging
+        lsp-print-io nil ; log all messages to *lsp-log* for debugging
         )
 
   ;; Enable lsp for all programming languages
