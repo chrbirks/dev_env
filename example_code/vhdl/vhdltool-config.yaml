@@ -5,21 +5,91 @@ Libraries:
     - name: work
     #The paths where the source files for this library can be found. Use "**" to match arbitrarily nested directories.
       paths:
-        - "./**/*.vhd"
-        - "./**/*.vhdl"
+        - "./src/**/*.vhd"
+        - "./src/**/*.vhdl"
 
 
     - name: std
       paths:
-        - "./vhdl_libraries/**/*.vhd"
-        - "./vhdl_libraries/**/*.vhdl"
+        - "./lib/vhdl_libraries/**/*.vhd"
+        - "./lib/vhdl_libraries/**/*.vhdl"
 
 
     - name: ieee
       paths:
-        - "./ieee2008/**/*.vhd"
-        - "./ieee2008/**/*.vhdl"
+        - "./lib/ieee2008/**/*.vhd"
+        - "./lib/ieee2008/**/*.vhdl"
 
+
+    - name: bitvis_irqc
+      paths:
+        - "./lib/UVVM/bitvis_irqc/src/*.vhd"
+        - "./lib/UVVM/bitvis_irqc/src/*.vhdl"
+
+    - name: bitvis_uart
+      paths:
+        - "./lib/UVVM/bitvis_uart/src/*.vhd"
+        - "./lib/UVVM/bitvis_uart/src/*.vhdl"
+
+    - name: bitvis_vip_avalon_mm
+      paths:
+        - "./lib/UVVM/bitvis_vip_avalon_mm/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_avalon_mm/src/*.vhdl"
+
+    - name: bitvis_vip_axilite
+      paths:
+        - "./lib/UVVM/bitvis_vip_axilite/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_axilite/src/*.vhdl"
+
+    - name: bitvis_vip_axistream
+      paths:
+        - "./lib/UVVM/bitvis_vip_axistream/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_axistream/src/*.vhdl"
+
+    - name: bitvis_vip_clock_generator
+      paths:
+        - "./lib/UVVM/bitvis_vip_clock_generator/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_clock_generator/src/*.vhdl"
+
+    - name: bitvis_vip_gpio
+      paths:
+        - "./lib/UVVM/bitvis_vip_gpio/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_gpio/src/*.vhdl"
+
+    - name: bitvis_vip_i2c
+      paths:
+        - "./lib/UVVM/bitvis_vip_i2c/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_i2c/src/*.vhdl"
+
+    - name: bitvis_vip_sbi
+      paths:
+        - "./lib/UVVM/bitvis_vip_sbi/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_sbi/src/*.vhdl"
+
+    - name: bitvis_vip_scoreboard
+      paths:
+        - "./lib/UVVM/bitvis_vip_scoreboard/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_scoreboard/src/*.vhdl"
+
+    - name: bitvis_vip_spi
+      paths:
+        - "./lib/UVVM/bitvis_vip_spi/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_spi/src/*.vhdl"
+
+    - name: bitvis_vip_uart
+      paths:
+        - "./lib/UVVM/bitvis_vip_uart/src/*.vhd"
+        - "./lib/UVVM/bitvis_vip_uart/src/*.vhdl"
+
+    - name: uvvm_util
+      paths:
+        - "./lib/UVVM/uvvm_util/src/*.vhd"
+        - "./lib/UVVM/uvvm_util/src/*.vhdl"
+
+    - name: uvvm_vvc_framework
+      paths:
+        - "./lib/UVVM/uvvm_vvc_framework/src/*.vhd"
+        - "./lib/UVVM/uvvm_vvc_framework/src/*.vhdl"
 
 
 #Enable/disable typechecking
