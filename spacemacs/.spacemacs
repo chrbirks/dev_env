@@ -26,7 +26,6 @@ This function should only modify configuration layer settings."
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
 
-   ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
@@ -185,14 +184,14 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
-   ;; (default nil)
-   dotspacemacs-verify-spacelpa-archives nil
+   ;; (default t)
+   dotspacemacs-verify-spacelpa-archives t
 
    ;; If non-nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
    ;; new versions works via git commands, thus it calls GitHub services
    ;; whenever you start Emacs. (default nil)
-   dotspacemacs-check-for-update t
+   dotspacemacs-check-for-update nil
 
    ;; If non-nil, a form that evaluates to a package directory. For example, to
    ;; use different package directories for different Emacs versions, set this
@@ -206,9 +205,6 @@ It should only modify the values of Spacemacs settings."
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
    dotspacemacs-editing-style 'hybrid
-
-   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -677,6 +673,10 @@ before packages are loaded."
       (select-window (active-minibuffer-window))))
   (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
 
+  ;; Use vterm terminal from https://github.com/akermu/emacs-libvterm
+  (add-to-list 'load-path "~/github/emacs-libvterm")
+  (require 'vterm)
+
   ;; Enable global auto completion
   (global-company-mode t)
   ;; TODO: Try with all possible backends and see which one suits vhdl-mode best
@@ -752,15 +752,17 @@ before packages are loaded."
   ;;       lsp-ui-flycheck-enable t)
   ;; Enable all lsp features except symbol highlighting
   (setq ; Show info from cursor
-        lsp-ui-doc-enable nil
+        lsp-ui-doc-enable t
         lsp-ui-doc-include-signature t
         lsp-ui-doc-use-childframe t ;TODO 17-05-2019: box is not placed correctly when t
         lsp-enable-symbol-highlighting nil
         ; Show info from whole line
-        lsp-ui-sideline-enable t
+        lsp-ui-sideline-enable nil
         lsp-ui-sideline-show-symbol t
         ; Other options
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
+        lsp-ui-peek-enable t
+        lsp-ui-peek-always-show nil
         lsp-ui-flycheck-enable t
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
@@ -830,6 +832,40 @@ before packages are loaded."
         vhdl-underscore-is-part-of-word t
         vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
         )
+  ;; Override vhdl-add-source-files-menu from vhdl-mode.el with identical function without print to *Messages*
+  (defun local--vhdl-add-source-files-menu ()
+    "Scan directory for all VHDL source files and generate menu.
+The directory of the current source file is scanned."
+    (interactive)
+    ;; (message "Scanning directory for source files ...") ;; Original message
+    (let ((newmap (current-local-map))
+          (file-list (vhdl-get-source-files))
+          menu-list found)
+      ;; Create list for menu
+      (setq found nil)
+      (while file-list
+        (setq found t)
+        (push (vector (car file-list) (list 'find-file (car file-list)) t)
+              menu-list)
+        (setq file-list (cdr file-list)))
+      (setq menu-list (vhdl-menu-split menu-list "Sources"))
+      (when found (push "--" menu-list))
+      (push ["*Rescan*" vhdl-add-source-files-menu t] menu-list)
+      (push "Sources" menu-list)
+      ;; Create menu
+      (easy-menu-add menu-list)
+      (easy-menu-define vhdl-sources-menu newmap
+        "VHDL source files menu" menu-list))
+    (message ""))
+  (with-eval-after-load 'vhdl-mode
+    (defun vhdl-add-source-files-menu ()
+      "Scan directory for all VHDL source files and generate menu.
+The directory of the current source file is scanned."
+      (interactive "*")
+      (save-excursion
+        (local--vhdl-add-source-files-menu)))
+    )
+
 
   (use-package silicom-fw-common
     :load-path "~/github/dev_env/emacs/emacs_packages/"
@@ -853,55 +889,60 @@ before packages are loaded."
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
   ;; Set hydra for vhdl-mode
-  ;; TODO: Use posframe for hydra
-  ;; (use-package posframe)
-  ;; (use-package hydra
-  ;;   :config
-  ;;   (use-package hydra-posframe
-  ;;     :load-path "~/github/hydra-posframe"
-  ;;     :custom
-  ;;     (hydra-posframe-parameters
-  ;;      '((left-fringe . 5)
-  ;;        (right-fringe . 5)))
-  ;;     :custom-face
-  ;;     (hydra-posframe-border-face ((t (:background "#6272a4"))))
-  ;;     :hook (after-init . hydra-posframe-enable)))
   (use-package major-mode-hydra
     :ensure t
-    :bind ("C-å" . major-mode-hydra)
-    )
-  (major-mode-hydra-define vhdl-mode nil
-    ;; :color amaranth
-    ;; :title jp-toggles--title
-    ;; :quit-key "q"
-    ;; (:title "Clojure Mode" :color pink :separator "-")
-    ("Toggles"
-     (
-      ;; ("n" linum-mode "line number" :toggle t)
-      ("2" spacemacs/toggle-auto-completion "autocompletion" :toogle (default-value 'spacemacs/toggle-auto-completion))
-      ("1" vhdl-underscore-is-part-of-word "underscore subword" :toggle (default-value 'vhdl-underscore-is-part-of-word))
-      ;; ("r" spacemacs/toggle-relative-line-numbers "relative linum" :toggle (default-value 'spacemacs/toggle-relative-line-numbers))
-      ("d" toggle-debug-on-error "debug on error" :toggle (default-value 'debug-on-error))
-      ("3" ggtags-mode "ggtags-mode" :toggle (default-value 'ggtags-mode))
-      ;; TODO: ("4" auto-hscroll-mode "hscroll-mode" :toggle 'current-line/t)
+    :bind ("C-å" . major-mode-hydra))
+  (major-mode-hydra-define vhdl-mode (
+    :color teal
+    :separator "─"
+    :foreign-keys warn
+    :quit-key "q")
+    ("Menus"
+     (("C-i" imenu-list-smart-toggle "imenu" :toggle (default-value nil))
+      ("C-I" lsp-ui-imenu "lsp-ui-imenu")
+      ;; ("p" helm-imenu "helm-imenu")
       )
-     "imenu"
-     (("i" imenu-list-smart-toggle "imenu" :toggle nil))
-     ;; "Test"
+     ;; "DeleteMe"
      ;; (("t" ert "prompt")
      ;;  ("T" (ert t) "all")
      ;;  ("F" (ert :failed) "failed"))
-     "Ref"
-     (("a" helm-gtags-create-tags "create tags")
-      ("b" helm-gtags-update-tags "update tags")
-      ("c" helm-gtags-parse-file "parse file")
-      ("d" helm-gtags-dwim "find definition")
-      ("e" helm-gtags-dwim-other-window "find definition (other window)")
-      ("f" helm-gtags-find-tag "find tag")
-      ("g" helm-gtags-find-rtag "find rtag")
-      ("h" helm-gtags-find-symbol "find symbol"))
+     "LSP"
+     (
+      ("g" lsp-ui-doc-mode "lsp-ui-doc-mode" :toggle (default-value 'lsp-ui-doc-mode))
+      ("3" lsp-ui-sideline-mode "lsp-ui-sideline-mode" :toggle (default-value 'lsp-ui-sideline-mode))
+      ("d" lsp-ui-peek-find-definitions "lsp-ui-peek-find-def")
+      ("r" lsp-ui-peek-find-references "lsp-ui-peek-find-ref")
+      ("i" lsp-ui-peek-find-implementation "lsp-ui-peek-find-impl")
+      ("k" lsp-describe-thing-at-point "lsp-describe-thing-at-point")
+      ;; ("l" lsp-execute-code-action "Execute code action")
+      ("m" lsp-rename "lsp-rename")
+      ("n" lsp-goto-type-definition "lsp-goto-type-def")
+      ("o" lsp-goto-implementation "lsp-goto-impl")
+      ("C-q" lsp-describe-session "lsp-describe-session"))
+     "xref"
+     (("r" xref-find-definitions "xref-find-def")
+      ("s" xref-find-definitions-other-window "xref-find-def-otherwin")
+      ("t" xref-find-references "xref-find-ref"))
+     "GTAGS"
+     (("d" ggtags-mode "ggtags-mode" :toggle (default-value 'ggtags-mode))
+      ("u" helm-gtags-create-tags "helm-gtags-create-tags")
+      ("v" helm-gtags-update-tags "helm-gtags-update-tags")
+      ("w" helm-gtags-parse-file "helm-gtags-parse-file")
+      ("x" helm-gtags-dwim "helm-gtags-dwim")
+      ("y" helm-gtags-dwim-other-window "helm-gtags-dwim-otherwin")
+      ("z" helm-gtags-find-tag "helm-gtags-find-tag")
+      ("a" helm-gtags-find-rtag "helm-gtags-find-rtag")
+      ("b" helm-gtags-find-symbol "helm-gtags-find-symbol"))
      "Misc"
-     (("x" vhdl-beautify-buffer "format buffer")))
+     (
+      ;; ("a" spacemacs/toggle-auto-completion "toggle-auto-completion" :color green :exit nil :toogle (default-value 'spacemacs/toggle-auto-completion))
+      ("2" spacemacs/toggle-auto-completion "toggle-auto-completion" :exit nil :toogle (default-value t))
+      ("1" spacemacs/toggle-syntax-checking "toggle-syntax-checking" :exit nil :toogle (default-value 'spacemacs/toggle-syntax-checking-status))
+      ;; ("c" toggle-debug-on-error "debug-on-error " :color yellow :exit nil :toggle (default-value 'debug-on-error))
+      ("c" toggle-debug-on-error "debug-on-error " :exit nil :toggle (default-value 'debug-on-error))
+      ("C-c" vhdl-beautify-buffer "vhdl-beautify-buffer")
+      ;; ("q" nil "quit")
+      ))
     )
 
 )
