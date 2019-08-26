@@ -33,8 +33,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(yaml
-     ;; ----------------------------------------------------------------
+   '(;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -83,7 +82,9 @@ This function should only modify configuration layer settings."
      org
      prettier
      (python :variables
-             python-backend 'lsp) ;anaconda or lsp
+             python-backend 'anaconda     ; anaconda or lsp
+             ;; python-lsp-server 'pyls ; pyls (default) or mspyls. See http://develop.spacemacs.org/layers/+lang/python/README.html for installation.
+             )
      rust
      shell-scripts
      spacemacs-layouts
@@ -100,6 +101,7 @@ This function should only modify configuration layer settings."
             shell-default-height 30
             shell-default-position 'bottom)
      ;; spell-checking
+     yaml
      )
 
    ;; List of additional packages that will be installed without being
@@ -111,7 +113,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(vhdl-tools ;; extended vhdl-mode
                                       ialign ;; visual align-regexp
-                                      ;; deadgrip
                                       doom-themes
                                       solaire-mode
                                       posframe
@@ -531,7 +532,7 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (setq-default
-   ;; debug-on-error t
+   debug-on-error nil
 
    ;; Do not wrap lines
    truncate-lines t
@@ -616,6 +617,8 @@ before packages are loaded."
   ;; Project Management
   (require 'projectile)
   (setq projectile-globally-ignored-files
+        ;; TODO: Move HDL/Vivado reletated files into separate VHDL/Verilog file
+        ;; FIXME: It still search through *.hg files and others
         (append '("_info"
                   "_lib.qdb"
                   "*.backup.log"
@@ -647,6 +650,7 @@ before packages are loaded."
         projectile-globally-ignored-directories
         (append '(".Xil"
                   "work"
+                  "obj"
                   "bit_file"))
         )
 
@@ -752,7 +756,7 @@ before packages are loaded."
   ;;       lsp-ui-flycheck-enable t)
   ;; Enable all lsp features except symbol highlighting
   (setq ; Show info from cursor
-        lsp-ui-doc-enable nil
+        lsp-ui-doc-enable t
         lsp-ui-doc-include-signature t
         lsp-ui-doc-use-childframe t ;TODO 17-05-2019: box is not placed correctly when t
         lsp-enable-symbol-highlighting nil
@@ -821,7 +825,6 @@ before packages are loaded."
         vhdl-hideshow-menu t
         vhdl-index-menu t ; Build file index for imenu when opened
         vhdl-intelligent-tab nil
-        vhdl-beautify-options (quote (nil t t t t)) ; whitespace cleanup, single state per line, indentation, alignment, case fixing TODO: move back into silicom-fw-common package
         vhdl-makefile-default-targets (quote ("all" "clean" "library"))
         vhdl-source-file-menu t ; Add menu of all source files in current directory
         vhdl-speedbar-auto-open nil
@@ -839,6 +842,7 @@ before packages are loaded."
     )
 
   ;; Set custom key bindings
+  ;; TODO: Set shortcuts for lsp-ui-doc/sideline mode etc.
   ;; Set helm-gtags key bindings
   (eval-after-load "helm-gtags"
     '(progn
