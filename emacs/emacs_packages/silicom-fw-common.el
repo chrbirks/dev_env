@@ -107,7 +107,7 @@
       vhdl-basic-offset 3
       vhdl-beautify-options (quote (nil t t t t)) ; whitespace cleanup, single state per line, indentation, alignment, case fixing TODO: move back into silicom-fw-common package
       vhdl-electric-mode nil
-      vhdl-end-comment-column 120
+      vhdl-end-comment-column 80
       vhdl-indent-comment-like-next-code-line t
       vhdl-indent-syntax-based t
       vhdl-indent-tabs-mode nil
