@@ -731,20 +731,20 @@ before packages are loaded."
     (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style)
     (push '(vhdl-mode . semantic-format-tag-summarize) helm-semantic-display-style))
 
-  ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
-  (use-package vhdl-tools
-    :ensure t
-    :defer t
-    :config
-    (setq vhdl-tools-manage-folding t
-          vhdl-tools-verbose nil
-          vhdl-tools-use-outshine nil
-          vhdl-tools-vorg-tangle-comments-link t
-          vhdl-tools-recenter-nb-lines '(6)))
-  (use-package vhdl
-    :defer t
-    :hook (vhdl-mode . (lambda ()
-                         (vhdl-tools-mode 1))))
+  ;; ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
+  ;; (use-package vhdl-tools
+  ;;   :ensure t
+  ;;   :defer t
+  ;;   :config
+  ;;   (setq vhdl-tools-manage-folding t
+  ;;         vhdl-tools-verbose nil
+  ;;         vhdl-tools-use-outshine nil
+  ;;         vhdl-tools-vorg-tangle-comments-link t
+  ;;         vhdl-tools-recenter-nb-lines '(6)))
+  ;; (use-package vhdl
+  ;;   :defer t
+  ;;   :hook (vhdl-mode . (lambda ()
+  ;;                        (vhdl-tools-mode 1))))
 
   ;; Set general parameters for lsp-mode
   ;; ;; Disable all lsp features except flycheck
@@ -893,6 +893,7 @@ The directory of the current source file is scanned."
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
   ;; Set hydra for vhdl-mode
+  ;; TODO: add shortcuts for lsp-format-buffer, lsp-ui-peek-find...
   (use-package major-mode-hydra
     :ensure t
     :bind ("C-å" . major-mode-hydra))
@@ -958,32 +959,7 @@ The directory of the current source file is scanned."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(comment-style (quote indent))
- '(custom-buffer-indent 2)
- '(helm-gtags-auto-update t)
- '(helm-gtags-direct-helm-completing t)
- '(helm-gtags-display-style (quote detail))
- '(helm-gtags-ignore-case t)
- '(helm-gtags-path-style (quote root))
- '(helm-gtags-pulse-at-cursor t)
- '(inhibit-startup-screen t)
- '(package-selected-packages
-   (quote
-    (yaml-mode toml-mode racer flycheck-rust counsel-gtags cargo rust-mode realgud test-simple loc-changes load-relative company-plsense git-gutter-fringe+ git-gutter+ git-commit insert-shebang fish-mode disaster csv-mode cmake-mode clang-format yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic fringe-helper with-editor flycheck-pos-tip pos-tip flycheck diff-hl helm-projectile helm-make projectile pkg-info epl ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-mode-manager helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bracketed-paste auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
- '(paradox-github-token t)
- '(standard-indent 2)
- '(user-full-name silicom-name)
- '(user-mail-address silicom-email))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+  ;; This is an extra to avoid having init.el polluted by M-x customize
+  (setq custom-file "~/custom.el")
+  (load custom-file)
 )
