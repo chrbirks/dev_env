@@ -799,8 +799,8 @@ before packages are loaded."
   (add-hook 'vhdl-mode-hook #'lsp)
   (add-to-list 'lsp-language-id-configuration '(vhdl-mode . "vhdl"))
   (lsp-register-client
-   ;; (make-lsp-client :new-connection (lsp-stdio-connection '("~/tmp/vhdl-tool" "--config" "/home/chrbirks/github/dev_env/example_code/vhdl/vhdltool-config.yaml" "lsp"))
-   (make-lsp-client :new-connection (lsp-stdio-connection '("~/tmp/vhdl-tool" "lsp"))
+   ;; (make-lsp-client :new-connection (lsp-stdio-connection '("~/github/dev_env/emacs/vhdl-tool" "--config" "~/projects/train/train/src/vhdltool-config.yaml" "lsp"))
+   (make-lsp-client :new-connection (lsp-stdio-connection '("~/github/dev_env/emacs/vhdl-tool" "lsp"))
                     :major-modes '(vhdl-mode)
                     :priority -1
                     :language-id "VHDL"
