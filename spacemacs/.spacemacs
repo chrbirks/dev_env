@@ -615,7 +615,7 @@ before packages are loaded."
   (require 'projectile)
   (setq projectile-globally-ignored-files
         ;; TODO: Move HDL/Vivado reletated files into separate VHDL/Verilog file
-        ;; FIXME: It still search through *.hg files and others
+        ;; FIXME 03-09-2019: List does not get passed to rg. Place ignore patterns in .ignore in project root.
         (append '("_info"
                   "_lib.qdb"
                   "*.backup.log"
