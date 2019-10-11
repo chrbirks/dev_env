@@ -75,7 +75,9 @@ This function should only modify configuration layer settings."
      imenu-list
      (java :variables
            java-backend 'lsp)
-     lsp ; Language Server Protocol
+     ;; lsp
+     (lsp :variables
+          lsp-vhdl-server-path "/home/chrbirks/github/dev_env/emacs/vhdl-tool")
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
@@ -368,7 +370,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup t
+   dotspacemacs-maximized-at-startup nil
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
@@ -780,23 +782,7 @@ before packages are loaded."
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
-
-  ;; ;; Load package for LSP in vhdl-mode
-  ;; (setq lsp-vhdl-server-install-dir "~/github/rust_hdl")
-  ;; (load-file "~/github/dev_env/emacs/emacs_packages/lsp-vhdl.el")
-
-
-  ;; Start vhdl-tool LSP server
   (add-hook 'vhdl-mode-hook #'lsp)
-  (add-to-list 'lsp-language-id-configuration '(vhdl-mode . "vhdl"))
-  (lsp-register-client
-   ;; (make-lsp-client :new-connection (lsp-stdio-connection '("~/github/dev_env/emacs/vhdl-tool" "--config" "~/projects/train/train/src/vhdltool-config.yaml" "lsp"))
-   (make-lsp-client :new-connection (lsp-stdio-connection '("~/github/dev_env/emacs/vhdl-tool" "lsp"))
-                    :major-modes '(vhdl-mode)
-                    :priority -1
-                    :language-id "VHDL"
-                    :server-id 'lsp-vhdl-mode))
-
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
