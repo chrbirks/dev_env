@@ -684,15 +684,6 @@ before packages are loaded."
 
   ;; Enable global auto completion
   (global-company-mode t)
-  ;; TODO: Try with all possible backends and see which one suits vhdl-mode best
-  ;; ;company-backends: ((company-capf)
-  ;; ;                   company-bbdb company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
-  ;; ;                   (company-dabbrev-code company-gtags company-etags company-keywords)
-  ;; ;                   company-oddmuse company-dabbrev)
-  ;; (add-to-list 'company-backends '(company-capf :with company-gtags))
-  ;; (add-to-list 'company-backends 'company-capf)
-  ;; (add-to-list 'company-backends 'company-gtags)
-  ;; (add-to-list 'company-backends 'company-bbdb)
 
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
   (use-package solaire-mode
