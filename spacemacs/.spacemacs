@@ -51,18 +51,18 @@ This function should only modify configuration layer settings."
                       org
                       git)
      asm
-     ;; better-defaults
      (c-c++ :variables
             ; Use ccls as LSP backend
-            c-c++-backend 'lsp-ccls ; 'lsp-ccls or 'lsp-cquery
-            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-ccls"
-            c-c++-lsp-executable "/usr/bin/ccls"
+            c-c++-backend 'lsp ; 'lsp-ccls or 'lsp-cquery
+            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-c-cpp"
+            ;; c-c++-lsp-executable "/usr/bin/ccls"
             ; Use cquery as LSP backend
             ;; c-c++-backend 'lsp-cquery
+            ;; c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-cquery"
             ;; c-c++-lsp-executable "/usr/bin/cquery"
             ; Others
             c-c++-adopt-subprojects t
-            ;; c-c++-enable-clang-support t ;; auto-completion of function calls etc. (ignored when using lsp backend)
+            c-c++-enable-clang-support t ;; auto-completion of function calls etc. (ignored when using lsp backend)
             c-c++-enable-rtags-completion t) ;; usefull for anything?
      csv
      dap ; optional requirement for lsp-ccls
@@ -75,9 +75,7 @@ This function should only modify configuration layer settings."
      imenu-list
      (java :variables
            java-backend 'lsp)
-     ;; lsp
-     (lsp :variables
-          lsp-vhdl-server-path "/home/chrbirks/github/dev_env/emacs/vhdl-tool")
+     lsp
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
      multiple-cursors
@@ -102,7 +100,6 @@ This function should only modify configuration layer settings."
      (shell :variables
             shell-default-height 30
             shell-default-position 'bottom)
-     ;; spell-checking
      yaml
      )
 
@@ -741,6 +738,15 @@ before packages are loaded."
   ;;                        (vhdl-tools-mode 1))))
 
   ;; Set general parameters for lsp-mode
+  (setq lsp-enable-file-watchers t
+        lsp-file-watch-threshold 2000)
+  ;; (custom-set-faces
+  ;;  '(lsp-ui-doc-background ((t (:background "magenta" :foreground "yellow"))))
+  ;;  '(lsp-ui-doc-header ((t (:background "deep sky blue" :foreground "red"))))
+  ;;  )
+  ;; Expression for getting lsp files from server
+  ; (lsp--directory-files-recursively "<Path of your project>" ".*" t)
+
   ;; ;; Disable all lsp features except flycheck
   ;; (setq lsp-ui-doc-enable nil
   ;;       lsp-ui-peek-enable nil
@@ -751,20 +757,30 @@ before packages are loaded."
   ;; Enable all lsp features except symbol highlighting
   (setq ; Show info from cursor
         lsp-ui-doc-enable t
+        lsp-ui-doc-header nil
         lsp-ui-doc-include-signature t
+        lsp-ui-doc-position 'top;'at-position
+        lsp-ui-doc-alignment 'window ; 'frame or 'window
         lsp-ui-doc-use-childframe t ;TODO 17-05-2019: box is not placed correctly when t
-        lsp-enable-symbol-highlighting nil
+        lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
+        lsp-enable-symbol-highlighting t
         ; Show info from whole line
-        lsp-ui-sideline-enable nil
+        lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
+        lsp-ui-sideline-ignore-duplicate t
+        lsp-ui-sideline-show-code-actions t
         ; Other options
+        lsp-eldoc-enable-hover t
+        lsp-eldoc-render-all t
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         lsp-ui-peek-enable t
         lsp-ui-peek-always-show nil
         lsp-ui-flycheck-enable t
+        lsp-ui-flycheck-list-position 'bottom
+        lsp-ui-flycheck-live-reporting t
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
-        lsp-auto-guess-root t
+        ;; lsp-auto-guess-root t
         lsp-lens-mode t
         lsp-enable-completion-at-point t
         lsp-enable-indentation t
@@ -783,6 +799,9 @@ before packages are loaded."
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
   (add-hook 'vhdl-mode-hook #'lsp)
+
+  ;; Set path to vhdl-tool LSP server
+  (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
@@ -813,40 +832,6 @@ before packages are loaded."
         vhdl-underscore-is-part-of-word t
         vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
         )
-  ;; Override vhdl-add-source-files-menu from vhdl-mode.el with identical function without print to *Messages*
-  (defun local--vhdl-add-source-files-menu ()
-    "Scan directory for all VHDL source files and generate menu.
-The directory of the current source file is scanned."
-    (interactive)
-    ;; (message "Scanning directory for source files ...") ;; Original message
-    (let ((newmap (current-local-map))
-          (file-list (vhdl-get-source-files))
-          menu-list found)
-      ;; Create list for menu
-      (setq found nil)
-      (while file-list
-        (setq found t)
-        (push (vector (car file-list) (list 'find-file (car file-list)) t)
-              menu-list)
-        (setq file-list (cdr file-list)))
-      (setq menu-list (vhdl-menu-split menu-list "Sources"))
-      (when found (push "--" menu-list))
-      (push ["*Rescan*" vhdl-add-source-files-menu t] menu-list)
-      (push "Sources" menu-list)
-      ;; Create menu
-      (easy-menu-add menu-list)
-      (easy-menu-define vhdl-sources-menu newmap
-        "VHDL source files menu" menu-list))
-    (message ""))
-  (with-eval-after-load 'vhdl-mode
-    (defun vhdl-add-source-files-menu ()
-      "Scan directory for all VHDL source files and generate menu.
-The directory of the current source file is scanned."
-      (interactive "*")
-      (save-excursion
-        (local--vhdl-add-source-files-menu)))
-    )
-
 
   (use-package silicom-fw-common
     :load-path "~/github/dev_env/emacs/emacs_packages/"
