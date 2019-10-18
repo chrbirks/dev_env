@@ -214,5 +214,8 @@ See also `verilog-header' for an alternative format."
 ;; TCL settings
 (setq tcl-indent-level 3)
 
+;; Python settings
+(setq python-indent-offset 3)
+
 (provide 'silicom-fw-common)
 ;;; silicom-fw-common.el ends here
