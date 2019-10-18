@@ -6,7 +6,7 @@
 -- Author     :   <chrbirks@CHRBIRKS-PC>
 -- Company    :
 -- Created    : 2016-05-01
--- Last update: 2019-05-17
+-- Last update: 2019-10-16
 -- Platform   :
 -- Standard   : VHDL'08
 -------------------------------------------------------------------------------
@@ -106,14 +106,14 @@ end package package_sha256_common;
 package body package_sha256_common is
 
   function sigma_0_lower (
-    x : unsigned(31 downto 0))
+    x : in unsigned(31 downto 0))
     return unsigned is
   begin
     return rotate_right(x, 7) xor rotate_right(x, 18) xor shift_right(x, 3);
   end sigma_0_lower;
 
   function sigma_1_lower (
-    x : unsigned(31 downto 0))
+    x : in unsigned(31 downto 0))
     return unsigned is
   begin
     return rotate_right(x, 17) xor rotate_right(x, 19) xor shift_right(x, 10);
