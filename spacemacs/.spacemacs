@@ -47,6 +47,7 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-sort-by-usage t ;sort provided by the company package only and not auto-completion
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
+                      auto-completion-use-company-box t
                       :disabled-for
                       org
                       git)
@@ -117,6 +118,7 @@ This function should only modify configuration layer settings."
                                       posframe
                                       hydra
                                       major-mode-hydra
+                                      company-box
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -554,26 +556,30 @@ before packages are loaded."
    tramp-inline-compress-start-size t
    )
 
-  ;; ;; Delete trailing whitespaces before saving
-  ;; (use-package files
-  ;;   :hook
-  ;;   (before-save . delete-trailing-whitespace)
-  ;;   :custom
-  ;;   (require-final-newline nil))
+  ;; Delete trailing whitespaces before saving
+  (if nil
+      (use-package files
+        :hook
+        (before-save . delete-trailing-whitespace)
+        :custom
+        (require-final-newline nil))
+    )
 
   ;; Clean up recent file buffers
-  (use-package recentf
-    :custom
-    (recentf-auto-cleanup 30)
-    :config
-    (run-with-idle-timer 30 t 'recentf-save-list))
-  ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
-  (require 'midnight)
-  (midnight-mode t)
-  (midnight-delay-set 'midnight-delay 3600) ; run every hour
-  ;; Parameters for clean-buffer-list mode
-  (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
-        clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
+  (if nil
+      (use-package recentf
+        :custom
+        (recentf-auto-cleanup 30)
+        :config
+        (run-with-idle-timer 30 t 'recentf-save-list))
+    ;; Enable midnight-mode for automatic deletion of unused buffers (using clean-buffer-list?)
+    (require 'midnight)
+    (midnight-mode t)
+    (midnight-delay-set 'midnight-delay 3600) ; run every hour
+    ;; Parameters for clean-buffer-list mode
+    (setq clean-buffer-list-delay-general 365         ; clean all open buffers not used for 365 days
+          clean-buffer-list-delay-special (* 1 3600)) ; clean all open special buffers not used for 60 min
+    )
 
   ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
   (setq avy-style 'words)
@@ -655,6 +661,8 @@ before packages are loaded."
 
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
   (add-to-list 'auto-mode-alist '("\\.[dsp]?v\\'" . verilog-mode))
+  ;; Add Maxeler maxj to java-mode
+  (add-to-list 'auto-mode-alist '("\\.maxj\\'" . java-mode))
 
   ;; Replace highlighted text when typing
   (delete-selection-mode 1)
@@ -684,6 +692,14 @@ before packages are loaded."
   ;; Enable global auto completion
   (global-company-mode t)
 
+  ;; Use icons in company autocomplete popup box
+  (if nil
+      (use-package all-the-icons
+        :ensure t)
+    (use-package company-box
+      :hook (company-mode . company-box-mode))
+    )
+
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
   (use-package solaire-mode
     :hook
@@ -696,6 +712,7 @@ before packages are loaded."
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
   ;; (setq 'flycheck-global-modes t)
+  ; FIXME: Try removing these since they are part of lsp-mode
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   (add-to-list 'flycheck-global-modes 'vhdl-mode)
 
@@ -704,8 +721,8 @@ before packages are loaded."
   (add-hook 'c++-mode-hook 'helm-gtags-mode)
   (add-hook 'asm-mode-hook 'helm-gtags-mode)
   (add-hook 'python-mode-hook 'helm-gtags-mode)
-  (add-hook 'verilog-mode-hook 'helm-gtags-mode)
-  (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'verilog-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
   ;; Customize helm-gtags-mode
   (custom-set-variables
    '(helm-gtags-path-style (quote root))
@@ -722,30 +739,32 @@ before packages are loaded."
     (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style)
     (push '(vhdl-mode . semantic-format-tag-summarize) helm-semantic-display-style))
 
-  ;; ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
-  ;; (use-package vhdl-tools
-  ;;   :ensure t
-  ;;   :defer t
-  ;;   :config
-  ;;   (setq vhdl-tools-manage-folding t
-  ;;         vhdl-tools-verbose nil
-  ;;         vhdl-tools-use-outshine nil
-  ;;         vhdl-tools-vorg-tangle-comments-link t
-  ;;         vhdl-tools-recenter-nb-lines '(6)))
-  ;; (use-package vhdl
-  ;;   :defer t
-  ;;   :hook (vhdl-mode . (lambda ()
-  ;;                        (vhdl-tools-mode 1))))
+  ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
+  (if nil
+      (use-package vhdl-tools
+        :ensure t
+        :defer t
+        :config
+        (setq vhdl-tools-manage-folding t
+              vhdl-tools-verbose nil
+              vhdl-tools-use-outshine nil
+              vhdl-tools-vorg-tangle-comments-link t
+              vhdl-tools-recenter-nb-lines '(6)))
+    (use-package vhdl
+      :defer t
+      :hook (vhdl-mode . (lambda ()
+                           (vhdl-tools-mode 1))))
+    )
 
   ;; Set general parameters for lsp-mode
   (setq lsp-enable-file-watchers t
-        lsp-file-watch-threshold 2000)
+        lsp-file-watch-threshold 10000)
   ;; (custom-set-faces
   ;;  '(lsp-ui-doc-background ((t (:background "magenta" :foreground "yellow"))))
   ;;  '(lsp-ui-doc-header ((t (:background "deep sky blue" :foreground "red"))))
   ;;  )
   ;; Expression for getting lsp files from server
-  ; (lsp--directory-files-recursively "<Path of your project>" ".*" t)
+  ; eval (lsp--directory-files-recursively "<Path of your project>" ".*" t)
 
   ;; ;; Disable all lsp features except flycheck
   ;; (setq lsp-ui-doc-enable nil
@@ -761,7 +780,7 @@ before packages are loaded."
         lsp-ui-doc-include-signature t
         lsp-ui-doc-position 'top;'at-position
         lsp-ui-doc-alignment 'window ; 'frame or 'window
-        lsp-ui-doc-use-childframe t ;TODO 17-05-2019: box is not placed correctly when t
+        lsp-ui-doc-use-childframe t
         lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
         lsp-enable-symbol-highlighting t
         ; Show info from whole line
@@ -770,17 +789,20 @@ before packages are loaded."
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-sideline-show-code-actions t
         ; Other options
-        lsp-eldoc-enable-hover t
+        lsp-eldoc-enable-hover nil
+        lsp-eldoc-enable-signature-help t
+        lsp-eldoc-prefer-signature-help t
+        lsp-signature-render-all t
         lsp-eldoc-render-all t
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         lsp-ui-peek-enable t
         lsp-ui-peek-always-show nil
-        lsp-ui-flycheck-enable t
+        lsp-prefer-flymake t ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
+        lsp-ui-flycheck-enable nil
         lsp-ui-flycheck-list-position 'bottom
         lsp-ui-flycheck-live-reporting t
-        lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
-        ;; lsp-auto-guess-root t
+        lsp-auto-guess-root nil
         lsp-lens-mode t
         lsp-enable-completion-at-point t
         lsp-enable-indentation t
