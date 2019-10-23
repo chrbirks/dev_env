@@ -813,6 +813,11 @@ before packages are loaded."
         lsp-print-io nil ; log all messages to *lsp-log* for debugging
         )
 
+  ;; Configure company-lsp company completion backend for lsp-mode
+  (setq company-lsp-async t
+        company-lsp-enable-snippet t
+        company-lsp-enable-recompletion t)
+
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
   ;; Enable lsp for specific programming languages
