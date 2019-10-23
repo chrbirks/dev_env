@@ -59,12 +59,14 @@ This function should only modify configuration layer settings."
             ;; c-c++-lsp-executable "/usr/bin/ccls"
             ; Use cquery as LSP backend
             ;; c-c++-backend 'lsp-cquery
-            ;; c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-cquery"
+            ;; c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-cquery")
             ;; c-c++-lsp-executable "/usr/bin/cquery"
             ; Others
+            c-c++-lsp-sem-highlight-method nil;'font-lock
+            c-c++-lsp-sem-highlight-rainbow t
             c-c++-adopt-subprojects t
-            c-c++-enable-clang-support t ;; auto-completion of function calls etc. (ignored when using lsp backend)
-            c-c++-enable-rtags-completion t) ;; usefull for anything?
+            c-c++-enable-clang-support nil ;; auto-completion of function calls etc. (ignored when using lsp backend)
+            c-c++-enable-rtags-completion nil) ;; usefull for anything?
      csv
      dap ; optional requirement for lsp-ccls
      debug ; layer for interactive debuggers using realgud, e.g. gdb
@@ -118,7 +120,8 @@ This function should only modify configuration layer settings."
                                       posframe
                                       hydra
                                       major-mode-hydra
-                                      company-box
+                                      ;; company-box
+                                      lsp-java
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -692,13 +695,13 @@ before packages are loaded."
   ;; Enable global auto completion
   (global-company-mode t)
 
-  ;; Use icons in company autocomplete popup box
-  (if nil
-      (use-package all-the-icons
-        :ensure t)
-    (use-package company-box
-      :hook (company-mode . company-box-mode))
-    )
+  ;; ;; Use icons in company autocomplete popup box
+  ;; (if nil
+  ;;     (use-package all-the-icons
+  ;;       :ensure t)
+  ;;   (use-package company-box
+  ;;     :hook (company-mode . company-box-mode))
+  ;;   )
 
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
   (use-package solaire-mode
@@ -787,7 +790,7 @@ before packages are loaded."
         lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-ignore-duplicate t
-        lsp-ui-sideline-show-code-actions t
+        lsp-ui-sideline-show-code-actions nil
         ; Other options
         lsp-eldoc-enable-hover nil
         lsp-eldoc-enable-signature-help t
@@ -797,7 +800,7 @@ before packages are loaded."
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         lsp-ui-peek-enable t
         lsp-ui-peek-always-show nil
-        lsp-prefer-flymake t ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
+        lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
         lsp-ui-flycheck-enable nil
         lsp-ui-flycheck-list-position 'bottom
         lsp-ui-flycheck-live-reporting t
@@ -821,11 +824,15 @@ before packages are loaded."
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
   ;; Enable lsp for specific programming languages
-  (add-hook 'java-mode-hook #'lsp)
+  ;; (add-hook 'java-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
   (add-hook 'vhdl-mode-hook #'lsp)
+
+  ;; Configure lsp for java
+  (require 'lsp-java)
+  (add-hook 'java-mode-hook #'lsp)
 
   ;; Set path to vhdl-tool LSP server
   (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
