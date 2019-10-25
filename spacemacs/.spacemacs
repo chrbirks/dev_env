@@ -717,7 +717,7 @@ before packages are loaded."
   ;; (setq 'flycheck-global-modes t)
   ; FIXME: Try removing these since they are part of lsp-mode
   (add-to-list 'flycheck-global-modes 'verilog-mode)
-  (add-to-list 'flycheck-global-modes 'vhdl-mode)
+  ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
 
   ;; Enable helm-gtags-mode
   (add-hook 'c-mode-hook 'helm-gtags-mode)
@@ -759,6 +759,10 @@ before packages are loaded."
                            (vhdl-tools-mode 1))))
     )
 
+  ;; ------------------------------------------------------------------------------------------------------------------
+  ;; LSP
+  ;; ------------------------------------------------------------------------------------------------------------------
+
   ;; Set general parameters for lsp-mode
   (setq lsp-enable-file-watchers t
         lsp-file-watch-threshold 10000)
@@ -777,7 +781,7 @@ before packages are loaded."
   ;;       lsp-enable-symbol-highlighting nil
   ;;       lsp-ui-flycheck-enable t)
   ;; Enable all lsp features except symbol highlighting
-  (setq ; Show info from cursor
+  (setq ; Show info box
         lsp-ui-doc-enable t
         lsp-ui-doc-header nil
         lsp-ui-doc-include-signature t
@@ -786,13 +790,14 @@ before packages are loaded."
         lsp-ui-doc-use-childframe t
         lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
         lsp-enable-symbol-highlighting t
-        ; Show info from whole line
+        ; Show info from selected line on the same line
         lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-ignore-duplicate t
-        lsp-ui-sideline-show-code-actions nil
+        lsp-ui-sideline-show-code-actions nil ; Show all possible LSP actions such as renaming, type casting, etc.
         ; Other options
-        lsp-eldoc-enable-hover nil
+        company-lsp-cache-candidates 'auto
+        lsp-eldoc-enable-hover nil ; Show LSP info in minibuffer?
         lsp-eldoc-enable-signature-help t
         lsp-eldoc-prefer-signature-help t
         lsp-signature-render-all t
@@ -824,7 +829,6 @@ before packages are loaded."
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
   ;; Enable lsp for specific programming languages
-  ;; (add-hook 'java-mode-hook #'lsp)
   (add-hook 'c-mode-hook #'lsp)
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
