@@ -1,6 +1,6 @@
 -- --------------------------------------------------------------------
 --
--- Copyright © 2008 by IEEE. All rights reserved.
+-- Copyright 2008 by IEEE. All rights reserved.
 --
 -- This source file is an essential part of IEEE Std 1076-2008,
 -- IEEE Standard VHDL Language Reference Manual. This source file may not be
@@ -60,12 +60,11 @@
 -- --------------------------------------------------------------------
 
 use STD.TEXTIO.all;
-library IEEE;
-use IEEE.STD_LOGIC_1164.all;
+library ieee;
+use ieee.std_logic_1164.all;
 
 package NUMERIC_STD is
-  constant CopyRightNotice : STRING
-    := "Copyright © 2008 IEEE. All rights reserved.";
+  constant CopyRightNotice : STRING;
 
 
   --============================================================================
@@ -92,7 +91,7 @@ package NUMERIC_STD is
   -- Result: Returns the absolute value of an UNRESOLVED_SIGNED vector ARG.
 
   -- Id: A.2
-  function "-" (ARG : UNRESOLVED_SIGNED) return UNRESOLVED_SIGNED;
+  function "-" (ARG :  UNRESOLVED_SIGNED) return UNRESOLVED_SIGNED;
   -- Result subtype: UNRESOLVED_SIGNED(ARG'LENGTH-1 downto 0)
   -- Result: Returns the value of the unary minus operation on a
   --         UNRESOLVED_SIGNED vector ARG.

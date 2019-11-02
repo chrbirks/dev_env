@@ -1,6 +1,6 @@
 -- --------------------------------------------------------------------
 --
--- Copyright © 2008 by IEEE. All rights reserved.
+-- Copyright 2008 by IEEE. All rights reserved.
 --
 -- This source file is an essential part of IEEE Std 1076-2008,
 -- IEEE Standard VHDL Language Reference Manual. This source file may not be
@@ -55,7 +55,7 @@ use STD.TEXTIO.all;
 
 package NUMERIC_BIT is
   constant CopyRightNotice : STRING
-    := "Copyright © 2008 IEEE. All rights reserved.";
+    := "Copyright IEEE. All rights reserved.";
 
   --============================================================================
   -- Numeric Array Type Definitions
