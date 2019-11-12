@@ -47,7 +47,7 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-sort-by-usage t ;sort provided by the company package only and not auto-completion
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
-                      auto-completion-use-company-box t
+                      auto-completion-use-company-box nil
                       :disabled-for
                       org
                       git)
@@ -101,8 +101,11 @@ This function should only modify configuration layer settings."
                       version-control-global-margin t
                       version-control-diff-tool 'diff-hl) ; options are diff-hl, git-gutter, git-gutter+. See version-control readme for differences.
      (shell :variables
+            close-window-with-terminal t
+            shell-default-shell 'vterm
             shell-default-height 30
-            shell-default-position 'bottom)
+            shell-default-position 'bottom
+            shell-default-term-shell "/bin/bash")
      yaml
      )
 
@@ -122,6 +125,7 @@ This function should only modify configuration layer settings."
                                       major-mode-hydra
                                       ;; company-box
                                       lsp-java
+                                      deadgrep
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -654,6 +658,7 @@ before packages are loaded."
                 projectile-globally-ignored-files)
         projectile-globally-ignored-directories
         (append '(".Xil"
+                  ".emacs.d"
                   "work"
                   "obj"
                   "bit_file"))
@@ -695,13 +700,13 @@ before packages are loaded."
   ;; Enable global auto completion
   (global-company-mode t)
 
-  ;; ;; Use icons in company autocomplete popup box
-  ;; (if nil
-  ;;     (use-package all-the-icons
-  ;;       :ensure t)
-  ;;   (use-package company-box
-  ;;     :hook (company-mode . company-box-mode))
-  ;;   )
+  ;; Use icons in company autocomplete popup box
+;  (if nil
+;      (use-package all-the-icons
+;        :ensure t)
+;    (use-package company-box
+;      :hook (company-mode . company-box-mode))
+;    )
 
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
   (use-package solaire-mode
@@ -724,7 +729,7 @@ before packages are loaded."
   (add-hook 'c++-mode-hook 'helm-gtags-mode)
   (add-hook 'asm-mode-hook 'helm-gtags-mode)
   (add-hook 'python-mode-hook 'helm-gtags-mode)
-  ;; (add-hook 'verilog-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'verilog-mode-hook 'helm-gtags-mode) ;; FIXME: ggtags-mode still enabled for vhdl-mode when commented out
   ;; (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
   ;; Customize helm-gtags-mode
   (custom-set-variables
@@ -803,6 +808,7 @@ before packages are loaded."
         lsp-signature-render-all t
         lsp-eldoc-render-all t
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
+        ;; lsp-enable-imenu t
         lsp-ui-peek-enable t
         lsp-ui-peek-always-show nil
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
