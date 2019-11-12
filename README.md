@@ -402,6 +402,9 @@ Searching with `iedit`
 | ... <kbd>TAB</kbd> | toggle selected occurence on/off |
 | ... <kbd>i</kbd> | enter edit mode |
 
+Searching with `deadgrep`
+Install package `deadgrep` and call the command `deadgrep`. It can be used for narrowing searches to file types, folders and supportes regex.
+
 ### Projectile shortcuts
 | Shortcut | Description |
 | -------- | ----------- |
