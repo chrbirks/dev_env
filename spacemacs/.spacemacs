@@ -521,6 +521,17 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  ;; ;; Set path to vhdl-tool LSP server
+  ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
+  ;; (custom-set-variables
+  ;;  '(lsp-vhdl-server 'vhdl-tool))
+
+  ;; Set path to hdl_cheker LSP server
+  (setq lsp-vhdl-server-path "~/.local/bin/hdl_checker")
+  (custom-set-variables
+   '(lsp-vhdl-server 'hdl-checker))
+  (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
+  (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
   )
 
 (defun dotspacemacs/user-load ()
@@ -561,6 +572,9 @@ before packages are loaded."
 
    ;; Compress files when access them via TRAMP
    tramp-inline-compress-start-size t
+
+   ;; Tell ripgrep to also search hidden files
+   ;; helm-rg-default-extra-args '("--hidden")
    )
 
   ;; Delete trailing whitespaces before saving
@@ -625,6 +639,10 @@ before packages are loaded."
 
   ;; Project Management
   (require 'projectile)
+  (custom-set-variables '(projectile-project-root-files
+                          '("rebar.config" "project.clj" "build.boot" "deps.edn" "SConstruct" "pom.xml" "build.sbt" "gradlew" "build.gradle" ".ensime" "Gemfile" "requirements.txt" "setup.py" "pyproject.toml" "tox.ini" "composer.json" "Cargo.toml" "mix.exs" "stack.yaml" "info.rkt" "DESCRIPTION" "configure.in" "configure.ac" "cscope.out"))
+                        '(projectile-project-root-files-bottom-up
+                          '(".projectile" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs")))
   (setq projectile-globally-ignored-files
         ;; TODO: Move HDL/Vivado reletated files into separate VHDL/Verilog file
         ;; FIXME 03-09-2019: List does not get passed to rg. Place ignore patterns in .ignore in project root.
@@ -843,9 +861,6 @@ before packages are loaded."
   ;; Configure lsp for java
   (require 'lsp-java)
   (add-hook 'java-mode-hook #'lsp)
-
-  ;; Set path to vhdl-tool LSP server
-  (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
