@@ -88,7 +88,15 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-function llr { command ls -alFtr --color=always "$@" | less -F -X -R ;}
+function llr { command ls -alFtr --color=always "$@" | less -F -X -R +G ;}
+#function rg { command rg "$@" | less -F -X -R ;}
+function dfh { command df -h "$@" | grep -v "/snap/" ;}
+function tree { command tree -C "$@" | less -F -X -R ;}
+function find { command find "$@" -regextype egrep | less -F -X ;}
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
