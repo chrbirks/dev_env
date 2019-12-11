@@ -39,7 +39,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      (auto-completion :variables
                       auto-completion-front-end 'company
-                      company-tooltip-align-annotations t
+                      company-tooltip-align-annotations t ; TODO: Move to separate (setq ...) statement if not working
                       auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
                       auto-completion-complete-with-key-sequence-delay 0.1
@@ -55,7 +55,7 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
             ; Use ccls as LSP backend
             c-c++-backend 'lsp ; 'lsp-ccls or 'lsp-cquery
-            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-c-cpp"
+            c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-c-cpp")
             ;; c-c++-lsp-executable "/usr/bin/ccls"
             ; Use cquery as LSP backend
             ;; c-c++-backend 'lsp-cquery
@@ -68,7 +68,7 @@ This function should only modify configuration layer settings."
             c-c++-enable-clang-support nil ;; auto-completion of function calls etc. (ignored when using lsp backend)
             c-c++-enable-rtags-completion nil) ;; usefull for anything?
      csv
-     dap ; optional requirement for lsp-ccls
+     ;; dap ; optional requirement for lsp-ccls
      debug ; layer for interactive debuggers using realgud, e.g. gdb
      emacs-lisp
      git
@@ -87,6 +87,8 @@ This function should only modify configuration layer settings."
      (python :variables
              python-backend 'anaconda     ; anaconda or lsp
              ;; python-lsp-server 'pyls ; pyls (default) or mspyls. See http://develop.spacemacs.org/layers/+lang/python/README.html for installation.
+             ;; python-shell-interpreter 'python3
+             python-indent-offset 4
              )
      rust
      shell-scripts
@@ -522,16 +524,18 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; ;; Set path to vhdl-tool LSP server
-  ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'vhdl-tool))
+  ;; (setq lsp-vhdl-server-path (file-truename "~/github/dev_env/emacs/vhdl-tool"))
 
-  ;; Set path to hdl_cheker LSP server
-  (setq lsp-vhdl-server-path "~/.local/bin/hdl_checker")
+  ;; Set path to hdl_checker LSP server
   (custom-set-variables
    '(lsp-vhdl-server 'hdl-checker))
   (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
   (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
+  (setenv "GHDL_PATH" "/usr/local/bin/")
+  (setenv "MODELSIM_PATH" "/opt/Mentor/questasim/10.6c/questasim/linux_x86_64/")
+  (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
   )
 
 (defun dotspacemacs/user-load ()
@@ -558,6 +562,9 @@ before packages are loaded."
 
    ;; Do not show trailing whitespaces
    spacemacs-show-trailing-whitespace nil
+
+   ;; Disable tildes in fringe
+   global-vi-tilde-fringe-mode nil
 
    ;; Escape sequence
    evil-escape-key-sequence "fd"
@@ -682,9 +689,6 @@ before packages are loaded."
                   "bit_file"))
         )
 
-  ;; Cycle through windows
-  (global-set-key (kbd "C-a") 'other-window)
-
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
   (add-to-list 'auto-mode-alist '("\\.[dsp]?v\\'" . verilog-mode))
   ;; Add Maxeler maxj to java-mode
@@ -742,22 +746,22 @@ before packages are loaded."
   (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
 
-  ;; Enable helm-gtags-mode
-  (add-hook 'c-mode-hook 'helm-gtags-mode)
-  (add-hook 'c++-mode-hook 'helm-gtags-mode)
-  (add-hook 'asm-mode-hook 'helm-gtags-mode)
-  (add-hook 'python-mode-hook 'helm-gtags-mode)
-  ;; (add-hook 'verilog-mode-hook 'helm-gtags-mode) ;; FIXME: ggtags-mode still enabled for vhdl-mode when commented out
-  ;; (add-hook 'vhdl-mode-hook 'helm-gtags-mode)
-  ;; Customize helm-gtags-mode
-  (custom-set-variables
-   '(helm-gtags-path-style (quote root))
-   '(helm-gtags-display-style (quote detail))
-   '(helm-gtags-direct-helm-completing t)
-   '(helm-gtags-ignore-case t)
-   '(helm-gtags-auto-update t) ; update TAGS files when buffer is saved
-   '(helm-gtags-pulse-at-cursor t)
-   )
+  ;; ;; Enable helm-gtags-mode
+  ;; (add-hook 'c-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'c++-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'asm-mode-hook 'helm-gtags-mode)
+  ;; (add-hook 'python-mode-hook 'helm-gtags-mode)
+  ;; ;; (add-hook 'verilog-mode-hook 'helm-gtags-mode)
+  ;; ;; (add-hook 'vhdl-mode-hook 'helm-gtags-mode) ;; FIXME: ggtags-mode still enabled for vhdl-mode when commented out
+  ;; ;; Customize helm-gtags-mode
+  ;; (custom-set-variables
+  ;;  '(helm-gtags-path-style (quote root))
+  ;;  '(helm-gtags-display-style (quote detail))
+  ;;  '(helm-gtags-direct-helm-completing t)
+  ;;  '(helm-gtags-ignore-case t)
+  ;;  '(helm-gtags-auto-update t) ; update TAGS files when buffer is saved
+  ;;  '(helm-gtags-pulse-at-cursor t)
+  ;;  )
 
   ;; Colorize tags (keywords) in helm-semantic-or-imenu
   (with-eval-after-load 'helm-semantic
@@ -861,6 +865,8 @@ before packages are loaded."
   ;; Configure lsp for java
   (require 'lsp-java)
   (add-hook 'java-mode-hook #'lsp)
+  (add-hook 'java-mode-hook (lambda ()
+                              (setq c-basic-offset 3)))
 
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
@@ -950,16 +956,16 @@ before packages are loaded."
      (("a" xref-find-definitions "xref-find-def")
       ("s" xref-find-definitions-other-window "xref-find-def-otherwin")
       ("d" xref-find-references "xref-find-ref"))
-     "GTAGS"
-     (("C-g" ggtags-mode "ggtags-mode" :toggle (default-value 'ggtags-mode))
-      ("M-c" helm-gtags-create-tags "helm-gtags-create-tags")
-      ("M-u" helm-gtags-update-tags "helm-gtags-update-tags")
-      ("M-p" helm-gtags-parse-file "helm-gtags-parse-file")
-      ("M-æ" helm-gtags-dwim "helm-gtags-dwim")
-      ("M-ø" helm-gtags-dwim-other-window "helm-gtags-dwim-otherwin")
-      ("M-t" helm-gtags-find-tag "helm-gtags-find-tag")
-      ("M-r" helm-gtags-find-rtag "helm-gtags-find-rtag")
-      ("M-s" helm-gtags-find-symbol "helm-gtags-find-symbol"))
+     ;; "GTAGS"
+     ;; (("C-g" ggtags-mode "ggtags-mode" :toggle (default-value 'ggtags-mode))
+     ;;  ("M-c" helm-gtags-create-tags "helm-gtags-create-tags")
+     ;;  ("M-u" helm-gtags-update-tags "helm-gtags-update-tags")
+     ;;  ("M-p" helm-gtags-parse-file "helm-gtags-parse-file")
+     ;;  ("M-æ" helm-gtags-dwim "helm-gtags-dwim")
+     ;;  ("M-ø" helm-gtags-dwim-other-window "helm-gtags-dwim-otherwin")
+     ;;  ("M-t" helm-gtags-find-tag "helm-gtags-find-tag")
+     ;;  ("M-r" helm-gtags-find-rtag "helm-gtags-find-rtag")
+     ;;  ("M-s" helm-gtags-find-symbol "helm-gtags-find-symbol"))
      "Misc"
      (
       ;; ("a" spacemacs/toggle-auto-completion "toggle-auto-completion" :color green :exit nil :toogle (default-value 'spacemacs/toggle-auto-completion))
@@ -983,6 +989,6 @@ This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
   ;; This is an extra to avoid having init.el polluted by M-x customize
-  (setq custom-file "~/custom.el")
+  (setq custom-file (file-truename "~/custom.el"))
   (load custom-file)
 )
