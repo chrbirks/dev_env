@@ -812,7 +812,7 @@ before packages are loaded."
         lsp-ui-doc-enable t
         lsp-ui-doc-header nil
         lsp-ui-doc-include-signature t
-        lsp-ui-doc-position 'top;'at-position
+        lsp-ui-doc-position 'at-point; 'top, 'bottom or 'at-point
         lsp-ui-doc-alignment 'window ; 'frame or 'window
         lsp-ui-doc-use-childframe t
         lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
@@ -861,6 +861,7 @@ before packages are loaded."
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
   (add-hook 'vhdl-mode-hook #'lsp)
+  (add-hook 'verilog-mode-hook #'lsp)
 
   ;; Configure lsp for java
   (require 'lsp-java)
