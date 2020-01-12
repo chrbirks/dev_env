@@ -1,5 +1,5 @@
 {
-  "use_non_breaking_spaces": false,
+	"use_non_breaking_spaces": false,
 	"segments": {
 		"left": [
 			{
@@ -29,15 +29,15 @@
 				"function": "powerline.segments.common.vcs.branch",
 				"priority": 40
 			},
-      {
-        "function": "powerline_hgstatus.hgstatus",
-        "priority": 40
-      },
-      {
+			{
+				"function": "powerline_hgstatus.hgstatus",
+				"priority": 40
+			},
+			{
 				"function": "powerline.segments.shell.jobnum",
 				"priority": 20
 			},
-      {
+			{
 				"function": "powerline.segments.shell.last_pipe_status",
 				"priority": 10
 			}
