@@ -113,8 +113,6 @@ fi
 alias ..='cd ..'
 alias tmux='tmux -2'
 
-alias sourcesim='source ~/projects/train/train/src/sub_comp/fb_scripts_lib/sim_scripts/bash/setup_sim.sh'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -122,7 +120,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
 function llr { command ls -alFtr --color=always "$@" | less -F -X -R +G ;}
 #function rg { command rg "$@" | less -F -X -R ;}
-function dfh { command df -h "$@" | grep -v "/snap/" ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
 
