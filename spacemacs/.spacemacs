@@ -81,13 +81,21 @@ This function should only modify configuration layer settings."
      lsp
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
-     multiple-cursors
-     org
+     ;; multiple-cursors
+     (org :variables
+          org-enable-github-support t
+          org-enable-trello-support t
+          org-projectile-file "TODOs.org"
+          org-enable-sticky-header nil; t
+          org-enable-jira-support t ; add your authentication credentials to ~/.authinfo.gpg or ~/.authinfo: machine yourcompany.atlassian.net login you@example.com password yourPassword port 443
+          jiralib-url "https://fiberblaze.atlassian.net:443")
      prettier
      (python :variables
-             python-backend 'anaconda     ; anaconda or lsp
-             ;; python-lsp-server 'pyls ; pyls (default) or mspyls. See http://develop.spacemacs.org/layers/+lang/python/README.html for installation.
-             ;; python-shell-interpreter 'python3
+             python-backend 'lsp     ; anaconda or lsp
+             python-lsp-server 'mspyls ; pyls (default) or mspyls. See http://develop.spacemacs.org/layers/+lang/python/README.html for installation.
+             python-lsp-git-root (file-truename "~/github/python-language-server")
+             python-formatter 'lsp
+             python-shell-interpreter 'python3
              python-indent-offset 4
              )
      rust
@@ -128,6 +136,7 @@ This function should only modify configuration layer settings."
                                       ;; company-box
                                       lsp-java
                                       deadgrep
+                                      monky
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -528,14 +537,19 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;;  '(lsp-vhdl-server 'vhdl-tool))
   ;; (setq lsp-vhdl-server-path (file-truename "~/github/dev_env/emacs/vhdl-tool"))
 
-  ;; Set path to hdl_checker LSP server
+  ;; ;; Set path to hdl_checker LSP server
+  ;; (custom-set-variables
+  ;;  '(lsp-vhdl-server 'hdl-checker))
+  ;; (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
+  ;; (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
+  ;; (setenv "GHDL_PATH" "/usr/local/bin/")
+  ;; (setenv "MODELSIM_PATH" "/opt/Mentor/questasim/10.6c/questasim/linux_x86_64/")
+  ;; (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
+
+  ;; Set path to VHDL LS
   (custom-set-variables
-   '(lsp-vhdl-server 'hdl-checker))
-  (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
-  (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
-  (setenv "GHDL_PATH" "/usr/local/bin/")
-  (setenv "MODELSIM_PATH" "/opt/Mentor/questasim/10.6c/questasim/linux_x86_64/")
-  (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
+   '(lsp-vhdl-server 'vhdl-ls))
+  (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/release/vhdl_ls"))
   )
 
 (defun dotspacemacs/user-load ()
@@ -644,6 +658,14 @@ before packages are loaded."
                       (when (stringp method)
                         (member method '("su" "sudo"))))))))
 
+  ;; The ORG todo files are not added to the agenda automatically. You can do this with the following snippet.
+  (with-eval-after-load 'org-agenda
+    (require 'org-projectile)
+    (mapcar '(lambda (file)
+               (when (file-exists-p file)
+                 (push file org-agenda-files)))
+            (org-projectile-todo-files)))
+
   ;; Project Management
   (require 'projectile)
   (custom-set-variables '(projectile-project-root-files
@@ -694,6 +716,9 @@ before packages are loaded."
   ;; Add Maxeler maxj to java-mode
   (add-to-list 'auto-mode-alist '("\\.maxj\\'" . java-mode))
 
+  ;; Spawn only single cmdserver instead of one for each Mercurial command
+  (setq monky-process-type 'cmdserver)
+
   ;; Replace highlighted text when typing
   (delete-selection-mode 1)
 
@@ -701,6 +726,9 @@ before packages are loaded."
   (fset 'verilog-block-comment
         [?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- return ?/ ?/ ?  return ?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- up right left ? ])
   (global-set-key (kbd "C-c c") 'verilog-block-comment)
+
+  ;; Disable auto-newline on semicolon in Verilog
+  (setq verilog-auto-newline nil)
 
   ;; UVM warning macro
   (fset 'uvm_warning
