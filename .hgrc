@@ -1,4 +1,28 @@
+[ui]
+merge = kdiff3
+editor = vim
+username = Christian Birk Sørensen <cbs@silicom.dk>
+commitsubrepos = false
+
+# We recommend enabling tweakdefaults to get slight improvements to
+# the UI over time. Make sure to set HGPLAIN in the environment when
+# writing scripts!
+tweakdefaults = True
+
+# uncomment to disable color in command output
+# (see 'hg help color' for details)
+# color = never
+color = yes
+
+# uncomment to disable command output pagination
+# (see 'hg help pager' for details)
+# paginate = never
+
 [extensions]
+# histedit =
+# rebase =
+# uncommit =
+hgext.extdiff = 
 extdiff =
 hgk =
 progress = 
@@ -7,6 +31,11 @@ shelve =
 strip = 
 # Extension for converting git to hg repos
 hgext.convert =
+
+[extdiff]
+# configure extended diff to use colordiff (requires colordiff installed in your system)
+#cmd.cdiff = colordiff
+#opts.cdiff = -uprN
 
 #[hgk]
 #vdiff = vdiff
@@ -18,8 +47,20 @@ delay = 1.0
 vdiff = meld
 editor = emacs
 
-[ui]
-merge = kdiff3
-editor = vim
-username = Christian Birk Sørensen <cbs@silicom.dk>
-commitsubrepos = false
+[color]
+status.modified = blue bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = magenta bold
+status.ignored = white
+# And for hg diff output
+diff.diffline = bold
+diff.extended = cyan bold
+diff.fila_a = red bold
+diff.file_b = green bold
+diff.hunk = magenta
+diff.delted = red
+diff.inserted = green
+diff.changed = white
+diff.trailingwhitespace = bold red_background
