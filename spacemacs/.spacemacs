@@ -53,15 +53,14 @@ This function should only modify configuration layer settings."
                       git)
      asm
      (c-c++ :variables
-            ; Use ccls as LSP backend
-            c-c++-backend 'lsp ; 'lsp-ccls or 'lsp-cquery
-            c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-c-cpp")
-            ;; c-c++-lsp-executable "/usr/bin/ccls"
-            ; Use cquery as LSP backend
-            ;; c-c++-backend 'lsp-cquery
-            ;; c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-cquery")
-            ;; c-c++-lsp-executable "/usr/bin/cquery"
+            ; Use clangd as LSP backend
+            c-c++-backend 'lsp-clangd ; 'lsp-ccls or 'lsp-cquery
+            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-c-cpp"
+            ;; c-c++-lsp-executable "/usr/bin/clangd"
             ; Others
+            c-c++-enable-auto-newline nil
+            c-c++-adopt-subprojects t
+            c-c++-lsp-enable-semantic-highlight t
             c-c++-lsp-sem-highlight-method nil;'font-lock
             c-c++-lsp-sem-highlight-rainbow t
             c-c++-adopt-subprojects t
@@ -532,24 +531,32 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+
   ;; ;; Set path to vhdl-tool LSP server
+  ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'vhdl-tool))
-  ;; (setq lsp-vhdl-server-path (file-truename "~/github/dev_env/emacs/vhdl-tool"))
 
   ;; ;; Set path to hdl_checker LSP server
+  ;; (setq lsp-vhdl-server-path "~/.local/bin/hdl_checker")
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'hdl-checker))
   ;; (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
   ;; (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
   ;; (setenv "GHDL_PATH" "/usr/local/bin/")
   ;; (setenv "MODELSIM_PATH" "/opt/Mentor/questasim/10.6c/questasim/linux_x86_64/")
-  ;; (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
 
-  ;; Set path to VHDL LS
+  ;; Set path to Rust VHDL LS
+  (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/release/vhdl_ls"))
   (custom-set-variables
    '(lsp-vhdl-server 'vhdl-ls))
-  (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/release/vhdl_ls"))
+  (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
+
+  ;; ;; Setup for GHDL LS
+  ;; (setq lsp-vhdl-server-path (file-truename "/usr/bin/ghdl-ls"))
+  ;; (custom-set-variables
+  ;;  '(lsp-vhdl-server 'ghdl-ls))
+
   )
 
 (defun dotspacemacs/user-load ()
@@ -661,7 +668,7 @@ before packages are loaded."
   ;; The ORG todo files are not added to the agenda automatically. You can do this with the following snippet.
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
-    (mapcar '(lambda (file)
+    (mapcar #'(lambda (file)
                (when (file-exists-p file)
                  (push file org-agenda-files)))
             (org-projectile-todo-files)))
@@ -771,8 +778,23 @@ before packages are loaded."
   (require 'flycheck)
   ;; (setq 'flycheck-global-modes t)
   ; FIXME: Try removing these since they are part of lsp-mode
-  (add-to-list 'flycheck-global-modes 'verilog-mode)
+  ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
+
+  ;; ;; Modify format of flycheck error table
+  ;; (add-hook 'flycheck-error-list-mode-hook
+  ;;           (lambda ()
+  ;;             (setq tabulated-list-format '[("Line" 1 flycheck-error-list-entry-< :right-align t)
+  ;;                                           ("Col" 4 nil :right-align t)
+  ;;                                           ("Level" 8 flycheck-error-list-entry-level-<)
+  ;;                                           ("ID" 20 t)
+  ;;                                           (#("Message (Checker)" 0 9
+  ;;                                              (face default)
+  ;;                                              9 16
+  ;;                                              (face flycheck-error-list-checker-name)
+  ;;                                              16 17
+  ;;                                              (face default))
+  ;;                                            0 t)])))
 
   ;; ;; Enable helm-gtags-mode
   ;; (add-hook 'c-mode-hook 'helm-gtags-mode)
@@ -842,11 +864,14 @@ before packages are loaded."
         lsp-ui-doc-include-signature t
         lsp-ui-doc-position 'at-point; 'top, 'bottom or 'at-point
         lsp-ui-doc-alignment 'window ; 'frame or 'window
+        lsp-ui-doc-border "white"
+        ;; lsp-ui-doc-max-width 150
+        lsp-ui-doc-max-height 5
         lsp-ui-doc-use-childframe t
         lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
         lsp-enable-symbol-highlighting t
         ; Show info from selected line on the same line
-        lsp-ui-sideline-enable t
+        lsp-ui-sideline-enable nil
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-sideline-show-code-actions nil ; Show all possible LSP actions such as renaming, type casting, etc.
@@ -876,6 +901,9 @@ before packages are loaded."
         lsp-enable-xref t
         lsp-print-io nil ; log all messages to *lsp-log* for debugging
         )
+
+  ;; Add LSP which-key integration
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
 
   ;; Configure company-lsp company completion backend for lsp-mode
   (setq company-lsp-async t
