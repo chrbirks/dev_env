@@ -147,11 +147,33 @@ export SSH_USER=$USER
 export BUILD_USER=CBS
 export MODELSIM=~/modelsim.ini
 
+# --------------------------------------------------------------------
 # Setup for fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_TMUX=1
+export FZF_TMUX_HEIGHT='40%'
+export FZF_COMPLETION_TRIGGER='**'
+[ -f ~/.fzf.bash ]; source ~/.fzf.bash
+
+__fzf_cd_from_home__() {
+    local cmd dir
+    cmd="${FZF_ALT_C_COMMAND:-"command find -L ~/ -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+       -o -type d -print 2> /dev/null | cut -b3-"}"
+    dir=$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS" $(__fzfcmd) +m) && printf 'cd %q' "$dir"
+}
+# ALT-SHIFT-C - cd into the selected directory from home
+bind '"\C-v": "\C-x\C-addi`__fzf_cd_from_home__`\C-x\C-e\C-x\C-r\C-m"'
+bind -m vi-command '"\C-v": "ddi`__fzf_cd_from_home__`\C-x\C-e\C-x\C-r\C-m"'
+
+__fzf_cd_from_root__() {
+    local cmd dir
+    cmd="${FZF_ALT_C_COMMAND:-"command find -L / -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+       -o -type d -print 2> /dev/null | cut -b3-"}"
+    dir=$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS" $(__fzfcmd) +m) && printf 'cd %q' "$dir"
+}
 
 # --------------------------------------------------------------------
 # Powerline for bash setup
+# NOTE: Remember to call `powerline-daemon --replace` and `powerline-lint` after each change to the powerline config files
 if command -v powerline-daemon > /dev/null; then
    powerline-daemon -q
    POWERLINE_BASH_CONTINUATION=1
@@ -160,5 +182,5 @@ if command -v powerline-daemon > /dev/null; then
    . /usr/share/powerline/bindings/bash/powerline.sh
 fi
 
-# Append below
-# --------------------------------------------------------------------
+# Opt out of .NET Core tools telemetry
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
