@@ -153,7 +153,7 @@ font:
     #style: Bold Italic
 
   # Point size
-  size: 10.0
+  size: 10
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -164,9 +164,9 @@ font:
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
   # increasing `y` moves the glyph upwards.
-  #glyph_offset:
-  #  x: 0
-  #  y: 0
+  glyph_offset:
+    x: 0
+    y: -1
 
   # Thin stroke font rendering (macOS only)
   #
@@ -185,13 +185,14 @@ font:
   #use_thin_strokes: true
 
 # If `true`, bold text is drawn using the bright color variants.
-#draw_bold_text_with_bright_colors: true
+draw_bold_text_with_bright_colors: true
 
 # Colors (Tomorrow Night Bright)
-#colors:
+colors:
   # Default colors
-  #primary:
-  #  background: '0x000000'
+  primary:
+    #background: '0x000000'
+    background: '0x002b36'
   #  foreground: '0xeaeaea'
 
     # Bright and dim foreground colors
