@@ -840,9 +840,14 @@ before packages are loaded."
   ;; LSP
   ;; ------------------------------------------------------------------------------------------------------------------
 
-  ;; Set general parameters for lsp-mode
+  ;; Optilize parameters for lsp-mode
   (setq lsp-enable-file-watchers t
-        lsp-file-watch-threshold 10000)
+        lsp-file-watch-threshold 100000000
+        read-process-output-max (* 1024 1024) ;; 1mb
+        ;; lsp-idle-delay 500
+        lsp-idle-delay 0.2
+        ;; lsp-print-performance t
+        )
   ;; (custom-set-faces
   ;;  '(lsp-ui-doc-background ((t (:background "magenta" :foreground "yellow"))))
   ;;  '(lsp-ui-doc-header ((t (:background "deep sky blue" :foreground "red"))))
