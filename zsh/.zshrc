@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block, everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -8,8 +15,17 @@ export ZSH="/home/chrbirks/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+
 #ZSH_THEME="robbyrussell"
-ZSH_THEME="powerlevel9k/powerlevel9k"
+
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+# default: #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
+# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(host dir vcs)
+# default: #POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs history time)
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(virtualenv status root_indicator background_jobs time)
+
+# powerline10k theme installed from https://github.com/romkatv/powerlevel10k
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -69,7 +85,9 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(colored-man-pages colorize fzf git)
+# Third-party plugins:
+#   zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
+plugins=(colored-man-pages colorize fzf git zsh-autosuggestions)
 
 export FZF_BASE=
 
@@ -109,7 +127,7 @@ alias tmux='tmux -2'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-function llr { command ls -alFtr --color=always "$@" | less -F -X -R +G ;}
+function llt { command ls -alFt --color=always "$@" | less -F -X -R +G ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
 
@@ -141,6 +159,10 @@ HISTFILESIZE=20000
 # match all files and zero or more directories and subdirectories.
 #setopt globstar
 
+# Enable command completion
+autoload -Uz compinit
+compinit
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -156,3 +178,7 @@ export FZF_COMPLETION_TRIGGER='**'
 # Opt out of .NET Core tools telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
+source /home/chrbirks/.config/broot/launcher/bash/br
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
