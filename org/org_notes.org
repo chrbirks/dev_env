@@ -1,0 +1,135 @@
+* Test
+** TODO Shave
+   SCHEDULED: <2009-10-17 Sat .+2d/4d>
+   - State "DONE"       from "TODO"       [2009-10-15 Thu]
+   - State "DONE"       from "TODO"       [2009-10-12 Mon]
+   - State "DONE"       from "TODO"       [2009-10-10 Sat]
+   - State "DONE"       from "TODO"       [2009-10-04 Sun]
+   - State "DONE"       from "TODO"       [2009-10-02 Fri]
+   - State "DONE"       from "TODO"       [2009-09-29 Tue]
+   - State "DONE"       from "TODO"       [2009-09-25 Fri]
+   - State "DONE"       from "TODO"       [2009-09-19 Sat]
+   - State "DONE"       from "TODO"       [2009-09-16 Wed]
+   - State "DONE"       from "TODO"       [2009-09-12 Sat]
+   :PROPERTIES:
+   :STYLE:    habit
+   :LAST_REPEAT: [2009-10-19 Mon 00:36]
+   :END:
+
+* Test                                                      :lightning_creek:
+
+* Project X                                                     :vista_creek:
+** TODO Contact Bill Gates
+   :LOGBOOK:
+   CLOCK: [2020-02-22 Sat 16:09]--[2020-02-22 Sat 16:10] =>  0:01
+   :END:
+** TODO Make business
+
+* Project Y
+
+* Project Y-2
+** [#A] SOMEDAY Get rich
+** TODO [1/1] Task A
+   - [X] Task 1
+** TODO [33%] Task A
+   - [X] Task A
+   - [ ] Task B
+   - [-] Task C
+     - [X] Task A
+     - [X] Task B
+     - [ ] Task C
+  :LOGBOOK:
+  CLOCK: [2020-02-22 Sat 16:20]--[2020-02-22 Sat 16:23] =>  0:03
+  CLOCK: [2020-02-22 Sat 13:28]--[2020-02-22 Sat 13:51] =>  0:23
+  :END:
+  :PROPERTIES:
+  :CATEGORY: ProjectY
+  :END:
+
+* Project Z
+  :PROPERTIES:
+  :LOGGING:  true
+  :END:
+  - Note taken on [2020-02-22 Sat 13:43] \\
+
+* Org notes
+** Shortcuts
+*** General
+    - C-c C-c   : org-ctrl-c-ctrl-c. Toggle/execute/tag/re-calculate something on current line.
+    - C-c /     : org-sparse-tree. Show sparse tree from buffer based on property, keyword, regex, etc.
+*** Tags
+    - C-c C-q   : Set tag.
+    - C-c / m   : Search for tags in sparse tree.
+    - C-c a m   : Global list of tag matching.
+    - C-c a M   : Same but check only TODO items.
+*** TODOs
+    - , T T     : org-todo. Toggle TODO state defined in org-todo-keywords.
+    - , T t     : org-show-todo-tree. Collapse/expand buffer to show todo items.
+    - C-S-RET   : New TODO heading.
+    - C-c / t   : Show sparse tree with TODOs.
+    - C-c a t   : Global TODO list in agenda.
+*** Items
+    - C-c -     : org-ctrl-c-minul. Cycle list types.
+    - M-enter   : Insert item from cursor.
+    - M-S-enter : Insert item from cursor with checkbox.
+*** Dates and times
+    - C-c <   : Insert today
+    - C-c C-d : Insert deadline
+    - C-c / d : Sparse tree with deadlines
+*** Clocking
+    - <?>             : org-clock-menu
+    - , C R           : org-clock-report. Insert total time spend on tasks (in buffer?)
+    - , C d           : org-clock-display. Show total time spend on each headline.
+    - SPC a o C i     : org-clock-in. Start clock on item.
+    - SPC a o C o     : Stop clock on item.
+    - SPC a o C c     : Cancel clock on item.
+    - SPC a o C g     : Goto.
+    - SPC a o C j     : Jump to current clock.
+    - SPC a o C r     : Resolve clocks.
+    - C-u C-c C-x C-i : Switch task.
+*** Visibility
+    - S-tab     : org-shifttab. Global visibility cycling.
+** Options
+   - Set item as priority 'A' by adding '[#A]' to item (C-c ,).
+   - Add ':<tag>:' to item to tag it.
+   - Add '[ / ]' to headline to count number of complete tasks.
+   - Add '[ % ]' to headline to count number of complete tasks in percent.
+** Org agenda
+*** Shortcuts
+    - <?>       : Org agenda transient state
+    - <?>       : org-agenda-clock-in
+    - <?>       : org-agenda-clock-out
+    - C-c [     : Add buffer to agenda
+    - C-c ]     : Remove buffer from agenda
+    - C-c a     : Show agenda command menu
+    - C-c a a   : Invoke agenda view
+    - C-c C-x < : Lock agenda to subtree
+    - C-c C-x < : Release agenda restriction lock
+    - While in agenda:
+      - q          : Quit agenda
+      - j          : Jump to date
+      - .          : Go to today
+      - f/b        : Forward/backwards
+      - v          : Choose view menu
+      - d/w        : Day/week view
+      - r          : Refresh
+      - RET        : Go to item
+      - SPC        : Show item
+      - /          : Filter by tag
+      - R          : Toggle clock report
+      - t          : Change TODO state
+      - colon or T : Set tags
+      - S-UP/DOWN  : Set priority
+      - e          : Set effort
+      - m/u        : Mark/unmark
+      - I          : Clock start
+      - O          : Clock stop
+      - X          : Clock cancel
+      - J          : Jump to running clock entry
+** Org capture
+*** Shortcuts
+    - SPC C c : capture
+    - , s r   : refile
+    - , s a   : Toggle archive tag
+** Org brain
+** Org jira
