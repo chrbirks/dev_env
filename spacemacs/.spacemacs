@@ -573,7 +573,7 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (setq-default
-   debug-on-error nil
+   debug-on-error t
 
    ;; Do not wrap lines
    truncate-lines t
@@ -673,6 +673,145 @@ before packages are loaded."
                  (push file org-agenda-files)))
             (org-projectile-todo-files)))
 
+  ;; TODO: enable 'spacemacs/toggle-mode-line-org-clock-on' always when clocked in
+  ;; TODO: make helpful hydra for clocking with org-mode. For example org-todo toggle, org-clock-menu, org-clock-in/out
+  ;; TODO: how to specify todo sequence for task
+
+  ;; Org Capture template
+  ;; Type: entry, item, checkitem, table-line, plain
+  ;; Macros: %^G tag, %^U date, %? insert curser here
+  (setq org-capture-templates
+        '(
+          ;; Template for todo stored in datetree
+	        ("t" "Simple TODO" entry (file+datetree "~/TODOs.org" "TODOs")
+"* TODO %^{Description} %^G%?
+  :PROPERTIES:
+  UPDATED: %U
+  :END:" :empty-lines 1)
+
+          ;; Template for project or task time tracking
+	        ("p" "Project" entry (file+headline "~/TODOs.org" "Projects")
+"* %^{Description} %^G%?
+  :PROPERTIES:
+  UPDATED: %U
+  :END:" :empty-lines 1)
+          )
+        )
+
+  ;; Set the TODo item states
+  ;; There are four classes of keywords, TASKS and EVENTS
+  ;; They are distinguished by their states and PROPERTIES data
+  ;; There are subsets of the classes that don't have keywords and use tags instead because they don't change state
+  (setq org-todo-keywords
+        '(;; Sequence for TASKS
+          ;; TODo means it's an item that needs addressing
+          ;; WAITING means it's dependent on something else happening
+          ;; DELEGATED means someone else is doing it and I need to follow up with them
+          ;; ASSIGNED means someone else has full, autonomous responsibility for it
+          ;; CANCELLED means it's no longer necessary to finish
+          ;; DONe means it's complete
+          (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "|" "ASSIGNED(.@/!)" "CANCELLED(x@/!)" "DONE(d@/!)")
+
+          ;; Sequence for EVENTS
+          ;; VISIT means that there is something you would physically like to do, no dates associated
+          ;; DIDNOTGO means the event was cancelled or I didn't go
+          ;; MEETING means a real time meeting, i.e. at work, or on the phone for something official
+          ;; VISITED means the event took place and is no longer scheduled
+          (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")
+
+          ;; Sequence for tasks for time-tracking
+          (sequence "BACKLOG(b@/!)" "|" "POSTPONED(p@/!)" "DOING(d@/!)" "|" "WAITING(w@/!)" "REVIEW(r@/!)" "DONE(c@/!)")
+  ))
+
+  ;; Record time and note when a task is completed
+  (setq org-log-done 'note)
+  ;; Record time and note when the scheduled date of a task is modified
+  (setq org-log-reschedule 'note)
+  ;; Record time and note when the deadline of a task is modified
+  (setq org-log-redeadline 'note)
+  ;; Record time and note when clocking out of a task
+  (setq org-log-clock-out 'note)
+  ;; Record time and note when a task is refiled
+  (setq org-log-refile 'note)
+  ;; Log everything into the LOGBOOK drawer
+  (setq org-log-into-drawer t)
+
+  ;; The following code clocks in whenever you market task is started,
+  ;; and clocks out when you market a task as WAITING. It also automatically
+  ;; market task is started if you clock in
+  (eval-after-load 'org
+    '(progn
+       (defun wicked/org-clock-in-if-starting ()
+         "Clock in when the task is marked STARTED."
+         (when (and (string= state "STARTED")
+		                (not (string= last-state state)))
+	         (org-clock-in)))
+       (add-hook 'org-after-todo-state-change-hook
+	               'wicked/org-clock-in-if-starting)
+       (defadvice org-clock-in (after wicked activate)
+         "Set this task's status to 'STARTED'."
+         (org-todo "STARTED"))
+       (defun wicked/org-clock-out-if-waiting ()
+         "Clock out when the task is marked WAITING."
+         (when (and (string= state "WAITING")
+                    (equal (marker-buffer org-clock-marker) (current-buffer))
+                    (< (point) org-clock-marker)
+	                  (> (save-excursion (outline-next-heading) (point))
+		                   org-clock-marker)
+		                (not (string= last-state state)))
+	         (org-clock-out)))
+       (add-hook 'org-after-todo-state-change-hook
+	               'wicked/org-clock-out-if-waiting)))
+
+  ;; Dynamic Org clock table which breaks the reported time by date.
+  ;; To include table in org-mode:
+  ;;    #+BEGIN: clockreportrange :maxlevel 2 :tags "ClickTime" :tstart "<2020-02-22>" :tend "<2020-02-23>"
+  ;;    ...
+  ;;    #+END:
+  (defun org-dblock-write:clockreportrange (params)
+    "Display day-by-day time reports."
+    (let* ((ts (plist-get params :tstart))
+           (te (plist-get params :tend))
+           (start (time-to-seconds
+                   (apply 'encode-time (org-parse-time-string ts))))
+           (end (time-to-seconds
+                 (apply 'encode-time (org-parse-time-string te))))
+           day-numbers)
+      (setq params (plist-put params :tstart nil))
+      (setq params (plist-put params :end nil))
+      (while (<= start end)
+        (save-excursion
+          (insert "\n\n"
+                  (format-time-string (car org-time-stamp-formats)
+                                      (seconds-to-time start))
+                  "\n")
+          (org-dblock-write:clocktable
+           (plist-put
+            (plist-put
+             params
+             :tstart
+             (format-time-string (car org-time-stamp-formats)
+                                 (seconds-to-time start)))
+            :tend
+            (format-time-string (car org-time-stamp-formats)
+                                (seconds-to-time end))))
+          (setq start (+ 86400 start))))))
+
+  ;; Custom Org Agenda functions
+  (setq org-agenda-custom-commands
+        '(("u" todo "WORK&URGENT" nil)               ;; (1)
+          ("c" todo "WORK&@PHONE" nil)               ;; (2)
+          ("h" todo "PERSONAL-@ERRANDS" nil)         ;; (3)
+          ("p" tags "PROJECT-MAYBE-DONE" nil)        ;; (4)
+          ("m" tags "PROJECT&MAYBE" nil)
+          ("a" "My agenda"
+           ((org-agenda-list)
+            (tags-todo "URGENT")                     ;; (5)
+            (tags "PROJECT-MAYBE-DONE")))            ;; (6)
+          ;; ... put your other custom commands here
+          ))
+
+
   ;; Project Management
   (require 'projectile)
   (custom-set-variables '(projectile-project-root-files
@@ -734,9 +873,6 @@ before packages are loaded."
         [?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- return ?/ ?/ ?  return ?/ ?/ ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- ?- up right left ? ])
   (global-set-key (kbd "C-c c") 'verilog-block-comment)
 
-  ;; Disable auto-newline on semicolon in Verilog
-  (setq verilog-auto-newline nil)
-
   ;; UVM warning macro
   (fset 'uvm_warning
         (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([96 117 118 109 95 119 97 114 110 105 110 103 40 34 70 73 88 77 69 34 44 32 41 59 left left] 0 "%d")) arg)))
@@ -756,6 +892,8 @@ before packages are loaded."
 
   ;; Enable global auto completion
   (global-company-mode t)
+  (setq company-quickhelp-delay 0.2
+        company-quickhelp-max-lines nil)
 
   ;; Use icons in company autocomplete popup box
 ;  (if nil
@@ -840,11 +978,11 @@ before packages are loaded."
   ;; LSP
   ;; ------------------------------------------------------------------------------------------------------------------
 
-  ;; Optilize parameters for lsp-mode
+  ;; Optimize parameters for lsp-mode
   (setq lsp-enable-file-watchers t
         lsp-file-watch-threshold 100000000
         read-process-output-max (* 1024 1024) ;; 1mb
-        ;; lsp-idle-delay 500
+        ;; lsp-idle-delay 0.500
         lsp-idle-delay 0.2
         ;; lsp-print-performance t
         )
@@ -854,6 +992,8 @@ before packages are loaded."
   ;;  )
   ;; Expression for getting lsp files from server
   ; eval (lsp--directory-files-recursively "<Path of your project>" ".*" t)
+
+  (setq lsp-prefer-capf t) ; default nil
 
   ;; ;; Disable all lsp features except flycheck
   ;; (setq lsp-ui-doc-enable nil
@@ -942,6 +1082,7 @@ before packages are loaded."
         verilog-highlight-p1800-keywords t
         verilog-highlight-modules t
         verilog-tab-always-indent t
+        verilog-auto-newline nil ;; Disable auto-newline on semicolon in Verilog
         )
 
   ;; Custom VHDL settings
