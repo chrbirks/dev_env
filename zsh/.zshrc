@@ -27,6 +27,8 @@ export ZSH="/home/chrbirks/.oh-my-zsh"
 # powerline10k theme installed from https://github.com/romkatv/powerlevel10k
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
+POWERLEVEL9K_MODE="awesome-patched"
+
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
@@ -87,11 +89,19 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 # Third-party plugins:
 #   zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
-plugins=(colored-man-pages colorize fzf git zsh-autosuggestions)
+plugins=(colored-man-pages colorize fzf git mercurial zsh-autosuggestions)
 
 export FZF_BASE=
 
+# Save aliases before sourcing oh-my-zsh
+save_aliases=$(alias -L)
+
+# Source all oh-my-zsh code
 source $ZSH/oh-my-zsh.sh
+
+# Remove all aliases set by oh-my-zsh and restore old
+unalias -m '*'
+eval $save_aliases; unset save_aliases
 
 # User configuration
 
@@ -121,13 +131,23 @@ fi
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ..='cd ..'
 alias tmux='tmux -2'
+alias ccat='colorize_cat'
+alias cless='colorize_less'
+alias cp='nocorrect cp'
+alias egrep='egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
+alias fgrep='fgrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
+alias history=omz_history
+alias man='nocorrect man'
+alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
+alias sudo='nocorrect sudo'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-function llt { command ls -alFt --color=always "$@" | less -F -X -R +G ;}
+function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
 
