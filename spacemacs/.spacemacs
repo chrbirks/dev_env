@@ -77,6 +77,7 @@ This function should only modify configuration layer settings."
      imenu-list
      (java :variables
            java-backend 'lsp)
+     javascript
      lsp
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
@@ -136,6 +137,8 @@ This function should only modify configuration layer settings."
                                       lsp-java
                                       deadgrep
                                       monky
+                                      org-pretty-tags
+                                      org-fancy-priorities
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -225,6 +228,11 @@ It should only modify the values of Spacemacs settings."
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
    dotspacemacs-editing-style 'hybrid
+
+   ;; If non-nil show the version string in the Spacemacs buffer. It will
+   ;; appear as (spacemacs version)@(emacs version)
+   ;; (default t)
+   dotspacemacs-startup-buffer-show-version t
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -573,7 +581,7 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
   (setq-default
-   debug-on-error t
+   debug-on-error nil
 
    ;; Do not wrap lines
    truncate-lines t
@@ -649,6 +657,7 @@ before packages are loaded."
      term-mode-hook
      shell-mode-hook))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Remote access via TRAMP
   (require 'tramp)
   (setq tramp-default-method "sshx"
@@ -665,6 +674,11 @@ before packages are loaded."
                       (when (stringp method)
                         (member method '("su" "sudo"))))))))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Org mode settings
+  ;; TODO: make helpful hydra for clocking with org-mode. For example org-todo toggle, org-clock-menu, org-clock-in/out
+  ;; TODO: how to specify todo sequence for task
+
   ;; The ORG todo files are not added to the agenda automatically. You can do this with the following snippet.
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
@@ -673,9 +687,8 @@ before packages are loaded."
                  (push file org-agenda-files)))
             (org-projectile-todo-files)))
 
-  ;; TODO: enable 'spacemacs/toggle-mode-line-org-clock-on' always when clocked in
-  ;; TODO: make helpful hydra for clocking with org-mode. For example org-todo toggle, org-clock-menu, org-clock-in/out
-  ;; TODO: how to specify todo sequence for task
+  ;; Always enable org clock in modeline when clocked in
+  (spaceline-toggle-org-clock-on)
 
   ;; Org Capture template
   ;; Type: entry, item, checkitem, table-line, plain
@@ -683,7 +696,7 @@ before packages are loaded."
   (setq org-capture-templates
         '(
           ;; Template for todo stored in datetree
-	        ("t" "Simple TODO" entry (file+datetree "~/TODOs.org" "TODOs")
+	        ("t" "Simple TODO" entry (file+olp+datetree "~/TODOs.org" "TODOs")
 "* TODO %^{Description} %^G%?
   :PROPERTIES:
   UPDATED: %U
@@ -699,28 +712,15 @@ before packages are loaded."
         )
 
   ;; Set the TODo item states
-  ;; There are four classes of keywords, TASKS and EVENTS
-  ;; They are distinguished by their states and PROPERTIES data
-  ;; There are subsets of the classes that don't have keywords and use tags instead because they don't change state
   (setq org-todo-keywords
         '(;; Sequence for TASKS
-          ;; TODo means it's an item that needs addressing
-          ;; WAITING means it's dependent on something else happening
-          ;; DELEGATED means someone else is doing it and I need to follow up with them
-          ;; ASSIGNED means someone else has full, autonomous responsibility for it
-          ;; CANCELLED means it's no longer necessary to finish
-          ;; DONe means it's complete
-          (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "|" "ASSIGNED(.@/!)" "CANCELLED(x@/!)" "DONE(d@/!)")
+          ;; (sequence "TODO(t@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "|" "ASSIGNED(.@/!)" "CANCELLED(x@/!)" "DONE(d@/!)")
 
           ;; Sequence for EVENTS
-          ;; VISIT means that there is something you would physically like to do, no dates associated
-          ;; DIDNOTGO means the event was cancelled or I didn't go
-          ;; MEETING means a real time meeting, i.e. at work, or on the phone for something official
-          ;; VISITED means the event took place and is no longer scheduled
-          (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")
+          ;; (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")
 
-          ;; Sequence for tasks for time-tracking
-          (sequence "BACKLOG(b@/!)" "|" "POSTPONED(p@/!)" "DOING(d@/!)" "|" "WAITING(w@/!)" "REVIEW(r@/!)" "DONE(c@/!)")
+          ;; Sequence for tasks for time-tracking. Add note with time when entering the state (@) and record only time when leaving the state (!)
+          (sequence "BACKLOG(b@/!)" "POSTPONED(p@/!)" "WAITING(w@/!)" "DOING(d@/!)" "|" "REVIEW(r@/!)" "DONE(c@/!)")
   ))
 
   ;; Record time and note when a task is completed
@@ -741,17 +741,17 @@ before packages are loaded."
   ;; market task is started if you clock in
   (eval-after-load 'org
     '(progn
-       (defun wicked/org-clock-in-if-starting ()
-         "Clock in when the task is marked STARTED."
-         (when (and (string= state "STARTED")
+       (defun org-clock-in-if-starting ()
+         "Clock in when the task is marked DOING."
+         (when (and (string= state "DOING")
 		                (not (string= last-state state)))
 	         (org-clock-in)))
        (add-hook 'org-after-todo-state-change-hook
-	               'wicked/org-clock-in-if-starting)
+	               'org-clock-in-if-starting)
        (defadvice org-clock-in (after wicked activate)
-         "Set this task's status to 'STARTED'."
-         (org-todo "STARTED"))
-       (defun wicked/org-clock-out-if-waiting ()
+         "Set this task's status to 'DOING'."
+         (org-todo "DOING"))
+       (defun org-clock-out-if-waiting ()
          "Clock out when the task is marked WAITING."
          (when (and (string= state "WAITING")
                     (equal (marker-buffer org-clock-marker) (current-buffer))
@@ -761,8 +761,9 @@ before packages are loaded."
 		                (not (string= last-state state)))
 	         (org-clock-out)))
        (add-hook 'org-after-todo-state-change-hook
-	               'wicked/org-clock-out-if-waiting)))
+	               'org-clock-out-if-waiting)))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Dynamic Org clock table which breaks the reported time by date.
   ;; To include table in org-mode:
   ;;    #+BEGIN: clockreportrange :maxlevel 2 :tags "ClickTime" :tstart "<2020-02-22>" :tend "<2020-02-23>"
@@ -797,6 +798,7 @@ before packages are loaded."
                                 (seconds-to-time end))))
           (setq start (+ 86400 start))))))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Custom Org Agenda functions
   (setq org-agenda-custom-commands
         '(("u" todo "WORK&URGENT" nil)               ;; (1)
@@ -811,7 +813,96 @@ before packages are loaded."
           ;; ... put your other custom commands here
           ))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Beautify Org mode
+  (prefer-coding-system       'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8)
+  ;; Use indentation
+  (setq org-startup-indented nil
+        org-src-tab-acts-natively t)
+  ;; ;; I like visual-pitch-mode and visual-line-mode for org files
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (variable-pitch-mode 1)
+  ;;             visual-line-mode))
+  (setq org-hide-emphasis-markers t
+        org-fontify-done-headline t
+        org-hide-leading-stars t
+        org-pretty-entities t ; show entities as utf8 characters
+        org-odd-levels-only t)
+  ;; Automatically change list bullets
+  (setq org-list-demote-modify-bullet
+        (quote (("+" . "-")
+                ("-" . "+")
+                ("*" . "-")
+                ("1." . "-")
+                ("1)" . "-")
+                ("A)" . "-")
+                ("B)" . "-")
+                ("a)" . "-")
+                ("b)" . "-")
+                ("A." . "-")
+                ("B." . "-")
+                ("a." . "-")
+                ("b." . "-"))))
+  ;; Convert stars into nice looking bullets.
+  ;; Since I only use odd-levels I added a specific one for all even levels to show the odd levels as intended.
+  (use-package org-bullets
+    :custom
+    (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+    (org-ellipsis "⤵")
+    :hook (org-mode . org-bullets-mode))
+  ;; Show bullets instead of a dash in bulleted lists
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([+]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
+  ;; Prettify src blocks
+  (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
+                                         ("#+END_SRC" . "†")
+                                         ("#+begin_src" . "†")
+                                         ("#+end_src" . "†")
+                                         (">=" . "≥")
+                                         ("=>" . "⇨")))
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  (add-hook 'org-mode-hook 'prettify-symbols-mode)
+  ;; pretty-tags is a package to replace the tags by unicode symbols
+  (use-package org-pretty-tags
+    :demand t
+    :config
+    (setq org-pretty-tags-surrogate-strings
+          (quote
+           (("TOPIC" . "☆")
+            ("ClickTime" . "💩")
+            ("vista_creek" . "\U0001F4A9")
+            ("SERVICE" . "✍")
+            ("Blog" . "✍")
+            ("music" . "♬")
+            ("security" . "☆"))))
+    (org-pretty-tags-global-mode))
+  ;; Show priority symbols instead of the standard A, B, C, D....
+  (use-package org-fancy-priorities
+    :diminish
+    :demand t
+    :defines org-fancy-priorities-list
+    :hook (org-mode . org-fancy-priorities-mode)
+    :config
+    (unless (char-displayable-p ?❗)
+      (setq org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL"))))
+  ;; ;; I like to display an outline numbering as overlays on Org mode headlines.
+  ;; ;; The numbering matches how it would appear when exporting the org file.
+  ;; ;; This file is in the org-mode git repo but not (yet?) part of official orgmode
+  ;; (use-package org-num
+  ;;   :load-path "lisp/"
+  ;;   :after org
+  ;;   :hook (org-mode . org-num-mode))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Project Management
   (require 'projectile)
   (custom-set-variables '(projectile-project-root-files
@@ -903,6 +994,7 @@ before packages are loaded."
 ;      :hook (company-mode . company-box-mode))
 ;    )
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
   (use-package solaire-mode
     :hook
@@ -912,6 +1004,7 @@ before packages are loaded."
     (solaire-global-mode +1)
     (solaire-mode-swap-bg))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
   (require 'flycheck)
   ;; (setq 'flycheck-global-modes t)
@@ -934,6 +1027,7 @@ before packages are loaded."
   ;;                                              (face default))
   ;;                                            0 t)])))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; Enable helm-gtags-mode
   ;; (add-hook 'c-mode-hook 'helm-gtags-mode)
   ;; (add-hook 'c++-mode-hook 'helm-gtags-mode)
@@ -951,12 +1045,14 @@ before packages are loaded."
   ;;  '(helm-gtags-pulse-at-cursor t)
   ;;  )
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Colorize tags (keywords) in helm-semantic-or-imenu
   (with-eval-after-load 'helm-semantic
     (push '(c-mode . semantic-format-tag-summarize) helm-semantic-display-style)
     (push '(c++-mode . semantic-format-tag-summarize) helm-semantic-display-style)
     (push '(vhdl-mode . semantic-format-tag-summarize) helm-semantic-display-style))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Extend vhdl-mode with vhdl-tools-mode in vhdl-tools package (https://github.com/csantosb/vhdl-tools/wiki/Use)
   (if nil
       (use-package vhdl-tools
@@ -1070,12 +1166,14 @@ before packages are loaded."
   (add-hook 'java-mode-hook (lambda ()
                               (setq c-basic-offset 3)))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; veri-kompass for Verilog
   ;; (add-to-list 'load-path "/home/chrbirks/Downloads/veri-kompass/")
   ;; (require 'veri-kompass)
   ;; ;; Enable veri kompass minor mode mode
   ;; (add-hook 'verilog-mode-hook 'veri-kompass-minor-mode)
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Custom Verilog settings
   (setq verilog-auto-delete-trailing-whitespace t
         verilog-highlight-grouping-keywords nil
@@ -1085,6 +1183,7 @@ before packages are loaded."
         verilog-auto-newline nil ;; Disable auto-newline on semicolon in Verilog
         )
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Custom VHDL settings
   (setq vhdl-array-index-record-field-in-sensitivity-list t
         vhdl-compiler "GHDL"
@@ -1101,6 +1200,7 @@ before packages are loaded."
         vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
         )
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (use-package silicom-fw-common
     :load-path "~/github/dev_env/emacs/emacs_packages/"
     :init (setq silicom-email "chrbirks+emacs@gmail.com"
@@ -1108,6 +1208,7 @@ before packages are loaded."
     :config (setq vhdl-standard (quote (8 nil))) ;; Change default VHDL standard from '93 to '08
     )
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Set custom key bindings
   ;; TODO: Set shortcuts for lsp-ui-doc/sideline mode etc.
   ;; Set helm-gtags key bindings
@@ -1123,6 +1224,7 @@ before packages are loaded."
        (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
        (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Set hydra for vhdl-mode
   ;; TODO: add shortcuts for lsp-format-buffer, lsp-ui-peek-find...
   (use-package major-mode-hydra
@@ -1184,6 +1286,7 @@ before packages are loaded."
 
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
