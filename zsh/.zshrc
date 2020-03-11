@@ -56,7 +56,8 @@ HYPHEN_INSENSITIVE="true"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# (tmux tab titles are constantly set to cwd otherwise)
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
@@ -94,6 +95,7 @@ export FZF_BASE=
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+export PAGER='less -F -X -R'
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -127,7 +129,7 @@ alias tmux='tmux -2'
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-function llt { command ls -alFt --color=always "$@" | less -F -X -R +G ;}
+function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
 
