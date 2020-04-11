@@ -55,7 +55,7 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
             ; Use clangd as LSP backend
             c-c++-backend 'lsp-clangd ; 'lsp-ccls or 'lsp-cquery
-            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-c-cpp"
+            c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-c-cpp")
             ;; c-c++-lsp-executable "/usr/bin/clangd"
             ; Others
             c-c++-enable-auto-newline nil
@@ -77,7 +77,6 @@ This function should only modify configuration layer settings."
      imenu-list
      (java :variables
            java-backend 'lsp)
-     javascript
      lsp
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
@@ -137,8 +136,7 @@ This function should only modify configuration layer settings."
                                       lsp-java
                                       deadgrep
                                       monky
-                                      org-pretty-tags
-                                      org-fancy-priorities
+                                      company-statistics
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -541,12 +539,12 @@ It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   ;; ;; Set path to vhdl-tool LSP server
-  ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
+  ;; (setq lsp-vhdl-server-path (file-truename "~/github/dev_env/emacs/vhdl-tool"))
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'vhdl-tool))
 
   ;; ;; Set path to hdl_checker LSP server
-  ;; (setq lsp-vhdl-server-path "~/.local/bin/hdl_checker")
+  ;; (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'hdl-checker))
   ;; (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
@@ -600,7 +598,7 @@ before packages are loaded."
 
    ;; Use 'verilator_bin' instead of 'verilator' which throws errors
    flycheck-verilog-verilator-executable "/usr/bin/verilator_bin"
-   flycheck-vhdl-ghdl-executable "/usr/bin/ghdl"
+   flycheck-vhdl-ghdl-executable (file-truename "/usr/bin/ghdl")
    flycheck-ghdl-ieee-library "synopsys" ;;"standard"
    flycheck-ghdl-language-standard "08"
    ;; flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl";; TODO
@@ -986,6 +984,31 @@ before packages are loaded."
   (setq company-quickhelp-delay 0.2
         company-quickhelp-max-lines nil)
 
+  ;; Use company-statistics to have some most used completion candidates to be placed on top of company-mode popup.
+  ;; This configuration preserves the order of candidates returned from language server while still have the most used candidates on top
+  (use-package company-statistics
+    :ensure t
+    :after company
+    :diminish
+    :config
+    (company-statistics-mode)
+    (advice-add #'company-sort-by-statistics :override
+                (lambda (candidates)
+                  (if (> (length candidates) 2)
+                      (let* ((max-by-score
+                              (lambda (list)
+                                (--reduce (if (> (funcall company-statistics-score-calc it)
+                                                 (funcall company-statistics-score-calc acc))
+                                              it acc)
+                                          list)))
+                             (max-cand (funcall max-by-score candidates))
+                             (candidates (delq max-cand candidates))
+                             (max-cand-2 (funcall max-by-score candidates))
+                             (candidates (delq max-cand-2 candidates)))
+                        (-concat `(,max-cand ,max-cand-2) candidates))
+                    candidates))
+                '((name . --boost-2))))
+
   ;; Use icons in company autocomplete popup box
 ;  (if nil
 ;      (use-package all-the-icons
@@ -993,6 +1016,7 @@ before packages are loaded."
 ;    (use-package company-box
 ;      :hook (company-mode . company-box-mode))
 ;    )
+  (setq company-box-icons-alist 'company-box-icons-all-the-icons)
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
@@ -1011,6 +1035,7 @@ before packages are loaded."
   ; FIXME: Try removing these since they are part of lsp-mode
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
+  (add-to-list 'flycheck-global-modes 'sh-mode)
 
   ;; ;; Modify format of flycheck error table
   ;; (add-hook 'flycheck-error-list-mode-hook
@@ -1026,6 +1051,10 @@ before packages are loaded."
   ;;                                              16 17
   ;;                                              (face default))
   ;;                                            0 t)])))
+
+  ;; Flycheck tcl setup
+  (add-to-list 'flycheck-global-modes 'tcl-mode)
+  (setq flycheck-tcl-nagelfar-executable (file-truename "~/github/nagelfar/nagelfar131/nagelfar.tcl"))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; Enable helm-gtags-mode
@@ -1158,7 +1187,7 @@ before packages are loaded."
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'python-mode #'lsp)
   (add-hook 'vhdl-mode-hook #'lsp)
-  (add-hook 'verilog-mode-hook #'lsp)
+  ;; (add-hook 'verilog-mode-hook #'lsp)
 
   ;; Configure lsp for java
   (require 'lsp-java)
