@@ -515,6 +515,13 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'changed ; FIXME: 'changed does not work
 
+   ;; If non nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; indent handling like has been reported for `go-mode'.
+   ;; If it does deactivate it here.
+   ;; (default t)
+   dotspacemacs-use-clean-aindent-mode t
+
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
    dotspacemacs-zone-out-when-idle nil
@@ -539,6 +546,9 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+
+  ;; ---------------------------------------------------------------------------
+  ;; Setup for VHDL language server
 
   ;; ;; Set path to vhdl-tool LSP server
   ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
@@ -565,6 +575,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'ghdl-ls))
 
+  ;; ---------------------------------------------------------------------------
+  ;; Setup for Verilog language server
+
+  ;; Setup for SVLS
+  (setq lsp-clients-verilog-executable (file-truename "~/github/svls/target/release/svls"))
   )
 
 (defun dotspacemacs/user-load ()
@@ -607,11 +622,13 @@ before packages are loaded."
    ;; (flycheck-verilator-include-path ...) TODO
 
    ;; Compress files when access them via TRAMP
-   tramp-inline-compress-start-size t
+   tramp-inline-compress-start-size 1024
 
    ;; Tell ripgrep to also search hidden files
    ;; helm-rg-default-extra-args '("--hidden")
    )
+
+  ;; TODO: enable spacemacs/toggle-indent-guide-globally
 
   ;; Delete trailing whitespaces before saving
   (if nil
@@ -673,6 +690,21 @@ before packages are loaded."
                (not (let ((method (file-remote-p name 'method)))
                       (when (stringp method)
                         (member method '("su" "sudo"))))))))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Configure default evil-surround pair-list to not insert parenthesies
+  (custom-set-variables
+   '(evil-surround-pairs-alist
+     '((41 "(" . ")")
+       (93 "[" . "]")
+       (125 "{" . "}")
+       (35 "#{" . "}")
+       (98 "(" . ")")
+       (66 "{" . "}")
+       (62 "<" . ">")
+       (116 . evil-surround-read-tag)
+       (60 . evil-surround-read-tag)
+       (102 . evil-surround-function))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Org mode settings
@@ -1070,9 +1102,12 @@ before packages are loaded."
                            (vhdl-tools-mode 1))))
     )
 
-  ;; ------------------------------------------------------------------------------------------------------------------
+
+  ; lsp verilog-verilator
+  ;; (flycheck-add-next-checker 'python-flake8 '(warning . python-pycompile))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; LSP
-  ;; ------------------------------------------------------------------------------------------------------------------
 
   ;; Optimize parameters for lsp-mode
   (setq lsp-enable-file-watchers t
