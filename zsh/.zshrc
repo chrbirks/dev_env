@@ -58,7 +58,8 @@ HYPHEN_INSENSITIVE="true"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# (tmux tab titles are constantly set to cwd otherwise)
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
@@ -104,6 +105,7 @@ unalias -m '*'
 eval $save_aliases; unset save_aliases
 
 # User configuration
+export PAGER='less -F -X -R'
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
