@@ -1,7 +1,7 @@
 ;(("default" . ((user-emacs-directory . "~/.emacs.d")))
 (("default" . ((user-emacs-directory . "~/.spacemacs.d")
 		 (server-name . "spacemacs")
-		 (custom-file . "~/custom.el")
+		 (custom-file . "~/.config/spacemacs/custom.el")
 		 (env . (("SPACEMACSDIR" . "~/.config/spacemacs")))
 		      ))
  ("doom" . ((user-emacs-directory . "~/doom_install")
