@@ -21,7 +21,9 @@ export ZSH="/home/chrbirks/.oh-my-zsh"
 
 #ZSH_THEME="robbyrussell"
 
-# ZSH_THEME="powerlevel9k/powerlevel9k"
+# Remove extra space between right prompt right edge of terminal
+export ZLE_RPROMPT_INDENT=0
+
 # default: #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs)
 # POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(host dir vcs)
 # default: #POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs history time)
