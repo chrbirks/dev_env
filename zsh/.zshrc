@@ -8,6 +8,9 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Load work related env
+[[ ! -f ~/.config/zsh/.silicom_env.zsh ]] || source ~/.config/zsh/.silicom_env.zsh
+
 # Path to your oh-my-zsh installation.
 export ZSH="/home/chrbirks/.oh-my-zsh"
 
@@ -90,7 +93,7 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 # Third-party plugins:
 #   zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
-plugins=(colored-man-pages colorize fzf git mercurial zsh-autosuggestions)
+plugins=(colored-man-pages colorize fzf git zsh-autosuggestions)
 
 export FZF_BASE=
 
@@ -187,10 +190,6 @@ compinit
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-export SSH_USER=$USER
-export BUILD_USER=CBS
-export MODELSIM=~/modelsim.ini
 
 # Setup for fzf
 export FZF_TMUX=1

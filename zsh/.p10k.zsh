@@ -95,6 +95,10 @@
     # swap                  # used swap
     todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     timewarrior             # timewarrior tracking status (https://timewarrior.net/)
+    quartus_env
+    questa_env
+    vivado_env
+    # example               # example user-defined segment (see prompt_example function below)
     time                    # current time
     # =========================[ Line #2 ]=========================
     newline                 # \n
@@ -103,7 +107,6 @@
     # proxy                 # system-wide http/https/ftp proxy
     # battery               # internal battery
     # wifi                  # wifi speed
-    # example               # example user-defined segment (see prompt_example function below)
   )
 
   # To enable default icons for all segments, don't define POWERLEVEL9K_VISUAL_IDENTIFIER_EXPANSION
