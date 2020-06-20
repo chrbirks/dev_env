@@ -97,7 +97,7 @@ COMPLETION_WAITING_DOTS="true"
 #   zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
 plugins=(colored-man-pages colorize fzf git zsh-autosuggestions)
 
-export FZF_BASE=
+export FZF_BASE=/usr/share/fzf
 
 # Save aliases before sourcing oh-my-zsh
 save_aliases=$(alias -L)
@@ -148,6 +148,9 @@ alias man='nocorrect man'
 alias mkdir='nocorrect mkdir'
 alias mv='nocorrect mv'
 alias sudo='nocorrect sudo'
+alias ydl='youtube-dl --write-sub --audio-quality 0 -ci --xattrs'
+alias sshsilicom='ssh -YC cbs@10.100.1.42'
+alias doomupdate='~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom refresh && ~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom update && ~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom upgrade'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
