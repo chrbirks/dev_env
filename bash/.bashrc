@@ -113,14 +113,26 @@ fi
 alias ..='cd ..'
 alias tmux='tmux -2'
 
+alias sourcesim='source ~/projects/train/train/src/sub_comp/fb_scripts_lib/sim_scripts/bash/setup_sim.sh'
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-function llr { command ls -alFtr --color=always "$@" | less -F -X -R +G ;}
+function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
+#function rg { command rg "$@" | less -F -X -R ;}
+function dfh { command df -h "$@" | grep -v "/snap/" | sort -k6 ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
+#find () {
+#	if [[ -p /dev/stdout ]] ## don't pipe to less if piping to something else
+#	then
+#		command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X
+#	else
+#		command find "$1" -regextype posix-extended "${@:2:$#}"
+#	fi
+#}
 
 # Ripgrep search dotfiles but not dotdirectories
 function rg {
@@ -181,6 +193,17 @@ if command -v powerline-daemon > /dev/null; then
    #. /home/cbs/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
    . /usr/share/powerline/bindings/bash/powerline.sh
 fi
+
+# Append below
+# --------------------------------------------------------------------
+#export PYENV_ROOT="~/.pyenv"
+#export PATH="$PYENV_ROOT/bin:$PATH"
+#if command -v pyenv 1>/dev/null 2>&1; then
+   #eval "$(pyenv init -)"
+#fi
+
+# Prevent "write error: Interrupted system call" in console with window size changes (e.g. fzf C-r)
+trap '' SIGWINCH
 
 # Opt out of .NET Core tools telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
