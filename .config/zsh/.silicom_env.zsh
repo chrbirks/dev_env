@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-# TODO: Map key bindings
+# TODO: Check for SSH X11 status: SSH_CLIENT or SSH_CONNECTION or SSH_TTY defined.
 
 export SSH_USER=$USER
 export BUILD_USER=CBS
@@ -13,17 +13,22 @@ function setup_quartus() {
    export ALTERAD_LICENSE_FILE=2110@bohr
 
    local BOHR_QUARTUS_DIR="/net/bohr/opt/altera"
-   export QUARTUS_VER=$(find $BOHR_QUARTUS_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf)
-   if [ ! -n "${QUARTUS_VER}" ]; then
+   local TMP_QUARTUS_VER=$(find $BOHR_QUARTUS_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf --no-info --header="Select Quartus version...")
+   if [ ! -n "${TMP_QUARTUS_VER}" ]; then
       return
    fi
+   export QUARTUS_VER=${TMP_QUARTUS_VER}
 
    export QUARTUS_ROOTDIR="$BOHR_QUARTUS_DIR/$QUARTUS_VER/quartus"
    #export QUARTUS_INSTALL_DIR="$QUARTUS_ROOTDIR"
    #export PATH="$QUARTUS_ROOTDIR/linux64":$PATH
-   source "$QUARTUS_ROOTDIR"/adm/qenv.sh 2> /dev/null
+   #source "$QUARTUS_ROOTDIR"/adm/qenv.sh 2> /dev/null
+   #
+   export PATH="${QUARTUS_ROOTDIR}/bin":$PATH
+   export QUARTUS_64BIT=1
 }
-bindkey -s '^v' 'setup_quartus\n'
+zle -N setup_quartus
+bindkey '\ev' setup_quartus # Alt-v
 
 # Powerline10K prompt
 function prompt_quartus_env() {
@@ -31,7 +36,7 @@ function prompt_quartus_env() {
    if [ ! -n "${QUARTUS_VER}" ]; then
       return
    fi
-   p10k segment -f 208 -i '𝒬' -t $(echo $QUARTUS_VER) 
+   p10k segment -f 208 -i 'ℚ' -t $(echo $QUARTUS_VER) 
 }
 
 # Powerline10K instant prompt
@@ -48,10 +53,11 @@ function setup_questa() {
    export MODELSIM=~/modelsim.ini
 
    local BOHR_QUESTA_DIR="/opt/Mentor/questasim"
-   export QUESTA_VER=$(find $BOHR_QUESTA_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf)
-   if [ ! -n "${QUESTA_VER}" ]; then
+   local TMP_QUESTA_VER=$(find $BOHR_QUESTA_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf --no-info --header="Select QuestaSim version...")
+   if [ ! -n "${TMP_QUESTA_VER}" ]; then
       return
    fi
+   export QUESTA_VER=${TMP_QUESTA_VER}
 
    export QUESTA_HOME="$BOHR_QUESTA_DIR/$QUESTA_VER/questasim"
    #export INSTALL_HOME=/opt/Mentor/questasim/$1/questasim
@@ -62,14 +68,15 @@ function setup_questa() {
    export PATH=$QUESTA_HOME/bin:$PATH
    export PATH=$QUESTA_HOME/linux_x86_64:$PATH
 }
-bindkey -s '^g' 'setup_questa\n'
+zle -N setup_questa
+bindkey '\eg' setup_questa
 
 # Powerline10K prompt
 function prompt_questa_env() {
    if [ ! -n "${QUESTA_VER}" ]; then
       return
    fi
-   p10k segment -f 208 -i 'ℚ' -t $(echo $QUESTA_VER) 
+   p10k segment -f 208 -i '𝒬' -t $(echo $QUESTA_VER) 
 }
 
 # Powerline10K instant prompt
@@ -83,15 +90,17 @@ function setup_vivado() {
    export XILINXD_LICENSE_FILE=2100@bohr
 
    local BOHR_VIVADO_DIR="/net/bohr/opt/Xilinx/Vivado"
-   export VIVADO_VER=$(find $BOHR_VIVADO_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf)
-   if [ ! -n "${VIVADO_VER}" ]; then
+   local TMP_VIVADO_VER=$(find $BOHR_VIVADO_DIR -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort --ignore-case --reverse | fzf --no-info --header="Select Vivado version...")
+   if [ ! -n "${TMP_VIVADO_VER}" ]; then
       return
    fi
+   export VIVADO_VER=${TMP_VIVADO_VER}
 
    export VIVADO_ROOTDIR="$BOHR_VIVADO_DIR/$VIVADO_VER"
    source "$VIVADO_ROOTDIR"/settings64.sh
 }
-bindkey -s '^b' 'setup_vivado\n'
+zle -N setup_vivado
+bindkey '\eb' setup_vivado
 
 # Powerline10K prompt
 function prompt_vivado_env() {

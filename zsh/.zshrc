@@ -8,11 +8,9 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Load work related env
-[[ ! -f ~/.config/zsh/.silicom_env.zsh ]] || source ~/.config/zsh/.silicom_env.zsh
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/chrbirks/.oh-my-zsh"
+export ZSH="/home/cbs/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -141,6 +139,7 @@ alias tmux='tmux -2'
 alias ccat='colorize_cat'
 alias cless='colorize_less'
 alias cp='nocorrect cp'
+alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias egrep='egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias fgrep='fgrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias history=omz_history
@@ -157,7 +156,9 @@ alias doomupdate='~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom 
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
+#function ll { {echo "" & command ls -l --color=always "$@";} | less -F -X -R ;}
 function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
+function dfh { command df -h -x tmpfs "$@" | command grep -v "/snap/" | command grep -v "Mounted on" | sort -k6 ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
 
@@ -181,6 +182,12 @@ setopt histappend
 HISTSIZE=10000
 HISTFILESIZE=20000
 
+if [[ -v TMUX_PANE ]]; then
+   HISTFILE=~/.zsh_history_${TMUX_PANE}
+else
+   HISTFILE=~/.zsh_history
+fi
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 #setopt checkwinsize
@@ -196,15 +203,27 @@ compinit
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# Opt out of .NET Core tools telemetry
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+# Add path to installed snaps
+export PATH="/snap/bin:$PATH"
+
+# Add path to rust compiler
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Configure broot to launch using a shell function
+# TODO: Check that broot is installed before running
+source /home/cbs/.config/broot/launcher/bash/br
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 # Setup for fzf
 export FZF_TMUX=1
 export FZF_TMUX_HEIGHT='40%'
 export FZF_COMPLETION_TRIGGER='**'
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Opt out of .NET Core tools telemetry
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-
-source /home/chrbirks/.config/broot/launcher/bash/br
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# Load work related env
+[[ ! -f ~/.config/zsh/.silicom_env.zsh ]] || source ~/.config/zsh/.silicom_env.zsh

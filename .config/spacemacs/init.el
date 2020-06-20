@@ -55,7 +55,7 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
             ; Use clangd as LSP backend
             c-c++-backend 'lsp-clangd ; 'lsp-ccls or 'lsp-cquery
-            c-c++-lsp-cache-dir "~/.emacs.d/.cache/lsp-c-cpp"
+            c-c++-lsp-cache-dir (file-truename "~/.emacs.d/.cache/lsp-c-cpp")
             ;; c-c++-lsp-executable "/usr/bin/clangd"
             ; Others
             c-c++-enable-auto-newline nil
@@ -78,6 +78,7 @@ This function should only modify configuration layer settings."
      (java :variables
            java-backend 'lsp)
      javascript
+     latex
      lsp
      major-modes ; adds packages for Arch PKGBUILDs, Arduino, Matlab, etc.
      markdown
@@ -128,7 +129,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(vhdl-tools ;; extended vhdl-mode
                                       ialign ;; visual align-regexp
-                                      doom-themes
                                       solaire-mode
                                       posframe
                                       hydra
@@ -139,6 +139,7 @@ This function should only modify configuration layer settings."
                                       monky
                                       org-pretty-tags
                                       org-fancy-priorities
+                                      company-fuzzy
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -626,6 +627,9 @@ before packages are loaded."
    ;; flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl";; TODO
    ;; (flycheck-verilator-include-path ...) TODO
 
+   ;; Increase max number of flycheck errors
+   flycheck-checker-error-threshold 1000
+
    ;; Compress files when access them via TRAMP
    tramp-inline-compress-start-size 1024
 
@@ -678,6 +682,19 @@ before packages are loaded."
      comint-mode-hook
      term-mode-hook
      shell-mode-hook))
+
+  (setq dumb-jump-prefer-searcher 'rg
+        dumb-jump-selector 'helm
+        dumb-jump-use-visible-window t)
+  (defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Remote access via TRAMP
@@ -1015,13 +1032,22 @@ before packages are loaded."
   (global-set-key (kbd "<f7>") 'switch-to-minibuffer-window)
 
   ;; Use vterm terminal from https://github.com/akermu/emacs-libvterm
-  (add-to-list 'load-path "~/github/emacs-libvterm")
+  (add-to-list 'load-path (file-truename "~/github/emacs-libvterm"))
   (require 'vterm)
 
   ;; Enable global auto completion
   (global-company-mode t)
   (setq company-quickhelp-delay 0.2
         company-quickhelp-max-lines nil)
+
+  ;; Enable company-fuzzy matching globally
+  (use-package company-fuzzy
+    :defer t
+    :init
+    (setq company-fuzzy-sorting-backend 'flx)
+    (setq company-fuzzy-prefix-ontop nil)
+    (with-eval-after-load 'company
+      (global-company-fuzzy-mode t)))
 
   ;; Use icons in company autocomplete popup box
 ;  (if nil
@@ -1180,16 +1206,16 @@ before packages are loaded."
         lsp-enable-on-type-formatting t
         lsp-enable-file-watchers t
         lsp-enable-xref t
-        lsp-print-io t ; log all messages to *lsp-log* for debugging
+        lsp-print-io nil ; log all messages to *lsp-log* for debugging
         )
 
   ;; Add LSP which-key integration
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
 
-  ;; Configure company-lsp company completion backend for lsp-mode
-  (setq company-lsp-async t
-        company-lsp-enable-snippet t
-        company-lsp-enable-recompletion t)
+  ;; ;; Configure company-lsp company completion backend for lsp-mode
+  ;; (setq company-lsp-async t
+  ;;       company-lsp-enable-snippet t
+  ;;       company-lsp-enable-recompletion t)
 
   ;; Enable lsp for all programming languages
   ;; (add-hook 'prog-mode-hook #'lsp)
@@ -1205,6 +1231,21 @@ before packages are loaded."
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'java-mode-hook (lambda ()
                               (setq c-basic-offset 3)))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; ;; lsp-latex settings (requires texlab from https://github.com/latex-lsp/texlab)
+  ;; (add-to-list 'load-path (file-truename "~/github/lsp-latex"))
+  ;; (require 'lsp-latex)
+  ;; ;; "texlab" must be located at a directory contained in `exec-path'.
+  ;; ;; If you want to put "texlab" somewhere else,
+  ;; ;; you can specify the path to "texlab" as follows:
+  ;; (setq lsp-latex-texlab-executable (file-truename "~/github/texlab/target/release/texlab"))
+  ;; (with-eval-after-load "tex-mode"
+  ;;   (add-hook 'tex-mode-hook 'lsp)
+  ;;   (add-hook 'latex-mode-hook 'lsp))
+  ;; ;; For YaTeX
+  ;; (with-eval-after-load "yatex"
+  ;;   (add-hook 'yatex-mode-hook 'lsp))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; veri-kompass for Verilog
@@ -1335,6 +1376,6 @@ This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
   ;; This is an extra to avoid having init.el polluted by M-x customize
-  (setq custom-file (file-truename "~/custom.el"))
+  (setq custom-file (file-truename "~/.config/spacemacs/custom.el"))
   (load custom-file)
 )
