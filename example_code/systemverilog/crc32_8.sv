@@ -95,7 +95,28 @@ module crc32_8
   assign next_crc[6] = d[2] ^ crc_reg[25] ^ d[0] ^ crc_reg[31] ^ d[3] ^ d[1] ^ crc_reg[28] ^ crc_reg[26] ^ crc_reg[29] ^ d[6] ^ d[5] ^ crc_reg[30];
   assign next_crc[7] = d[2] ^ crc_reg[31] ^ d[0] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[29] ^ d[4] ^ d[7] ^ crc_reg[27] ^ d[5];
   assign next_crc[8] = crc_reg[0] ^ crc_reg[27] ^ d[7] ^ d[6] ^ d[4] ^ crc_reg[25] ^ d[3] ^ crc_reg[28] ^ crc_reg[24];
-  assign next_crc[9] = d[5] ^ crc_reg[1] ^ crc_reg[25] ^ d[3] ^ crc_reg[28] ^ d[2] ^ d[6] ^ crc_reg[26] ^ crc_reg[29];assign next_crc[10] = d[5] ^ d[7] ^ crc_reg[27] ^ crc_reg[29] ^ d[4] ^ crc_reg[26] ^ crc_reg[24] ^ d[2] ^ crc_reg[2];assign next_crc[11] = d[6] ^ d[7] ^ crc_reg[27] ^ d[4] ^ crc_reg[3] ^ crc_reg[24] ^ d[3] ^ crc_reg[28] ^ crc_reg[25];assign next_crc[12] = d[5] ^ crc_reg[30] ^ d[2] ^ crc_reg[25] ^ d[1] ^ d[3] ^ crc_reg[28] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[29] ^ d[7] ^ crc_reg[4] ^ d[6];assign next_crc[13] = crc_reg[30] ^ d[5] ^ d[6] ^ crc_reg[27] ^ crc_reg[29] ^ d[4] ^ crc_reg[5] ^ crc_reg[26] ^ d[1] ^ d[0] ^ crc_reg[31] ^ crc_reg[25] ^ d[2];assign next_crc[14] = d[0] ^ crc_reg[31] ^ d[3] ^ d[1] ^ crc_reg[28] ^ crc_reg[26] ^ crc_reg[6] ^ d[4] ^ crc_reg[27] ^ d[5] ^ crc_reg[30];assign next_crc[15] = crc_reg[7] ^ crc_reg[31] ^ d[0] ^ crc_reg[28] ^ d[3] ^ d[2] ^ crc_reg[27] ^ crc_reg[29] ^ d[4];assign next_crc[16] = d[2] ^ crc_reg[8] ^ d[3] ^ crc_reg[28] ^ crc_reg[24] ^ crc_reg[29] ^ d[7];assign next_crc[17] = crc_reg[30] ^ d[2] ^ d[1] ^ crc_reg[9] ^ crc_reg[25] ^ crc_reg[29] ^ d[6];assign next_crc[18] = crc_reg[31] ^ d[0] ^ d[1] ^ crc_reg[26] ^ crc_reg[10] ^ d[5] ^ crc_reg[30];assign next_crc[19] = crc_reg[11] ^ crc_reg[31] ^ d[0] ^ crc_reg[27] ^ d[4];assign next_crc[20] = crc_reg[28] ^ d[3] ^ crc_reg[12];assign next_crc[21] = crc_reg[29] ^ crc_reg[13] ^ d[2];assign next_crc[22] = d[7] ^ crc_reg[24] ^ crc_reg[14];assign next_crc[23] = crc_reg[30] ^ crc_reg[15] ^ d[6] ^ d[7] ^ d[1] ^ crc_reg[24] ^ crc_reg[25];assign next_crc[24] = crc_reg[16] ^ d[5] ^ crc_reg[25] ^ d[0] ^ crc_reg[31] ^ d[6] ^ crc_reg[26];assign next_crc[25] = crc_reg[27] ^ d[4] ^ crc_reg[26] ^ crc_reg[17] ^ d[5];assign next_crc[26] = crc_reg[27] ^ d[7] ^ d[4] ^ d[1] ^ crc_reg[28] ^ d[3] ^ crc_reg[24] ^ crc_reg[30] ^ crc_reg[18];assign next_crc[27] = crc_reg[29] ^ d[6] ^ d[2] ^ crc_reg[25] ^ d[0] ^ crc_reg[31] ^ crc_reg[28] ^ d[3] ^ crc_reg[19];assign next_crc[28] = crc_reg[29] ^ crc_reg[26] ^ d[1] ^ d[2] ^ crc_reg[30] ^ crc_reg[20] ^ d[5];assign next_crc[29] = crc_reg[31] ^ d[0] ^ d[1] ^ d[4] ^ crc_reg[27] ^ crc_reg[21] ^ crc_reg[30];assign next_crc[30] = d[0] ^ crc_reg[31] ^ d[3] ^ crc_reg[28] ^ crc_reg[22];
+  assign next_crc[9] = d[5] ^ crc_reg[1] ^ crc_reg[25] ^ d[3] ^ crc_reg[28] ^ d[2] ^ d[6] ^ crc_reg[26] ^ crc_reg[29];
+  assign next_crc[10] = d[5] ^ d[7] ^ crc_reg[27] ^ crc_reg[29] ^ d[4] ^ crc_reg[26] ^ crc_reg[24] ^ d[2] ^ crc_reg[2];
+  assign next_crc[11] = d[6] ^ d[7] ^ crc_reg[27] ^ d[4] ^ crc_reg[3] ^ crc_reg[24] ^ d[3] ^ crc_reg[28] ^ crc_reg[25];
+  assign next_crc[12] = d[5] ^ crc_reg[30] ^ d[2] ^ crc_reg[25] ^ d[1] ^ d[3] ^ crc_reg[28] ^ crc_reg[24] ^ crc_reg[26] ^ crc_reg[29] ^ d[7] ^ crc_reg[4] ^ d[6];
+  assign next_crc[13] = crc_reg[30] ^ d[5] ^ d[6] ^ crc_reg[27] ^ crc_reg[29] ^ d[4] ^ crc_reg[5] ^ crc_reg[26] ^ d[1] ^ d[0] ^ crc_reg[31] ^ crc_reg[25] ^ d[2];
+  assign next_crc[14] = d[0] ^ crc_reg[31] ^ d[3] ^ d[1] ^ crc_reg[28] ^ crc_reg[26] ^ crc_reg[6] ^ d[4] ^ crc_reg[27] ^ d[5] ^ crc_reg[30];
+  assign next_crc[15] = crc_reg[7] ^ crc_reg[31] ^ d[0] ^ crc_reg[28] ^ d[3] ^ d[2] ^ crc_reg[27] ^ crc_reg[29] ^ d[4];
+  assign next_crc[16] = d[2] ^ crc_reg[8] ^ d[3] ^ crc_reg[28] ^ crc_reg[24] ^ crc_reg[29] ^ d[7];
+  assign next_crc[17] = crc_reg[30] ^ d[2] ^ d[1] ^ crc_reg[9] ^ crc_reg[25] ^ crc_reg[29] ^ d[6];
+  assign next_crc[18] = crc_reg[31] ^ d[0] ^ d[1] ^ crc_reg[26] ^ crc_reg[10] ^ d[5] ^ crc_reg[30];
+  assign next_crc[19] = crc_reg[11] ^ crc_reg[31] ^ d[0] ^ crc_reg[27] ^ d[4];
+  assign next_crc[20] = crc_reg[28] ^ d[3] ^ crc_reg[12];
+  assign next_crc[21] = crc_reg[29] ^ crc_reg[13] ^ d[2];
+  assign next_crc[22] = d[7] ^ crc_reg[24] ^ crc_reg[14];
+  assign next_crc[23] = crc_reg[30] ^ crc_reg[15] ^ d[6] ^ d[7] ^ d[1] ^ crc_reg[24] ^ crc_reg[25];
+  assign next_crc[24] = crc_reg[16] ^ d[5] ^ crc_reg[25] ^ d[0] ^ crc_reg[31] ^ d[6] ^ crc_reg[26];
+  assign next_crc[25] = crc_reg[27] ^ d[4] ^ crc_reg[26] ^ crc_reg[17] ^ d[5];
+  assign next_crc[26] = crc_reg[27] ^ d[7] ^ d[4] ^ d[1] ^ crc_reg[28] ^ d[3] ^ crc_reg[24] ^ crc_reg[30] ^ crc_reg[18];
+  assign next_crc[27] = crc_reg[29] ^ d[6] ^ d[2] ^ crc_reg[25] ^ d[0] ^ crc_reg[31] ^ crc_reg[28] ^ d[3] ^ crc_reg[19];
+  assign next_crc[28] = crc_reg[29] ^ crc_reg[26] ^ d[1] ^ d[2] ^ crc_reg[30] ^ crc_reg[20] ^ d[5];
+  assign next_crc[29] = crc_reg[31] ^ d[0] ^ d[1] ^ d[4] ^ crc_reg[27] ^ crc_reg[21] ^ crc_reg[30];
+  assign next_crc[30] = d[0] ^ crc_reg[31] ^ d[3] ^ crc_reg[28] ^ crc_reg[22];
   assign next_crc[31] = d[2] ^ crc_reg[29] ^ crc_reg[23];
   
 endmodule

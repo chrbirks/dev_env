@@ -121,7 +121,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 function ll { command ls -l --color=always "$@" | less -F -X -R ;}
 function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
-#function rg { command rg "$@" | less -F -X -R ;}
+function llr { command ls -alFtr --color=always "$@" | less -F -X -R +G ;}
 function dfh { command df -h "$@" | grep -v "/snap/" | sort -k6 ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }

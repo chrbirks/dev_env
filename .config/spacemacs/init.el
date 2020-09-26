@@ -140,6 +140,8 @@ This function should only modify configuration layer settings."
                                       org-pretty-tags
                                       org-fancy-priorities
                                       company-fuzzy
+                                      pcre2el ;; Required for PCRE mode in ialign
+                                      vterm
                                       )
 
    ;; A list of packages that cannot be updated.
@@ -180,9 +182,9 @@ It should only modify the values of Spacemacs settings."
    ;; portable dumper in the cache directory under dumps sub-directory.
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
-   ;;   ./emacs --dump-file=~/.emacs.d/.cache/dumps/spacemacs.pdmp
-   ;; (default spacemacs.pdmp)
-   dotspacemacs-emacs-dumper-dump-file "spacemacs.pdmp"
+   ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
+   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
+   dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
@@ -202,9 +204,18 @@ It should only modify the values of Spacemacs settings."
    ;; (default '(100000000 0.1))
    dotspacemacs-gc-cons '(100000000 0.1)
 
+   ;; Set `read-process-output-max' when startup finishes.
+   ;; This defines how much data is read from a foreign process.
+   ;; Setting this >= 1 MB should increase performance for lsp servers
+   ;; in emacs 27.
+   ;; (default (* 1024 1024))
+   dotspacemacs-read-process-output-max (* 1024 1024)
+
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
-   ;; latest version of packages from MELPA. (default nil)
+   ;; latest version of packages from MELPA. Spacelpa is currently in
+   ;; experimental state please use only for testing purposes.
+   ;; (default nil)
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
@@ -487,6 +498,7 @@ It should only modify the values of Spacemacs settings."
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
    ;; (default '("rg" "ag" "pt" "ack" "grep"))
    dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   ;; NOTE: rg ignores files and folders defined in .gitignore and .ignore files
 
    ;; Format specification for setting the frame title.
    ;; %a - the `abbreviated-file-name', or `buffer-name'
@@ -525,6 +537,13 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
 
+   ;; If non-nil shift your number row to match the entered keyboard layout
+   ;; (only in insert state). Currently supported keyboard layouts are:
+   ;; `qwerty-us', `qwertz-de' and `querty-ca-fr'.
+   ;; New layouts can be added in `spacemacs-editing' layer.
+   ;; (default nil)
+   dotspacemacs-swap-number-row nil
+
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
    dotspacemacs-zone-out-when-idle nil
@@ -532,7 +551,11 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil))
+   dotspacemacs-pretty-docs nil
+
+   ;; If nil the home buffer shows the full path of agenda items
+   ;; and todos. If non nil only the file name is shown.
+   dotspacemacs-home-shorten-agenda-source nil))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -634,8 +657,13 @@ before packages are loaded."
    tramp-inline-compress-start-size 1024
 
    ;; Tell ripgrep to also search hidden files
-   ;; helm-rg-default-extra-args '("--hidden")
+   ; helm-rg-default-extra-args '("--hidden")
+   ;helm-rg-default-extra-args '("-gXXX '!/qvip_axi4_example/'")
+   ;helm-rg-ripgrep-executable '("/usr/bin/rgXXX -g '!/qvip_axi4_example/'")
    )
+
+  ;(setq helm-rg-default-extra-args '("-gXXX '!/qvip_axi4_example/'"))
+  ;(setq helm-rg-ripgrep-executable '("/usr/bin/rgXXX -g '!/qvip_axi4_example/'"))
 
   ;; TODO: enable spacemacs/toggle-indent-guide-globally
 
@@ -750,14 +778,14 @@ before packages are loaded."
   (setq org-capture-templates
         '(
           ;; Template for todo stored in datetree
-	        ("t" "Simple TODO" entry (file+olp+datetree "~/TODOs.org" "TODOs")
+          ("t" "Simple TODO" entry (file+olp+datetree "~/TODOs.org" "TODOs")
 "* TODO %^{Description} %^G%?
   :PROPERTIES:
   UPDATED: %U
   :END:" :empty-lines 1)
 
           ;; Template for project or task time tracking
-	        ("p" "Project" entry (file+headline "~/TODOs.org" "Projects")
+          ("p" "Project" entry (file+headline "~/TODOs.org" "Projects")
 "* %^{Description} %^G%?
   :PROPERTIES:
   UPDATED: %U
@@ -798,10 +826,10 @@ before packages are loaded."
        (defun org-clock-in-if-starting ()
          "Clock in when the task is marked DOING."
          (when (and (string= state "DOING")
-		                (not (string= last-state state)))
-	         (org-clock-in)))
+                    (not (string= last-state state)))
+           (org-clock-in)))
        (add-hook 'org-after-todo-state-change-hook
-	               'org-clock-in-if-starting)
+                 'org-clock-in-if-starting)
        (defadvice org-clock-in (after wicked activate)
          "Set this task's status to 'DOING'."
          (org-todo "DOING"))
@@ -810,12 +838,12 @@ before packages are loaded."
          (when (and (string= state "WAITING")
                     (equal (marker-buffer org-clock-marker) (current-buffer))
                     (< (point) org-clock-marker)
-	                  (> (save-excursion (outline-next-heading) (point))
-		                   org-clock-marker)
-		                (not (string= last-state state)))
-	         (org-clock-out)))
+                    (> (save-excursion (outline-next-heading) (point))
+                       org-clock-marker)
+                    (not (string= last-state state)))
+           (org-clock-out)))
        (add-hook 'org-after-todo-state-change-hook
-	               'org-clock-out-if-waiting)))
+                 'org-clock-out-if-waiting)))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Dynamic Org clock table which breaks the reported time by date.
@@ -902,13 +930,14 @@ before packages are loaded."
                 ("B." . "-")
                 ("a." . "-")
                 ("b." . "-"))))
-  ;; Convert stars into nice looking bullets.
-  ;; Since I only use odd-levels I added a specific one for all even levels to show the odd levels as intended.
-  (use-package org-bullets
-    :custom
-    (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
-    (org-ellipsis "⤵")
-    :hook (org-mode . org-bullets-mode))
+  ;; ;; Convert stars into nice looking bullets.
+  ;; ;; Since I only use odd-levels I added a specific one for all even levels to show the odd levels as intended.
+  ;; (use-package org-bullets
+  ;;   :ensure t
+  ;;   :custom
+  ;;   (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+  ;;   (org-ellipsis "⤵")
+  ;;   :hook (org-mode . org-bullets-mode))
   ;; Show bullets instead of a dash in bulleted lists
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -955,6 +984,16 @@ before packages are loaded."
   ;;   :load-path "lisp/"
   ;;   :after org
   ;;   :hook (org-mode . org-num-mode))
+
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Prettify symbols for LaTeX
+  (global-prettify-symbols-mode 1)
+  (add-hook
+   'latex-mode-hook
+   (lambda ()
+     (mapc (lambda (pair) (push pair prettify-symbols-alist))
+           '(("\\_" . #x5f) ; Replace '\_' with actual '_'
+             ))))
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Project Management
@@ -1050,12 +1089,54 @@ before packages are loaded."
       (global-company-fuzzy-mode t)))
 
   ;; Use icons in company autocomplete popup box
-;  (if nil
-;      (use-package all-the-icons
-;        :ensure t)
-;    (use-package company-box
-;      :hook (company-mode . company-box-mode))
-;    )
+  (if nil
+    ;;   (use-package all-the-icons
+    ;;     :ensure t)
+    ;; (use-package company-box
+    ;;   :hook (company-mode . company-box-mode))
+      (use-package company-box
+        :diminish company-box-mode
+        :hook (company-mode . company-box-mode)
+        :init
+        (setq company-box-icons-alist 'company-box-icons-all-the-icons)
+        :config
+        (require 'all-the-icons)
+        (setf (alist-get 'min-height company-box-frame-parameters) 6)
+        (setq company-box-icons-alist 'company-box-icons-all-the-icons
+              company-box-backends-colors nil
+              ;; These are the Doom Emacs defaults
+              company-box-icons-all-the-icons
+              `((Unknown       . ,(all-the-icons-material "find_in_page"             :face 'all-the-icons-purple))
+                (Text          . ,(all-the-icons-material "text_fields"              :face 'all-the-icons-green))
+                (Method        . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+                (Function      . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+                (Constructor   . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+                (Field         . ,(all-the-icons-material "functions"                :face 'all-the-icons-red))
+                (Variable      . ,(all-the-icons-material "adjust"                   :face 'all-the-icons-blue))
+                (Class         . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
+                (Interface     . ,(all-the-icons-material "settings_input_component" :face 'all-the-icons-red))
+                (Module        . ,(all-the-icons-material "view_module"              :face 'all-the-icons-red))
+                (Property      . ,(all-the-icons-material "settings"                 :face 'all-the-icons-red))
+                (Unit          . ,(all-the-icons-material "straighten"               :face 'all-the-icons-red))
+                (Value         . ,(all-the-icons-material "filter_1"                 :face 'all-the-icons-red))
+                (Enum          . ,(all-the-icons-material "plus_one"                 :face 'all-the-icons-red))
+                (Keyword       . ,(all-the-icons-material "filter_center_focus"      :face 'all-the-icons-red))
+                (Snippet       . ,(all-the-icons-material "short_text"               :face 'all-the-icons-red))
+                (Color         . ,(all-the-icons-material "color_lens"               :face 'all-the-icons-red))
+                (File          . ,(all-the-icons-material "insert_drive_file"        :face 'all-the-icons-red))
+                (Reference     . ,(all-the-icons-material "collections_bookmark"     :face 'all-the-icons-red))
+                (Folder        . ,(all-the-icons-material "folder"                   :face 'all-the-icons-red))
+                (EnumMember    . ,(all-the-icons-material "people"                   :face 'all-the-icons-red))
+                (Constant      . ,(all-the-icons-material "pause_circle_filled"      :face 'all-the-icons-red))
+                (Struct        . ,(all-the-icons-material "streetview"               :face 'all-the-icons-red))
+                (Event         . ,(all-the-icons-material "event"                    :face 'all-the-icons-red))
+                (Operator      . ,(all-the-icons-material "control_point"            :face 'all-the-icons-red))
+                (TypeParameter . ,(all-the-icons-material "class"                    :face 'all-the-icons-red))
+                (Template      . ,(all-the-icons-material "short_text"               :face 'all-the-icons-green))))
+        ;; Add a space after the icon
+        (dolist (elt company-box-icons-all-the-icons)
+          (setcdr elt (concat (cdr elt) " "))))
+    )
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Visually distinguish file-visiting windows from other types of windows (like popups or sidebars) by giving them a slightly different -- often brighter -- background
@@ -1166,7 +1247,9 @@ before packages are loaded."
   ;;       lsp-ui-flycheck-enable t)
   ;; Enable all lsp features except symbol highlighting
   (setq ; Show info box
-        lsp-ui-doc-enable t
+        lsp-ui-doc-enable nil
+        lsp-ui-doc-show-with-cursor nil
+        lsp-ui-doc-show-with-mouse t
         lsp-ui-doc-header nil
         lsp-ui-doc-include-signature t
         lsp-ui-doc-position 'at-point; 'top, 'bottom or 'at-point
@@ -1175,20 +1258,36 @@ before packages are loaded."
         ;; lsp-ui-doc-max-width 150
         lsp-ui-doc-max-height 5
         lsp-ui-doc-use-childframe t
-        lsp-ui-doc-use-webkit nil ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --width-xwidgets
-        lsp-enable-symbol-highlighting t
+        lsp-ui-doc-use-webkit t ;; Use lsp-ui-doc-webkit only in GUI. Requires compiling --with-xwidgets
         ; Show info from selected line on the same line
-        lsp-ui-sideline-enable nil
+        lsp-ui-sideline-enable t
         lsp-ui-sideline-show-symbol t
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-sideline-show-code-actions nil ; Show all possible LSP actions such as renaming, type casting, etc.
-        ; Other options
-        company-lsp-cache-candidates 'auto
+        ; Enable lenses
+        lsp-lens-enable t
+        ; Eldoc
         lsp-eldoc-enable-hover nil ; Show LSP info in minibuffer?
         lsp-eldoc-enable-signature-help t
         lsp-eldoc-prefer-signature-help t
         lsp-signature-render-all t
         lsp-eldoc-render-all t
+        ; Modeline
+        lsp-modeline-code-actions-enable t
+        lsp-modeline-diagnostics-enable t
+        ; Auto completion
+        lsp-completion-provider :company-mode ; company-mode (company-capf?) or capf
+        lsp-completion-show-detail t
+        lsp-completion-show-kind t
+        ; Headerline
+        lsp-headerline-breadcrumb-mode t
+        lsp-headerline-breadcrumb-enable t
+        ; Other options
+        lsp-enable-symbol-highlighting nil
+        lsp-signature-render-all t
+        company-lsp-cache-candidates 'auto
+        lsp-signature-auto-activate t
+        lsp-signature-render-documentation t
         ;; lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         ;; lsp-enable-imenu t
         lsp-ui-peek-enable t
@@ -1208,6 +1307,11 @@ before packages are loaded."
         lsp-enable-xref t
         lsp-print-io nil ; log all messages to *lsp-log* for debugging
         )
+
+  ;; See all error statistics in modeline
+  (with-eval-after-load 'lsp-mode
+    (setq lsp-modeline-diagnostics-scope :project) ;project, workspace or file
+    (add-hook 'lsp-managed-mode-hook 'lsp-modeline-diagnostics-mode))
 
   ;; Add LSP which-key integration
   (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
@@ -1231,6 +1335,7 @@ before packages are loaded."
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'java-mode-hook (lambda ()
                               (setq c-basic-offset 3)))
+
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; lsp-latex settings (requires texlab from https://github.com/latex-lsp/texlab)

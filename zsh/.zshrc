@@ -10,7 +10,7 @@ fi
 
 
 # Path to your oh-my-zsh installation.
-export ZSH="/home/cbs/.oh-my-zsh"
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -34,7 +34,7 @@ POWERLEVEL9K_MODE="awesome-patched"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
+# a theme from this variable instead of looking in $ZSH/themes/
 # If set to an empty array, this variable will have no effect.
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
@@ -55,7 +55,7 @@ HYPHEN_INSENSITIVE="true"
 # export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
+# DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -87,8 +87,8 @@ COMPLETION_WAITING_DOTS="true"
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
 # Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 # Third-party plugins:
@@ -155,8 +155,8 @@ alias doomupdate='~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom 
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-function ll { command ls -l --color=always "$@" | less -F -X -R ;}
-#function ll { {echo "" & command ls -l --color=always "$@";} | less -F -X -R ;}
+#function ll { command ls -l --color=always "$@" | less -F -X -R ;}
+function ll { {echo "" & command ls -l --color=always "$@";} | less -F -X -R ;} # Echo empty line at top. Usefull when using double-height zsh prompt and output is more than one screen.
 function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
 function dfh { command df -h -x tmpfs "$@" | command grep -v "/snap/" | command grep -v "Mounted on" | sort -k6 ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
@@ -223,7 +223,7 @@ source /home/cbs/.config/broot/launcher/bash/br
 export FZF_TMUX=1
 export FZF_TMUX_HEIGHT='40%'
 export FZF_COMPLETION_TRIGGER='**'
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Load work related env
 [[ ! -f ~/.config/zsh/.silicom_env.zsh ]] || source ~/.config/zsh/.silicom_env.zsh

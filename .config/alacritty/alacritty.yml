@@ -66,11 +66,11 @@ window:
   #title: Alacritty
 
   # Window class (Linux/BSD only):
-  #class:
+  class:
     # Application instance name
-    #instance: Alacritty
+    instance: Alacritty
     # General application class
-    #general: Alacritty
+    general: Alacritty
 
   # GTK theme variant (Linux/BSD only)
   #
@@ -373,7 +373,7 @@ colors:
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
 shell:
-  program: /bin/bash
+  program: /bin/zsh
 #  args:
 #    - --login
 
