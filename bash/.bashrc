@@ -73,6 +73,12 @@ HISTTIMEFORMAT="%F %T "
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+bind 'set completion-ignore-case on' # Make tab completion case insensitive
+bind 'set bell-style visible'
+bind 'set colored-completion-prefix on'
+bind 'set completion-map-case on' # Treat hyphens and underscores as equivalent when performing case-insensitive filename matching and completion
+bind 'set editing-mode emacs' # emacs or vi
+
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar

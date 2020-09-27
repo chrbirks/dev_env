@@ -1,0 +1,11 @@
+# possible colors: red, green, yellow, blue, magenta, cyan, white
+colorscheme:quartus_log
+cs_re:green:^\s*(Info|INFO).*$
+#cs_re:black,yellow:(Warning|WARNING|WARN).*$
+cs_re:yellow,:^\s*(Warning|WARNING|WARN).*$
+#cs_re:black,yellow:Critical Warning.*$
+cs_re:black,yellow:^\s*(Critical Warning).*$
+#cs_re:white,red:(Error|ERROR|ERR).*$
+#cs_re:red,:\S*(Error|ERROR|ERR).*$
+cs_re:red,,bold:^\s*(Error|ERROR|ERR).*$
+cs_re:white,red:^\s*Warning \(292000\): FLEXlm software error.*$

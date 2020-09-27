@@ -31,6 +31,7 @@ shelve =
 strip = 
 # Extension for converting git to hg repos
 hgext.convert =
+purge = 
 
 [extdiff]
 # configure extended diff to use colordiff (requires colordiff installed in your system)
@@ -45,7 +46,7 @@ delay = 1.0
 
 [tortoisehg]
 vdiff = meld
-editor = emacs
+editor = vim
 
 [color]
 status.modified = blue bold

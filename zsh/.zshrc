@@ -136,9 +136,10 @@ fi
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ..='cd ..'
 alias tmux='tmux -2'
-alias ccat='colorize_cat'
-alias cless='colorize_less'
+alias ccat='colorize_cat' # From 'colorize' plugin. Depends on 'pygments' or 'chroma'.
+alias cless='colorize_less' # From 'colorize' plugin. Depends on 'pygments' or 'chroma'.
 alias cp='nocorrect cp'
+alias hg='nocorrect hg'
 alias grep='grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias egrep='egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias fgrep='fgrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
@@ -147,13 +148,17 @@ alias man='nocorrect man'
 alias mkdir='nocorrect mkdir'
 alias mv='nocorrect mv'
 alias sudo='nocorrect sudo'
+alias gnomon='gnomon --real-time=1000 --type=elapsed-total --format="H:i:s"'
+alias w=' w' # Don't save in history. Requires 'setopt HIST_IGNORE_SPACE'
+alias qtail='multitail -D -CS quartus_log --retry-all --mergeall'
+alias sshagent='eval $(ssh-agent) && ssh-add'
 alias ydl='youtube-dl --write-sub --audio-quality 0 -ci --xattrs'
 alias sshsilicom='ssh -YC cbs@10.100.1.42'
 alias doomupdate='~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom refresh && ~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom update && ~/doom_install/bin/doom --doomdir /home/chrbirks/.config/doom upgrade'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias alert='notify-send --urgency=critical -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 #function ll { command ls -l --color=always "$@" | less -F -X -R ;}
 function ll { {echo "" & command ls -l --color=always "$@";} | less -F -X -R ;} # Echo empty line at top. Usefull when using double-height zsh prompt and output is more than one screen.
@@ -161,15 +166,43 @@ function llt { command ls -alFt --color=always "$@" | less -F -X -R ;}
 function dfh { command df -h -x tmpfs "$@" | command grep -v "/snap/" | command grep -v "Mounted on" | sort -k6 ;}
 function tree { command tree -C "$@" | less -F -X -R ;}
 function find { command find "$1" -regextype posix-extended "${@:2:$#}" | less -F -X ; }
+less() { command less -F -X -R "$@" ;}
 
 # Ripgrep search dotfiles but not dotdirectories
-function rg {
-    # command rg --hidden -g '!.*/' "$@" | less -F -X -R ;
-    command rg --hidden -g '!.*/' "$@";
+rg() {
+    command rg --pretty --hidden \
+	    -g '!.*/' \
+	    "$@" \
+	    | less -F -X -R ;
+}
+
+# Color print of users logged into local machine
+umon() {
+	who | awk '
+	## Color myself green using whole line match
+	# /.\(10\.100\.1\.42\)/ {print "\033[32m" $0 "\033 [39m"}
+	# /.\(\:1\)/ {print "\033[32m" $0 "\033[39m"}
+	#
+	## Color myself green using second field match
+	$2 ~ /\:1/ {print "\033[32m" $0 "\033[39m"}
+	#
+	## Color other users red using whole line match
+	# !/.\(\:1\)/ {print "\033[31m" $0 "\033[39m"}
+	#
+	## Color other users red using second field match
+	$2 !~ /\:1/ {print "\033[31m" $0 "\033[39m"}
+	'
 }
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Don't make cd push the old dir onto the stack
+unsetopt AUTO_PUSHD
+# Required for pushd/popd to work after unsetopt AUTO_PUSHD
+unsetopt PUSHD_IGNORE_DUPS
+# Suppress output from pushd/popd
+setopt PUSHD_SILENT
 
 # don't put duplicate lines or lines starting with space in the history.
 # # See bash(1) for more options
@@ -223,7 +256,7 @@ source /home/cbs/.config/broot/launcher/bash/br
 export FZF_TMUX=1
 export FZF_TMUX_HEIGHT='40%'
 export FZF_COMPLETION_TRIGGER='**'
-#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Load work related env
 [[ ! -f ~/.config/zsh/.silicom_env.zsh ]] || source ~/.config/zsh/.silicom_env.zsh

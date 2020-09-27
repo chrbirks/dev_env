@@ -97,7 +97,7 @@
 -- Platform   : <platform string>
 -- Standard   : <standard>
 -------------------------------------------------------------------------------
--- Description: <cursor>TODO
+-- Description: <cursor>IF YOU DON'T WRITE THIS NOW IT WILL NEVER BE WRITTEN!
 -------------------------------------------------------------------------------
 
 "
@@ -107,7 +107,7 @@
       vhdl-basic-offset 3
       vhdl-beautify-options (quote (nil t t t t)) ; whitespace cleanup, single state per line, indentation, alignment, case fixing TODO: move back into silicom-fw-common package
       vhdl-electric-mode nil
-      vhdl-end-comment-column 80
+      vhdl-end-comment-column 120
       vhdl-indent-comment-like-next-code-line t
       vhdl-indent-syntax-based t
       vhdl-indent-tabs-mode nil
@@ -214,8 +214,17 @@ See also `verilog-header' for an alternative format."
 ;; TCL settings
 (setq tcl-indent-level 3)
 
+;; Shell settings
+(setq sh-basic-offset 4)
+
 ;; Python settings
 (setq python-indent-offset 4)
+
+;; Quartus settings
+(add-to-list 'auto-mode-alist '("\\.qsf\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.qpf\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.sdc\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.stp\\'" . xml-mode))
 
 (provide 'silicom-fw-common)
 ;;; silicom-fw-common.el ends here

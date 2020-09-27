@@ -938,13 +938,13 @@ before packages are loaded."
   ;;   (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
   ;;   (org-ellipsis "⤵")
   ;;   :hook (org-mode . org-bullets-mode))
-  ;; Show bullets instead of a dash in bulleted lists
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([+]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
+  ;; ;; Show bullets instead of a dash in bulleted lists
+  ;; (font-lock-add-keywords 'org-mode
+  ;;                         '(("^ *\\([-]\\) "
+  ;;                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; (font-lock-add-keywords 'org-mode
+  ;;                         '(("^ *\\([+]\\) "
+  ;;                            (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
   ;; Prettify src blocks
   (setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
                                          ("#+END_SRC" . "†")
@@ -1150,7 +1150,7 @@ before packages are loaded."
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
-  (require 'flycheck)
+  ;(require 'flycheck)
   ;; (setq 'flycheck-global-modes t)
   ; FIXME: Try removing these since they are part of lsp-mode
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
@@ -1335,7 +1335,6 @@ before packages are loaded."
   (add-hook 'java-mode-hook #'lsp)
   (add-hook 'java-mode-hook (lambda ()
                               (setq c-basic-offset 3)))
-
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;; lsp-latex settings (requires texlab from https://github.com/latex-lsp/texlab)

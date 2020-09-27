@@ -1,0 +1,24 @@
+[global_config]
+  extra_styling = False
+  title_font = Sans 7
+  title_use_system_font = False
+[keybindings]
+  layout_launcher = None
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      profile = default
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+[profiles]
+  [[default]]
+    background_color = "#002b36"
+    cursor_color = "#aaaaaa"
+    font = Hack 10
+    foreground_color = "#839496"
+    show_titlebar = False
+    use_system_font = False
