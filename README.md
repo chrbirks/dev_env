@@ -181,6 +181,11 @@ It requires a file list called `vhdl_ls.toml` with paths to all files in the pro
 
 This root path is determined by Projectile (true?) when `lsp-auto-guess-root t` and will search upwards from the opened VHDL file until a project folder is found. This can be a Git or Mercurial root directory, or when a empty `.projectile` file is found.
 
+### LSP language server for SystemVerilog
+A language server frontend for ModelSim, GHDL and Vivado Simulator can be found here https://github.com/suoto/hdl_checker and installed with `pip3 install hdl-checker --user --upgrade`. Useful or required packages: `pip3 install jedi vunit vunit_hdl --user --upgrade`.
+
+The tool used can be set by editing `~/.local/lib/python3.6/site-packages/hdl_checker/builder_utils.py` or any of the builder modules under `.../builders`. For ModelSim (and QuestaSim) to work it needs to have `vcom` and `vlog` in the shell PATH so the tool should be sourced for all login shells, e.g. added to `~/.profile`. The language server expects to find a library files with the default name `.hdl_checker.config` but can be overwritten by setting `HDL_CHECKER_DEFAULT_PROJECT_FILE`.
+
 ## Company mode for autocompletion
 To see all available company backends and the currently used backend type <kbd>M-x</kbd><kbd>company-diag</kbd>.
 
