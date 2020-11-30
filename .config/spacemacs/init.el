@@ -47,7 +47,7 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-sort-by-usage t ;sort provided by the company package only and not auto-completion
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t
-                      auto-completion-use-company-box nil
+                      auto-completion-use-company-box t
                       :disabled-for
                       org
                       git)
@@ -461,7 +461,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-line-numbers t
 
-   ;; Code folding method. Possible values are `evil' and `origami'.
+   ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
 
@@ -1225,9 +1225,8 @@ before packages are loaded."
   (setq lsp-enable-file-watchers t
         lsp-file-watch-threshold 100000000
         read-process-output-max (* 1024 1024) ;; 1mb
-        ;; lsp-idle-delay 0.500
-        lsp-idle-delay 0.2
-        ;; lsp-print-performance t
+        lsp-idle-delay 0.500
+        ;; lsp-idle-delay 0.2
         )
   ;; (custom-set-faces
   ;;  '(lsp-ui-doc-background ((t (:background "magenta" :foreground "yellow"))))
@@ -1276,9 +1275,10 @@ before packages are loaded."
         lsp-modeline-code-actions-enable t
         lsp-modeline-diagnostics-enable t
         ; Auto completion
-        lsp-completion-provider :company-mode ; company-mode (company-capf?) or capf
+        lsp-completion-provider :capf
         lsp-completion-show-detail t
         lsp-completion-show-kind t
+        lsp-enable-completion-at-point t
         ; Headerline
         lsp-headerline-breadcrumb-mode t
         lsp-headerline-breadcrumb-enable t
@@ -1293,19 +1293,18 @@ before packages are loaded."
         lsp-ui-peek-enable t
         lsp-ui-peek-always-show nil
         lsp-prefer-flymake nil ; 't' (flymake), 'nil' (flycheck), ':none' (None of them)
-        lsp-ui-flycheck-enable nil
+        lsp-ui-flycheck-enable t
         lsp-ui-flycheck-list-position 'bottom
         lsp-ui-flycheck-live-reporting t
         lsp-auto-configure t ; auto-configure lsp-ui and company-lsp
         lsp-auto-guess-root nil
-        lsp-lens-mode t
-        lsp-enable-completion-at-point t
         lsp-enable-indentation t
         lsp-enable-snippet t
         lsp-enable-on-type-formatting t
         lsp-enable-file-watchers t
         lsp-enable-xref t
         lsp-print-io nil ; log all messages to *lsp-log* for debugging
+        lsp-print-performance nil ; check lsp-log data
         )
 
   ;; See all error statistics in modeline
@@ -1329,6 +1328,7 @@ before packages are loaded."
   (add-hook 'python-mode #'lsp)
   (add-hook 'vhdl-mode-hook #'lsp)
   (add-hook 'verilog-mode-hook #'lsp)
+  (add-hook 'shell-script-mode #'lsp) ;; sudo npm i -g bash-language-server
 
   ;; Configure lsp for java
   (require 'lsp-java)

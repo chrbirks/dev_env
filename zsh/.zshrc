@@ -65,7 +65,7 @@ HYPHEN_INSENSITIVE="true"
 DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
 COMPLETION_WAITING_DOTS="true"
@@ -81,7 +81,7 @@ COMPLETION_WAITING_DOTS="true"
 # "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
-#HIST_STAMPS="dd/mm/yyyy"
+HIST_STAMPS="dd/mm/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -91,9 +91,12 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# Plugin notes:
+#   command-not-found: Needs "sudo pacman -S pkgfile && sudo pkgfile --update" on Arch
 # Third-party plugins:
 #   zsh-autosuggestions: https://github.com/zsh-users/zsh-autosuggestions
-plugins=(colored-man-pages colorize fzf git zsh-autosuggestions)
+#   zsh-syntax-highlighting: https://github.com/zsh-users/zsh-syntax-highlighting.git (must be last in plugins list)
+plugins=(colored-man-pages colorize fzf git command-not-found zsh-autosuggestions zsh-syntax-highlighting)
 
 export FZF_BASE=/usr/share/fzf
 
